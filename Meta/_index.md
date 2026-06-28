@@ -10,10 +10,10 @@ Vault overview and navigation.
 
 ## Dashboard
 
-- **Total Notes:** 107
+- **Total Notes:** 133
 - **Projects:** [[1 - Projects/_index|Projects]]
 - **Areas:** [[2 - Areas/_index|Areas]]
-- **Resources:** [[3 - Resources/_index|Resources]] (90 notes)
+- **Resources:** [[3 - Resources/_index|Resources]] (121 notes)
 - **Archives:** [[4 - Archives/_index|Archives]]
 
 ### Resource Breakdown
@@ -32,6 +32,11 @@ Vault overview and navigation.
 - [[3 - Resources/13 - Infrastructure & DevOps/_index|Infrastructure & DevOps]] — 5 notes
 - [[3 - Resources/14 - Databases & SQL/_index|Databases & SQL]] — 5 notes
 - [[3 - Resources/15 - Data Visualization/_index|Data Visualization]] — 5 notes
+- [[3 - Resources/16 - Data Engineering/_index|Data Engineering]] — 6 notes
+- [[3 - Resources/17 - Containers & Orchestration/_index|Containers & Orchestration]] — 6 notes
+- [[3 - Resources/18 - Advanced Statistics/_index|Advanced Statistics]] — 5 notes
+- [[3 - Resources/19 - NLP/_index|NLP]] — 5 notes
+- [[3 - Resources/20 - Responsible AI/_index|Responsible AI]] — 4 notes
 
 ## Vault Structure
 
