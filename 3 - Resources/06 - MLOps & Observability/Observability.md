@@ -4,25 +4,27 @@ status: growing
 created: 2026-06-27
 ---
 
-# Observability
+# Observabilidad
 
-## 1. Why This Matters
+## 1. Escenario de aprendizaje
 
-A model is running in production. Is it working correctly? How do you know?
+Tu modelo está en producción respondiendo miles de predicciones por segundo. Un día, los usuarios empiezan a recibir respuestas lentas. ¿Es el modelo? ¿Es la base de datos? ¿Es la red? Sin observabilidad, no tienes idea de dónde está el problema. Con un sistema de logging, métricas y trazado bien configurado, puedes seguir una petición desde que llega hasta que se responde y ver exactamente dónde se está tardando.
 
-Observability is the practice of making a system's internal state inferable from its external outputs. In ML, this means knowing not just "is the model responding?" but "is it responding correctly? Is it degrading slowly? Is it serving the right users with the right latency?"
+Un modelo está ejecutándose en producción. ¿Está funcionando correctamente? ¿Cómo lo sabes?
 
-Without observability, you are flying blind. With it, you can detect, diagnose, and fix problems before users notice.
+La observabilidad es la práctica de hacer que el estado interno de un sistema sea inferible a partir de sus salidas externas. En ML, esto significa saber no solo "¿está respondiendo el modelo?" sino "¿está respondiendo correctamente? ¿Se está degradando lentamente? ¿Está sirviendo a los usuarios correctos con la latencia adecuada?"
+
+Sin observabilidad, estás volando a ciegas. Con ella, puedes detectar, diagnosticar y solucionar problemas antes de que los usuarios los noten.
 
 ---
 
-## 2. The Three Pillars
+## 2. Los Tres Pilares
 
 ### 2.1 Logging
 
-Structured, searchable records of events.
+Registros estructurados y consultables de eventos.
 
-**What to log**:
+**Qué registrar**:
 ```json
 {
   "timestamp": "2026-06-27T14:30:00Z",
@@ -36,135 +38,135 @@ Structured, searchable records of events.
 }
 ```
 
-**Best practices**:
-- **Structured JSON** (not plain text) — queryable with tools like jq, Loki, Elasticsearch
-- **Correlation ID** — trace a request across all services
-- **Log levels**: DEBUG (dev), INFO (normal), WARN (potential issue), ERROR (failure)
-- **Never log PII** — mask or omit personal data
-- **Link logs to code versions** — use [[Git]] commit hashes in log metadata
+**Mejores prácticas**:
+- **JSON estructurado** (no texto plano) — consultable con herramientas como jq, Loki, Elasticsearch
+- **ID de correlación** — rastrear una solicitud a través de todos los servicios
+- **Niveles de log**: DEBUG (desarrollo), INFO (normal), WARN (problema potencial), ERROR (fallo)
+- **Nunca registrar PII** — enmascarar u omitir datos personales
+- **Vincular logs a versiones de código** — usar hashes de commit de [[Git]] en metadatos de log
 
-### 2.2 Metrics
+### 2.2 Métricas
 
-Numerical measurements collected over time.
+Mediciones numéricas recolectadas a lo largo del tiempo.
 
-| Metric Type | Examples | What It Tells You |
+| Tipo de Métrica | Ejemplos | Qué Te Dice |
 |---|---|---|
-| **Counters** | Total requests, total errors | Volume (increases monotonically) |
-| **Gauges** | Current memory use, queue depth | Current state (up/down) |
-| **Histograms** | Latency (p50, p95, p99), prediction values | Distribution over time |
-| **Rates** | Requests/second, error rate, throughput | Velocity (derivative of counter) |
+| **Contadores** | Total de solicitudes, total de errores | Volumen (aumenta monótonamente) |
+| **Medidores** | Uso de memoria actual, profundidad de cola | Estado actual (sube/baja) |
+| **Histogramas** | Latencia (p50, p95, p99), valores de predicción | Distribución en el tiempo |
+| **Tasas** | Solicitudes/segundo, tasa de error, rendimiento | Velocidad (derivada del contador) |
 
-**The USE method**: for every resource, monitor:
-- **U**tilization: how busy is it?
-- **S**aturation: how much backlog?
-- **E**rrors: how many failures?
+**El método USE**: para cada recurso, monitorear:
+- **U**tilización: ¿qué tan ocupado está?
+- **S**aturación: ¿cuánto trabajo pendiente?
+- **E**rrores: ¿cuántos fallos?
 
-**The RED method**: for every request, monitor:
-- **R**ate: requests per second
-- **E**rrors: failed requests per second
-- **D**uration: latency distribution
+**El método RED**: para cada solicitud, monitorear:
+- **R**ate: solicitudes por segundo
+- **E**rrores: solicitudes fallidas por segundo
+- **D**uración: distribución de latencia
 
-### 2.3 Tracing
+### 2.3 Trazado
 
-Follow a single request across multiple services.
+Seguir una sola solicitud a través de múltiples servicios.
 
 ```
-Gateway → Auth → Feature Store → Model Server → Response
+Gateway → Auth → Feature Store → Model Server → Respuesta
   2ms      5ms       12ms            45ms         3ms
 ```
 
-**Why tracing matters for ML**: a slow prediction may not be the model's fault — it could be the feature store, the embedding service, or the cache miss. Tracing tells you where the time went.
+**Por qué el trazado importa para ML**: una predicción lenta puede no ser culpa del modelo — podría ser el feature store, el servicio de embeddings o la caché. El trazado te dice dónde se fue el tiempo.
 
-**OpenTelemetry**: the standard for distributed tracing. Instrument once, export to any backend.
-
----
-
-## 3. ML-Specific Observability
-
-Combine with [[Experiment Tracking]] to correlate prediction behavior with specific training runs.
-
-### 3.1 Prediction Monitoring
-
-Beyond system health, monitor the **quality and behavior** of predictions:
-
-| What to Monitor | How |
-|---|---|
-| **Prediction distribution** | Histogram of scores over time |
-| **Confidence scores** | Are predictions becoming less certain? |
-| **Feature values** | Distribution of each input feature |
-| **Model version** | Which version served each prediction |
-| **Error cases** | What inputs cause the model to fail |
-
-### 3.2 Data Pipeline Monitoring
-
-| What | Alert When |
-|---|---|
-| **Data freshness** | Last successful pipeline run > 2 hours ago |
-| **Row counts** | Significantly different from expected |
-| **Null rates** | Sudden spike in missing values |
-| **Schema violations** | Unexpected column types or names |
+**OpenTelemetry**: el estándar para trazado distribuido. Instrumenta una vez, exporta a cualquier backend.
 
 ---
 
-## 4. Alerting Strategy
+## 3. Observabilidad Específica de ML
 
-### 4.1 Alert Design
+Combinar con [[Experiment Tracking]] para correlacionar el comportamiento de predicción con ejecuciones de entrenamiento específicas.
 
-A good alert:
-- **Actionable**: someone can do something about it
-- **Timely**: early enough to prevent impact
-- **Specific**: tells you what is wrong
-- **Noiseless**: does not fire unnecessarily
+### 3.1 Monitoreo de Predicciones
 
-Set up alerting for [[A-B Testing]] experiments to catch regressions early.
+Más allá de la salud del sistema, monitorear la **calidad y el comportamiento** de las predicciones:
 
-### 4.2 Severity Levels
+| Qué Monitorear | Cómo |
+|---|---|
+| **Distribución de predicciones** | Histograma de puntuaciones a lo largo del tiempo |
+| **Puntuaciones de confianza** | ¿Las predicciones se están volviendo menos seguras? |
+| **Valores de características** | Distribución de cada característica de entrada |
+| **Versión del modelo** | Qué versión sirvió cada predicción |
+| **Casos de error** | Qué entradas hacen que el modelo falle |
 
-| Level | Response | Example |
+### 3.2 Monitoreo del Pipeline de Datos
+
+| Qué | Alertar Cuando |
+|---|---|
+| **Frescura de datos** | Última ejecución exitosa del pipeline > 2 horas |
+| **Conteo de filas** | Significativamente diferente de lo esperado |
+| **Tasas de nulos** | Pico repentino en valores faltantes |
+| **Violaciones de esquema** | Tipos o nombres de columna inesperados |
+
+---
+
+## 4. Estrategia de Alertas
+
+### 4.1 Diseño de Alertas
+
+Una buena alerta:
+- **Accionable**: alguien puede hacer algo al respecto
+- **Oportuna**: suficientemente temprano para prevenir el impacto
+- **Específica**: te dice qué está mal
+- **Sin ruido**: no se dispara innecesariamente
+
+Configura alertas para experimentos de [[A-B Testing]] para detectar regresiones temprano.
+
+### 4.2 Niveles de Severidad
+
+| Nivel | Respuesta | Ejemplo |
 |---|---|---|
-| **Page (P0)** | Immediate (5 min) | Model returning 50% errors |
-| **Ticket (P1)** | Within 1 hour | Latency P95 exceeds threshold |
-| **Slack (P2)** | Same day | Gradual accuracy decline |
-| **Dashboard (P3)** | Review weekly | Minor feature drift |
+| **Página (P0)** | Inmediata (5 min) | Modelo devolviendo 50% de errores |
+| **Ticket (P1)** | Dentro de 1 hora | Latencia P95 excede el umbral |
+| **Slack (P2)** | Mismo día | Declive gradual de precisión |
+| **Dashboard (P3)** | Revisión semanal | Deriva menor de características |
 
 ---
 
-## 5. Tools
+## 5. Herramientas
 
-| Domain | Tool |
+| Dominio | Herramienta |
 |---|---|
-| **Metrics** | Prometheus + Grafana |
+| **Métricas** | Prometheus + Grafana |
 | **Logging** | ELK (Elasticsearch, Logstash, Kibana), Loki |
-| **Tracing** | Jaeger, OpenTelemetry |
-| **ML-specific** | WhyLabs, Evidently, Arize |
+| **Trazado** | Jaeger, OpenTelemetry |
+| **Específico de ML** | WhyLabs, Evidently, Arize |
 
 ---
 
 ## 6. Common Mistakes
 
-1. **Logging everything**: too much data is as bad as too little. Log what is actionable. Archive old logs.
+1. **Registrar todo**: demasiados datos es tan malo como muy pocos. Registra lo que sea accionable. Archiva logs antiguos.
 
-2. **No correlation IDs**: without a request ID, you cannot connect logs, metrics, and traces for the same event.
+2. **Sin IDs de correlación**: sin un ID de solicitud, no puedes conectar logs, métricas y trazas del mismo evento.
 
-3. **Alert fatigue**: too many alerts → alerts are ignored. Every alert should require a specific action.
+3. **Fatiga de alertas**: demasiadas alertas → las alertas se ignoran. Cada alerta debería requerir una acción específica.
 
-4. **Monitoring code but not data**: the code runs fine, but the data is wrong. Monitor data quality separately from system health.
+4. **Monitorear código pero no datos**: el código funciona bien, pero los datos son incorrectos. Monitorea la calidad de los datos por separado de la salud del sistema.
 
-5. **No dashboards**: a Grafana dashboard that is never looked at is wasted effort. Build dashboards for specific audiences (on-call, team lead, business).
+5. **Sin paneles**: un panel de Grafana que nunca se mira es esfuerzo desperdiciado. Construye paneles para audiencias específicas (guardia, líder de equipo, negocio).
 
 ---
 
 ## 7. Check Your Understanding
 
-1. A user reports a slow response. How do you diagnose it? (Find the request ID → trace through services → identify the bottleneck.)
+1. Un usuario reporta una respuesta lenta. ¿Cómo lo diagnosticas? (Encontrar el ID de solicitud → trazar a través de servicios → identificar el cuello de botella.)
 
-2. What is the difference between a counter and a gauge? (Counter: monotonically increasing (total requests). Gauge: fluctuating (current memory).)
+2. ¿Cuál es la diferencia entre un contador y un medidor? (Contador: aumenta monótonamente (total de solicitudes). Medidor: fluctúa (memoria actual).)
 
-3. Why log in structured JSON instead of plain text? (Queryable — you can search for specific fields without parsing.)
+3. ¿Por qué registrar en JSON estructurado en lugar de texto plano? (Consultable — puedes buscar campos específicos sin parsear.)
 
-4. Your alert "P99 latency > 1s" fires at 3 AM. The on-call engineer checks and finds a one-time spike caused by a batch job. What is wrong? (The alert is too sensitive — add a duration window or exclude batch times.)
+4. Tu alerta "Latencia P99 > 1s" se dispara a las 3 AM. El ingeniero de guardia verifica y encuentra un pico único causado por un trabajo batch. ¿Qué está mal? (La alerta es demasiado sensible — añade una ventana de duración o excluye horarios de batch.)
 
-5. A model's accuracy drops but all system metrics (latency, error rate) are normal. What is missing? (ML-specific monitoring — prediction quality is not captured by system metrics.)
+5. La precisión de un modelo cae pero todas las métricas del sistema (latencia, tasa de error) son normales. ¿Qué falta? (Monitoreo específico de ML — la calidad de predicción no es capturada por las métricas del sistema.)
 
 ---
 
@@ -176,6 +178,6 @@ Observability makes production ML systems understandable. Logging records events
 
 ## 9. Where to Go Next
 
-- [[Model Monitoring]] — ML-specific monitoring in depth
-- [[Data & Concept Drift]] — Data quality monitoring
-- [[ML Pipelines]] — Observability for pipeline failures
+- [[Model Monitoring]] — Monitoreo específico de ML en profundidad
+- [[Data & Concept Drift]] — Monitoreo de calidad de datos
+- [[ML Pipelines]] — Observabilidad para fallos en pipelines

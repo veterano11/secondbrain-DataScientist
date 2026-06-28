@@ -4,203 +4,203 @@ status: growing
 created: 2026-06-27
 ---
 
-# Statistics
+# Estadística
 
-## 1. Why This Matters
+## 1. Escenario de aprendizaje
 
-If probability is the mathematics of uncertainty, statistics is the practice of **making decisions with data despite uncertainty**.
+Entrenas un modelo y obtienes un 92% de precisión. ¿Es bueno? ¿Cómo sabes que no es solo suerte? Pruebas dos modelos diferentes y uno rinde 1% mejor. ¿Es una mejora real? Despliegas un modelo y al mes siguiente la precisión cae al 88%. ¿Es una degradación real o solo ruido aleatorio?
 
-You trained a model and it got 92% accuracy. Is that good? How do you know it is not just luck? You tried two different models and one performed 1% better. Is that a real improvement? You deployed a model and next month accuracy dropped to 88%. Is that a real degradation or just random noise?
+Sin herramientas estadísticas, estas preguntas son imposibles de responder. Necesitas intervalos de confianza, pruebas de hipótesis y comprensión del sesgo-varianza para separar la señal del ruido. Si la probabilidad es la matemática de la incertidumbre, la estadística es la práctica de **tomar decisiones con datos a pesar de la incertidumbre**.
 
-Statistics gives you the tools to answer these questions. It separates signal from noise. Without it, you are guessing.
-
----
-
-## 2. Descriptive Statistics — Summarizing Data
-
-Before making inferences, you need to **describe** what you see.
-
-### 2.1 Measures of Central Tendency
-
-**Mean** (average): $\bar{x} = \frac{1}{n}\sum_{i=1}^n x_i$
-- Sensitive to outliers. A single billionaire in a room of 100 people raises the mean income drastically.
-
-**Median**: the middle value when data is sorted.
-- Robust to outliers. The median income barely changes if you add a billionaire.
-
-**Mode**: the most frequent value.
-- Useful for categorical data. "The most common product category is Electronics."
-
-**When to use which?**
-- Normal distribution → mean (most efficient estimator)
-- Skewed data (income, house prices) → median
-- Categorical data → mode
-
-### 2.2 Measures of Dispersion
-
-**Variance**: $\sigma^2 = \frac{1}{n}\sum (x_i - \bar{x})^2$
-- Average squared distance from the mean.
-
-**Standard Deviation**: $\sigma = \sqrt{\sigma^2}$
-- In the same units as the data. If height has mean 170cm and std 10cm, most people are between 160-180cm.
-
-**Interquartile Range (IQR)**: Q3 - Q1 (75th percentile - 25th percentile)
-- Robust to outliers. Contains the middle 50% of data.
-
-**Why dispersion matters**: two datasets can have the same mean but very different spreads. A model trained on high-variance data may need more regularization.
-
-### 2.3 Shape
-
-- **Skewness**: asymmetry. Positive skew → long tail to the right (like income). Negative skew → long tail to the left.
-- **Kurtosis**: tail heaviness. High kurtosis → more outliers. Financial returns have high kurtosis (fat tails).
+La estadística te da las herramientas para responder estas preguntas. Separa la señal del ruido. Sin ella, estás adivinando.
 
 ---
 
-## 3. Inferential Statistics — Drawing Conclusions from Samples
+## 2. Estadística descriptiva — Resumiendo datos
 
-You never have all the data (the population). You have a **sample**. Statistics tells you what you can infer about the population from that sample.
+Antes de hacer inferencias, necesitas **describir** lo que ves.
 
-### 3.1 Estimation
+### 2.1 Medidas de tendencia central
 
-**Point estimate**: a single best guess for a population parameter.
-- Example: the sample mean $\bar{x}$ is a point estimate of the population mean $\mu$.
+**Media** (promedio): $\bar{x} = \frac{1}{n}\sum_{i=1}^n x_i$
+- Sensible a valores atípicos. Un solo multimillonario en una sala de 100 personas eleva drásticamente el ingreso medio.
 
-**Confidence interval**: a range that likely contains the true value.
+**Mediana**: el valor del medio cuando los datos están ordenados.
+- Robusta a valores atípicos. La mediana del ingreso apenas cambia si agregas un multimillonario.
 
-$$CI = \hat{\theta} \pm z_{\alpha/2} \cdot SE$$
+**Moda**: el valor más frecuente.
+- Útil para datos categóricos. "La categoría de producto más común es Electrónicos."
 
-- $\hat{\theta}$: point estimate
-- $SE$: standard error (standard deviation of the sampling distribution)
-- $z_{\alpha/2}$: critical value (1.96 for 95% confidence)
+**¿Cuándo usar cada una?**
+- Distribución normal → media (estimador más eficiente)
+- Datos sesgados (ingresos, precios de casas) → mediana
+- Datos categóricos → moda
 
-**Interpretation**: "If we repeated this experiment many times, 95% of the confidence intervals would contain the true population parameter."
+### 2.2 Medidas de dispersión
 
-This does NOT mean "there is a 95% chance the true value is in this interval." The true value either is or is not in the interval. The 95% refers to the **procedure**, not the specific interval.
+**Varianza**: $\sigma^2 = \frac{1}{n}\sum (x_i - \bar{x})^2$
+- Distancia cuadrática promedio desde la media.
 
-### 3.2 Hypothesis Testing
+**Desviación estándar**: $\sigma = \sqrt{\sigma^2}$
+- En las mismas unidades que los datos. Si la altura tiene media 170cm y desviación estándar 10cm, la mayoría de las personas están entre 160-180cm.
 
-**The framework**:
+**Rango Intercuartil (IQR)**: Q3 - Q1 (percentil 75 - percentil 25)
+- Robusto a valores atípicos. Contiene el 50% central de los datos.
 
-1. **$H_0$ (null hypothesis)**: the default assumption (no effect, no difference)
-2. **$H_1$ (alternative hypothesis)**: what you want to prove (there is an effect)
+**Por qué importa la dispersión**: dos conjuntos de datos pueden tener la misma media pero dispersiones muy diferentes. Un modelo entrenado con datos de alta varianza puede necesitar más regularización.
 
-**Example**:
-- $H_0$: the new model has the same accuracy as the old model
-- $H_1$: the new model has higher accuracy
+### 2.3 Forma
 
-3. **Choose significance level $\alpha$** (typically 0.05)
-4. **Compute a test statistic** and its **p-value**
-5. **Decision**: if $p < \alpha$, reject $H_0$ (you have evidence for $H_1$)
+- **Asimetría (Skewness)**: falta de simetría. Sesgo positivo → cola larga a la derecha (como los ingresos). Sesgo negativo → cola larga a la izquierda.
+- **Curtosis**: pesadez de las colas. Curtosis alta → más valores atípicos. Los rendimientos financieros tienen alta curtosis (colas gruesas).
 
-### 3.3 The p-value
+---
 
-**Definition**: the probability of observing data as extreme as yours (or more extreme) **assuming $H_0$ is true**.
+## 3. Estadística inferencial — Extrayendo conclusiones de muestras
 
-**What p < 0.05 means**: "If there were truly no effect, we would see data this extreme less than 5% of the time."
+Nunca tienes todos los datos (la población). Tienes una **muestra**. La estadística te dice qué puedes inferir sobre la población a partir de esa muestra.
 
-**Common misinterpretations**:
-- ❌ "There is a 95% chance the effect is real"
-- ❌ "P values tell you the size of the effect"
-- ✅ "P values tell you how surprising your data would be under $H_0$"
+### 3.1 Estimación
 
-### 3.4 Type I and Type II Errors
+**Estimación puntual**: una mejor estimación única para un parámetro poblacional.
+- Ejemplo: la media muestral $\bar{x}$ es una estimación puntual de la media poblacional $\mu$.
 
-| Decision | $H_0$ is true | $H_0$ is false |
+**Intervalo de confianza**: un rango que probablemente contiene el valor verdadero.
+
+$$IC = \hat{\theta} \pm z_{\alpha/2} \cdot EE$$
+
+- $\hat{\theta}$: estimación puntual
+- $EE$: error estándar (desviación estándar de la distribución muestral)
+- $z_{\alpha/2}$: valor crítico (1.96 para 95% de confianza)
+
+**Interpretación**: "Si repitiéramos este experimento muchas veces, el 95% de los intervalos de confianza contendrían el verdadero parámetro poblacional."
+
+Esto NO significa "hay un 95% de probabilidad de que el valor verdadero esté en este intervalo." El valor verdadero está o no está en el intervalo. El 95% se refiere al **procedimiento**, no al intervalo específico.
+
+### 3.2 Pruebas de hipótesis
+
+**El marco**:
+
+1. **$H_0$ (hipótesis nula)**: la suposición predeterminada (sin efecto, sin diferencia)
+2. **$H_1$ (hipótesis alternativa)**: lo que quieres probar (hay un efecto)
+
+**Ejemplo**:
+- $H_0$: el nuevo modelo tiene la misma precisión que el modelo anterior
+- $H_1$: el nuevo modelo tiene mayor precisión
+
+3. **Elige el nivel de significancia $\alpha$** (típicamente 0.05)
+4. **Calcula un estadístico de prueba** y su **valor p**
+5. **Decisión**: si $p < \alpha$, rechaza $H_0$ (tienes evidencia para $H_1$)
+
+### 3.3 El valor p
+
+**Definición**: la probabilidad de observar datos tan extremos como los tuyos (o más extremos) **asumiendo que $H_0$ es cierta**.
+
+**Qué significa p < 0.05**: "Si verdaderamente no hubiera efecto, veríamos datos tan extremos como estos menos del 5% de las veces."
+
+**Interpretaciones erróneas comunes**:
+- ❌ "Hay un 95% de probabilidad de que el efecto sea real"
+- ❌ "Los valores p te dicen el tamaño del efecto"
+- ✅ "Los valores p te dicen qué tan sorprendentes serían tus datos bajo $H_0$"
+
+### 3.4 Errores Tipo I y Tipo II
+
+| Decisión | $H_0$ es cierta | $H_0$ es falsa |
 |---|---|---|
-| **Reject $H_0$** | Type I error (false positive) | Correct! |
-| **Fail to reject $H_0$** | Correct! | Type II error (false negative) |
+| **Rechazar $H_0$** | Error Tipo I (falso positivo) | ¡Correcto! |
+| **No rechazar $H_0$** | ¡Correcto! | Error Tipo II (falso negativo) |
 
-- **Type I rate** = $\alpha$ (you control this — usually 0.05)
-- **Type II rate** = $\beta$
-- **Power** = $1 - \beta$ (probability of detecting a real effect)
+- **Tasa de Tipo I** = $\alpha$ (tú controlas esto — usualmente 0.05)
+- **Tasa de Tipo II** = $\beta$
+- **Poder** = $1 - \beta$ (probabilidad de detectar un efecto real)
 
-In ML terms:
-- False positive: deploying a model that does not actually improve
-- False negative: NOT deploying a model that WOULD have improved
-- Power: how likely your A/B test is to detect a real improvement
+En términos de ML:
+- Falso positivo: desplegar un modelo que en realidad no mejora
+- Falso negativo: NO desplegar un modelo que SÍ habría mejorado
+- Poder: qué tan probable es que tu prueba A/B detecte una mejora real
 
-### 3.5 Common Statistical Tests
+### 3.5 Pruebas estadísticas comunes
 
-| Test | What it compares | When to use |
+| Prueba | Qué compara | Cuándo usarla |
 |---|---|---|
-| **t-test** | Means of two groups | A/B test, normal-ish data |
-| **ANOVA** | Means of 3+ groups | Multiple model comparison |
-| **Chi-squared** | Categorical distributions | Feature independence test |
-| **Mann-Whitney U** | Medians of two groups | Non-normal data, small samples |
-| **KS test** | Full distributions | Detecting data drift |
+| **t-test** | Medias de dos grupos | Prueba A/B, datos aproximadamente normales |
+| **ANOVA** | Medias de 3+ grupos | Comparación de múltiples modelos |
+| **Chi-cuadrado** | Distribuciones categóricas | Prueba de independencia de características |
+| **Mann-Whitney U** | Medianas de dos grupos | Datos no normales, muestras pequeñas |
+| **KS test** | Distribuciones completas | Detección de deriva de datos |
 
 ---
 
-## 4. The Bias-Variance Tradeoff
+## 4. El equilibrio Sesgo-Varianza
 
-This is the **central concept** connecting statistics to [[Supervised Learning]].
+Este es el **concepto central** que conecta la estadística con [[Supervised Learning]].
 
-### 4.1 Definitions
+### 4.1 Definiciones
 
-- **Bias**: error from assuming the model form is simpler than reality. A linear model on non-linear data has high bias.
-- **Variance**: error from sensitivity to fluctuations in training data. A deep decision tree has high variance.
+- **Sesgo (Bias)**: error por asumir que la forma del modelo es más simple que la realidad. Un modelo lineal en datos no lineales tiene alto sesgo.
+- **Varianza (Variance)**: error por sensibilidad a fluctuaciones en los datos de entrenamiento. Un árbol de decisión profundo tiene alta varianza.
 
-$$E[(y - \hat{f}(x))^2] = \text{Bias}^2 + \text{Variance} + \text{Irreducible Error}$$
+$$E[(y - \hat{f}(x))^2] = \text{Sesgo}^2 + \text{Varianza} + \text{Error irreducible}$$
 
-### 4.2 The Tradeoff
+### 4.2 El equilibrio
 
-- **Simple model** (linear regression): high bias, low variance
-- **Complex model** (deep tree): low bias, high variance
-- **The goal**: find the sweet spot where total error is minimized
+- **Modelo simple** (regresión lineal): alto sesgo, baja varianza
+- **Modelo complejo** (árbol profundo): bajo sesgo, alta varianza
+- **El objetivo**: encontrar el punto óptimo donde el error total se minimiza
 
-**Visual description**: imagine shooting arrows at a target.
-- High bias: all arrows clustered in the wrong place (off-center)
-- High variance: all arrows scattered randomly (some close, some far)
-- Ideal: all arrows clustered at the center (low bias, low variance)
+**Descripción visual**: imagina disparar flechas a un blanco.
+- Alto sesgo: todas las flechas agrupadas en el lugar equivocado (fuera del centro)
+- Alta varianza: todas las flechas dispersas aleatoriamente (algunas cerca, otras lejos)
+- Ideal: todas las flechas agrupadas en el centro (bajo sesgo, baja varianza)
 
-### 4.3 Consequences in Practice
+### 4.3 Consecuencias en la práctica
 
-- **Underfitting** (high bias): model is too simple. Training error is high. Fix: more features, more complex model.
-- **Overfitting** (high variance): model memorized training data. Training error is low but validation error is high. Fix: regularization, more data, simpler model.
+- **Subajuste (Underfitting)** (alto sesgo): el modelo es demasiado simple. El error de entrenamiento es alto. Solución: más características, modelo más complejo.
+- **Sobreajuste (Overfitting)** (alta varianza): el modelo memorizó los datos de entrenamiento. El error de entrenamiento es bajo pero el error de validación es alto. Solución: regularización, más datos, modelo más simple.
 
-The learning curve tells you which problem you have:
-- If training and validation curves converge but both are high → high bias (need a more expressive model)
-- If there is a large gap between training and validation → high variance (need regularization or more data)
+La curva de aprendizaje te dice qué problema tienes:
+- Si las curvas de entrenamiento y validación convergen pero ambas son altas → alto sesgo (necesitas un modelo más expresivo)
+- Si hay una gran brecha entre entrenamiento y validación → alta varianza (necesitas regularización o más datos)
 
 ---
 
-## 5. Correlation and Causation
+## 5. Correlación y Causalidad
 
-### 5.1 Correlation
+### 5.1 Correlación
 
 $$\rho_{X,Y} = \frac{\text{Cov}(X, Y)}{\sigma_X \sigma_Y}$$
 
-- Ranges from -1 to 1
-- 0 means no linear relationship
-- ±1 means perfect linear relationship
+- Varía de -1 a 1
+- 0 significa que no hay relación lineal
+- ±1 significa relación lineal perfecta
 
-### 5.2 Correlation ≠ Causation
+### 5.2 Correlación ≠ Causalidad
 
-Classic example: ice cream sales and drowning incidents are correlated. Does ice cream cause drowning? No. Both are caused by hot weather (a **confounder**).
+Ejemplo clásico: las ventas de helado y los incidentes de ahogamiento están correlacionados. ¿El helado causa ahogamiento? No. Ambos son causados por el clima cálido (un **factor de confusión**).
 
-In ML: a model might learn that "umbrella sales" predicts "rain", but umbrella sales do not cause rain. This matters when you deploy the model in a new environment where the correlation might break.
+En ML: un modelo podría aprender que "ventas de paraguas" predice "lluvia", pero las ventas de paraguas no causan lluvia. Esto importa cuando despliegas el modelo en un nuevo entorno donde la correlación podría romperse.
 
-### 5.3 Simpson's Paradox
+### 5.3 Paradoja de Simpson
 
-A trend appears in several groups but disappears or reverses when the groups are combined.
+Una tendencia que aparece en varios grupos pero desaparece o se invierte cuando los grupos se combinan.
 
-**Example**: UC Berkeley gender bias case. In 1973, UC Berkeley was sued for gender bias: overall, men were admitted at a higher rate than women. However, when examining individual departments, most departments had **equal or higher** admission rates for women. The paradox was caused by women applying to more competitive departments (with lower admission rates overall).
+**Ejemplo**: caso de sesgo de género en UC Berkeley. En 1973, UC Berkeley fue demandada por sesgo de género: en general, los hombres eran admitidos a una tasa más alta que las mujeres. Sin embargo, al examinar departamentos individuales, la mayoría de los departamentos tenían tasas de admisión **iguales o más altas** para las mujeres. La paradoja fue causada porque las mujeres solicitaban ingreso a departamentos más competitivos (con tasas de admisión más bajas en general).
 
-**Takeaway**: always check for confounding variables. Your ML model's performance may hide biases that only appear when segmenting the data.
+**Conclusión**: siempre verifica las variables de confusión. El rendimiento de tu modelo de ML puede ocultar sesgos que solo aparecen al segmentar los datos.
 
 ---
 
-## 6. Statistical Thinking in ML
+## 6. Pensamiento estadístico en ML
 
-| ML Concept | Statistical Parallel |
+| Concepto de ML | Paralelo estadístico |
 |---|---|
-| Training loss | Sample error (how well you fit the data) |
-| Validation loss | Out-of-sample error (how well you generalize) |
-| L2 regularization | Bayesian prior (weights ~ Normal(0, 1/λ)) |
-| L1 regularization | Bayesian prior (weights ~ Laplace(0, 1/λ)) |
-| Cross-validation | Repeated sampling to estimate generalization error |
-| Ensemble methods | Reducing variance by averaging multiple estimators |
-| Gradient descent | Optimization for MLE/MAP estimation |
+| Pérdida de entrenamiento | Error muestral (qué tan bien ajustas los datos) |
+| Pérdida de validación | Error fuera de muestra (qué tan bien generalizas) |
+| Regularización L2 | Prior Bayesiano (pesos ~ Normal(0, 1/λ)) |
+| Regularización L1 | Prior Bayesiano (pesos ~ Laplace(0, 1/λ)) |
+| Validación cruzada | Muestreo repetido para estimar el error de generalización |
+| Métodos de ensemble | Reducción de varianza promediando múltiples estimadores |
+| Descenso por gradiente | Optimización para estimación MLE/MAP |
 
 ---
 

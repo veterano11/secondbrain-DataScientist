@@ -6,11 +6,9 @@ created: 2026-06-27
 
 # Neural Networks
 
-## 1. Why This Matters
+## 1. Escenario de aprendizaje
 
-Neural networks are the engine behind modern AI. From image recognition to language models, from recommendation systems to drug discovery — virtually every breakthrough of the last decade uses neural networks.
-
-The fundamental idea is simple: a neural network is a **composition of differentiable functions** that can approximate any continuous function (Universal Approximation Theorem). But the depth of the theory lies in understanding how these functions compose, how gradients flow through them, and how the architecture affects what the network can learn.
+Quieres construir un sistema que reconozca dígitos escritos a mano (como los códigos postales en sobres). Tienes imágenes de 28×28 píxeles y quieres que la máquina aprenda a clasificarlas en dígitos del 0 al 9. Las redes neuronales son el motor detrás de esta tarea — desde reconocimiento de imágenes hasta modelos de lenguaje. La idea fundamental es simple: una red neuronal es una **composición de funciones diferenciables** que puede aproximar cualquier función continua (Teorema de Aproximación Universal). Pero la profundidad de la teoría está en entender cómo se componen esas funciones, cómo fluyen los gradientes a través de ellas y cómo la arquitectura afecta lo que la red puede aprender.
 
 ---
 

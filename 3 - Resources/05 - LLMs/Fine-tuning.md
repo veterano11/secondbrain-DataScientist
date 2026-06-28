@@ -6,201 +6,203 @@ created: 2026-06-27
 
 # Fine-tuning
 
-## 1. Why This Matters
+## 1. Escenario de aprendizaje
 
-Pre-trained LLMs are generalists — they know a bit about everything but excel at nothing specific. Fine-tuning adapts them to a particular domain, task, or behavior — the core idea behind [[Transfer Learning]]. It is how you turn a generic model into a specialized tool.
+Tienes un modelo base como Llama 3 que sabe de todo un poco pero necesitas que genere informes médicos con terminología especializada y un formato específico de tu hospital. El modelo genérico produce texto correcto pero no útil — usa lenguaje impreciso y omite secciones críticas. El fine-tuning te permite adaptar el modelo a tu dominio, transformando un modelo genérico en una herramienta especializada.
 
-Fine-tuning is the difference between a model that "knows about" your codebase and one that "writes code in your style." Between a model that "understands" medical terminology and one that "diagnoses" from radiology reports correctly.
+Los LLMs pre-entrenados son generalistas — saben un poco de todo pero no sobresalen en nada específico. El fine-tuning los adapta a un dominio, tarea o comportamiento particular — la idea central detrás de [[Transfer Learning]]. Así es como conviertes un modelo genérico en una herramienta especializada.
+
+El fine-tuning es la diferencia entre un modelo que "sabe acerca de" tu código y uno que "escribe código en tu estilo." Entre un modelo que "entiende" terminología médica y uno que "diagnostica" correctamente a partir de informes de radiología.
 
 ---
 
-## 2. The Fine-Tuning Spectrum
+## 2. El Espectro del Fine-Tuning
 
-### 2.1 Full Fine-Tuning
+### 2.1 Fine-Tuning Completo
 
-Update all parameters. Powerful but expensive.
+Actualizar todos los parámetros. Potente pero costoso.
 
-**Memory**:
-- Model weights: 70B × 2 bytes (BF16) = 140 GB
-- Optimizer states (Adam): 70B × 4 × 4 bytes = 1.12 TB
-- Gradients: 70B × 4 bytes = 280 GB
-- **Total**: ~1.5 TB per GPU — impossible. Distributed across GPUs.
+**Memoria**:
+- Pesos del modelo: 70B × 2 bytes (BF16) = 140 GB
+- Estados del optimizador (Adam): 70B × 4 × 4 bytes = 1.12 TB
+- Gradientes: 70B × 4 bytes = 280 GB
+- **Total**: ~1.5 TB por GPU — imposible. Distribuido entre GPUs.
 
-**When to use**: large target dataset, high-quality data, sufficient compute budget.
+**Cuándo usarlo**: conjunto de datos objetivo grande, datos de alta calidad, presupuesto de cómputo suficiente.
 
-### 2.2 Parameter-Efficient Fine-Tuning (PEFT)
+### 2.2 Fine-Tuning Eficiente en Parámetros (PEFT)
 
-Update a tiny fraction of parameters. Almost as good as full fine-tuning for most tasks.
+Actualizar una fracción minúscula de parámetros. Casi tan bueno como el fine-tuning completo para la mayoría de las tareas.
 
 #### LoRA (Low-Rank Adaptation)
 
 $$W' = W + BA, \quad B \in \mathbb{R}^{d \times r}, A \in \mathbb{R}^{r \times k}$$
 
-**Step by step**:
-1. Freeze the original weight matrix $W$
-2. Add two small matrices $A$ and $B$ with rank $r$ (typically 8-64)
-3. Only $A$ and $B$ are trained
-4. After training, $BA$ can be merged into $W$ (zero inference overhead)
+**Paso a paso**:
+1. Congela la matriz de pesos original $W$
+2. Añade dos matrices pequeñas $A$ y $B$ con rango $r$ (típicamente 8-64)
+3. Solo se entrenan $A$ y $B$
+4. Después del entrenamiento, $BA$ puede fusionarse en $W$ (sin sobrecarga en inferencia)
 
-**Why it works**: the weight updates during fine-tuning have low "intrinsic rank" — the actual changes lie in a low-dimensional subspace.
+**Por qué funciona**: las actualizaciones de pesos durante el fine-tuning tienen "rango intrínseco" bajo — los cambios reales están en un subespacio de baja dimensión.
 
-**Memory**: a 7B model with LoRA trains on a single GPU with 24GB memory.
+**Memoria**: un modelo de 7B con LoRA se entrena en una sola GPU con 24GB de memoria.
 
 #### QLoRA
 
-LoRA + 4-bit quantization of the base model. Enables fine-tuning a 70B model on a single 48GB GPU.
+LoRA + cuantización de 4 bits del modelo base. Permite fine-tuning de un modelo de 70B en una sola GPU de 48GB.
 
-**Techniques**:
-- NF4 quantization (normal float 4-bit)
-- Double quantization (quantize the quantization constants)
-- Paged optimizers (CPU offloading when GPU memory is exceeded)
+**Técnicas**:
+- Cuantización NF4 (normal float 4-bit)
+- Doble cuantización (cuantizar las constantes de cuantización)
+- Optimizadores paginados (descarga a CPU cuando se excede la memoria GPU)
 
-#### Adapters
+#### Adaptadores
 
-Insert small bottleneck layers between transformer blocks:
+Insertar pequeñas capas de cuello de botella entre bloques transformer:
 
 ```
-Input → Adapter(down) → ReLU → Adapter(up) → Output
-       d → r              r → d
+Entrada → Adaptador(abajo) → ReLU → Adaptador(arriba) → Salida
+         d → r               r → d
 ```
 
-Only the adapter parameters are trained. Less efficient than LoRA (adds inference latency).
+Solo los parámetros del adaptador se entrenan. Menos eficiente que LoRA (añade latencia en inferencia).
 
 #### Prefix Tuning
 
-Learn "virtual tokens" prepended to each layer's key/value. No new weights added, just learned embeddings.
+Aprender "tokens virtuales" antepuestos a las claves/valores de cada capa. No se añaden pesos nuevos, solo embeddings aprendidos.
 
 ---
 
-## 3. Instruction Fine-Tuning
+## 3. Fine-tuning por Instrucciones
 
-### 3.1 The Format
+### 3.1 El Formato
 
 ```
 {
-  "instruction": "Translate to French",
-  "input": "Hello, how are you?",
+  "instruction": "Traduce al francés",
+  "input": "Hola, ¿cómo estás?",
   "output": "Bonjour, comment allez-vous?"
 }
 ```
 
-The model learns to follow instructions in the format seen during training. This is how base models become chat/assistant models.
+El modelo aprende a seguir instrucciones en el formato visto durante el entrenamiento. Así es como los modelos base se convierten en modelos de chat/asistente.
 
-### 3.2 Chat Template
+### 3.2 Plantilla de Chat
 
-Models use specific chat templates that structure the conversation:
+Los modelos usan plantillas de chat específicas que estructuran la conversación:
 
 ```python
-# Llama 3 chat template
+# Plantilla de chat de Llama 3
 <|begin_of_text|><|start_header_id|>system<|end_header_id|>
-You are a helpful assistant.<|eot_id|>
+Eres un asistente útil.<|eot_id|>
 <|start_header_id|>user<|end_header_id|>
-What is ML?<|eot_id|>
+¿Qué es ML?<|eot_id|>
 <|start_header_id|>assistant<|end_header_id|>
-Machine learning is...
+El machine learning es...
 ```
 
-Always use the model's correct chat template. Using the wrong template degrades performance significantly.
+Usa siempre la plantilla de chat correcta del modelo. Usar la plantilla incorrecta degrada el rendimiento significativamente.
 
 ---
 
-## 4. Data Quality
+## 4. Calidad de los Datos
 
-### 4.1 Quantity vs Quality
+### 4.1 Cantidad vs Calidad
 
-100 high-quality examples > 10,000 noisy examples.
+100 ejemplos de alta calidad > 10,000 ejemplos ruidosos.
 
-**Quality criteria**:
-- **Correct**: the output is factually correct
-- **Consistent**: follows the expected format and style
-- **Diverse**: covers the range of inputs the model will see
-- **Non-toxic**: no harmful content in outputs
+**Criterios de calidad**:
+- **Correcto**: la salida es factualmente correcta
+- **Consistente**: sigue el formato y estilo esperados
+- **Diverso**: cubre el rango de entradas que el modelo verá
+- **No tóxico**: sin contenido dañino en las salidas
 
-### 4.2 Data Preparation
+### 4.2 Preparación de Datos
 
-1. **Collect**: gather examples of the desired behavior
-2. **Clean**: remove duplicates, fix formatting, check correctness
-3. **Format**: apply the appropriate chat template
-4. **Split**: train (90%), validation (10%)
-5. **Deduplicate**: remove near-duplicates (LLM-based or embedding similarity)
+1. **Recolectar**: recopilar ejemplos del comportamiento deseado
+2. **Limpiar**: eliminar duplicados, corregir formato, verificar corrección
+3. **Formatear**: aplicar la plantilla de chat apropiada
+4. **Dividir**: entrenamiento (90%), validación (10%)
+5. **Deduplicar**: eliminar casi duplicados (basado en LLM o similitud de embeddings)
 
 ---
 
 ## 5. RLHF — Reinforcement Learning from Human Feedback
 
-### 5.1 The Problem
+### 5.1 El Problema
 
-Fine-tuning on instructions teaches the model WHAT to do, but not HOW to behave. [[RLHF & Preference Optimization]] aligns the model with human preferences.
+El fine-tuning por instrucciones enseña al modelo QUÉ hacer, pero no CÓMO comportarse. [[RLHF & Preference Optimization]] alinea el modelo con las preferencias humanas.
 
-### 5.2 The Three Steps
+### 5.2 Los Tres Pasos
 
-**Step 1: Supervised Fine-Tuning (SFT)**
-- Fine-tune on high-quality human demonstrations — a form of [[Supervised Learning]]
-- Teaches the model the desired format and style
+**Paso 1: Supervised Fine-Tuning (SFT)**
+- Fine-tuning en demostraciones humanas de alta calidad — una forma de [[Supervised Learning]]
+- Enseña al modelo el formato y estilo deseados
 
-**Step 2: Reward Model Training**
-- For each prompt, generate multiple outputs from the SFT model
-- Humans rank the outputs (pairwise comparisons)
-- Train a reward model to predict human preferences
+**Paso 2: Entrenamiento del Modelo de Recompensa**
+- Para cada prompt, generar múltiples salidas del modelo SFT
+- Humanos clasifican las salidas (comparaciones por pares)
+- Entrenar un modelo de recompensa para predecir preferencias humanas
 
-**Step 3: PPO (Proximal Policy Optimization)**
-- Use the reward model to score the LLM's outputs
-- Optimize the LLM to maximize reward
-- Add KL penalty to prevent the model from diverging too far from the SFT model
+**Paso 3: PPO (Proximal Policy Optimization)**
+- Usar el modelo de recompensa para puntuar las salidas del LLM
+- Optimizar el LLM para maximizar la recompensa
+- Añadir penalización KL para evitar que el modelo se aleje demasiado del modelo SFT
 
-### 5.3 Alternatives to RLHF
+### 5.3 Alternativas a RLHF
 
-| Method | Description | Pros | Cons |
+| Método | Descripción | Pros | Contras |
 |---|---|---|---|
-| **DPO** | Direct Preference Optimization | Simpler, no reward model | May not scale as well |
-| **ORPO** | Combined SFT + alignment | Single stage | New, less tested |
-| **KTO** | Kahneman-Tversky Optimization | Only needs binary feedback | Less fine-grained |
+| **DPO** | Direct Preference Optimization | Más simple, sin modelo de recompensa | Puede no escalar igual |
+| **ORPO** | SFT + alineación combinados | Una sola etapa | Nuevo, menos probado |
+| **KTO** | Kahneman-Tversky Optimization | Solo necesita feedback binario | Menos detallado |
 
-DPO is the most popular alternative: it directly optimizes the policy on preference pairs without training a separate reward model.
+DPO es la alternativa más popular: optimiza directamente la política en pares de preferencia sin entrenar un modelo de recompensa separado.
 
 ---
 
-## 6. Practical Checklist
+## 6. Lista de Verificación Práctica
 
 ```
-☐ Data: min 100 high-quality examples
-☐ Format: correct chat template
-☐ Rank r: 8-64 (higher for more diverse tasks)
-☐ Target modules: q_proj, v_proj (common), or all linear layers
-☐ LR: 1e-4 to 5e-4 (LoRA), 1e-5 to 5e-5 (full)
-☐ Batch size: gradient accumulation to 64-128 samples
-☐ Epochs: 1-3 (more = overfitting risk)
-☐ Evaluation: held-out validation set
-☐ Monitor: loss curves, generation quality on validation — use [[Experiment Tracking]] to log these metrics
+☐ Datos: mínimo 100 ejemplos de alta calidad
+☐ Formato: plantilla de chat correcta
+☐ Rango r: 8-64 (más alto para tareas más diversas)
+☐ Módulos objetivo: q_proj, v_proj (común), o todas las capas lineales
+☐ LR: 1e-4 a 5e-4 (LoRA), 1e-5 a 5e-5 (completo)
+☐ Tamaño de lote: acumulación de gradientes a 64-128 muestras
+☐ Épocas: 1-3 (más = riesgo de sobreajuste)
+☐ Evaluación: conjunto de validación reservado
+☐ Monitorear: curvas de pérdida, calidad de generación en validación — usa [[Experiment Tracking]] para registrar estas métricas
 ```
 
 ---
 
 ## 7. Common Mistakes
 
-1. **Too many epochs**: LLMs overfit quickly. 1-3 epochs is usually enough. More epochs hurt generalization.
+1. **Demasiadas épocas**: los LLMs se sobreajustan rápidamente. 1-3 épocas suele ser suficiente. Más épocas perjudican la generalización.
 
-2. **Mismatched chat template**: using the wrong template causes garbled outputs. Verify that the format matches exactly.
+2. **Plantilla de chat incorrecta**: usar la plantilla equivocada causa salidas incoherentes. Verifica que el formato coincida exactamente.
 
-3. **Forgetting to merge LoRA weights for deployment**: LoRA weights must be merged or loaded separately at inference time.
+3. **Olvidar fusionar los pesos de LoRA para despliegue**: los pesos de LoRA deben fusionarse o cargarse por separado en inferencia.
 
-4. **Low-quality data**: garbage in, garbage out. Fine-tuning amplifies patterns in the training data — including errors.
+4. **Datos de baja calidad**: basura entra, basura sale. El fine-tuning amplifica los patrones en los datos de entrenamiento — incluyendo errores.
 
-5. **Not evaluating before/after**: if you cannot measure improvement, you do not know if fine-tuning helped. Always evaluate on a held-out test set.
+5. **No evaluar antes/después**: si no puedes medir la mejora, no sabes si el fine-tuning ayudó. Evalúa siempre en un conjunto de prueba reservado.
 
 ---
 
 ## 8. Check Your Understanding
 
-1. LoRA rank r=8 uses what fraction of a 4096×4096 weight matrix? (8×4096 + 4096×8 = 65K out of 4096² ≈ 16.8M → 0.4%)
+1. El rango r=8 de LoRA usa ¿qué fracción de una matriz de pesos 4096×4096? (8×4096 + 4096×8 = 65K de 4096² ≈ 16.8M → 0.4%)
 
-2. Why does QLoRA enable fine-tuning a 70B model on a single GPU? (4-bit quantization reduces base model memory by 4×.)
+2. ¿Por qué QLoRA permite fine-tuning de un modelo de 70B en una sola GPU? (La cuantización de 4 bits reduce la memoria del modelo base en 4×.)
 
-3. You fine-tune on 500 examples for 10 epochs. Training loss is near zero but validation perplexity is worse than before. What happened? (Overfitting.)
+3. Fine-tuning en 500 ejemplos por 10 épocas. La pérdida de entrenamiento es casi cero pero la perplejidad de validación es peor que antes. ¿Qué sucedió? (Sobreajuste.)
 
-4. What is the KL penalty in PPO for? (Prevents the model from diverging too far from the SFT model and losing general capabilities.)
+4. ¿Para qué sirve la penalización KL en PPO? (Evita que el modelo se aleje demasiado del modelo SFT y pierda capacidades generales.)
 
-5. DPO does not require a reward model. How does it optimize for human preferences? (It directly optimizes the policy on preference pairs using a binary cross-entropy-like loss.)
+5. DPO no requiere un modelo de recompensa. ¿Cómo optimiza las preferencias humanas? (Optimiza directamente la política en pares de preferencia usando una pérdida similar a la entropía cruzada binaria.)
 
 ---
 
@@ -212,6 +214,6 @@ Fine-tuning adapts LLMs to specific tasks. Full fine-tuning is powerful but expe
 
 ## 10. Where to Go Next
 
-- [[RAG]] — An alternative to fine-tuning for knowledge-intensive tasks
-- [[Prompt Engineering]] — The simplest form of task adaptation
-- [[Training Techniques]] — Advanced training tricks for fine-tuning
+- [[RAG]] — Una alternativa al fine-tuning para tareas intensivas en conocimiento
+- [[Prompt Engineering]] — La forma más simple de adaptación de tareas
+- [[Training Techniques]] — Trucos avanzados de entrenamiento para fine-tuning

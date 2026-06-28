@@ -6,11 +6,11 @@ created: 2026-06-27
 
 # Regularization
 
-## 1. Why This Matters
+## 1. Escenario de aprendizaje
 
-A model that perfectly memorizes training data will fail on new data. Regularization is the set of techniques to **prevent this overfitting** by constraining the model.
+Estás entrenando un modelo para predecir el precio de casas usando 300 características — metros cuadrados, número de habitaciones, año de construcción, distancia al centro, etc. Tu modelo logra un error casi nulo en entrenamiento, pero cuando lo pruebas con casas nuevas, las predicciones son pésimas. El modelo ha memorizado el ruido y los detalles irrelevantes de los datos de entrenamiento en lugar de aprender patrones generales. Regularization es el conjunto de técnicas para **prevenir este overfitting** restringiendo la complejidad del modelo.
 
-The core idea: a simpler model is better than a complex one, all else being equal (Occam's razor). Regularization penalizes complexity, nudging the model toward simpler solutions that generalize better.
+La idea central: un modelo más simple es mejor que uno complejo, todo lo demás siendo igual (navaja de Occam). La regularización penaliza la complejidad, empujando al modelo hacia soluciones más simples que generalizan mejor.
 
 ---
 

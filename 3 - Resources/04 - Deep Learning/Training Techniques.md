@@ -6,9 +6,9 @@ created: 2026-06-27
 
 # Training Techniques
 
-## 1. Why This Matters
+## 1. Escenario de aprendizaje
 
-Knowing the architecture of a neural network is half the battle. The other half is **training it effectively**. A well-chosen optimizer, learning rate schedule, and normalization strategy can mean the difference between a model that converges in hours and one that diverges to NaN.
+Has diseñado una red neuronal para clasificar imágenes de retina y diagnosticar retinopatía diabética. Conoces la arquitectura (capas convolucionales, fully connected, softmax), pero cuando comienzas a entrenar, la pérdida no disminuye o explota a NaN. Aquí es donde las técnicas de entrenamiento marcan la diferencia. Un optimizador bien elegido, una planificación de learning rate y una estrategia de normalización pueden significar la diferencia entre un modelo que converge en horas y uno que diverge a NaN.
 
 ---
 

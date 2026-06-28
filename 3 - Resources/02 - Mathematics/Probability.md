@@ -4,215 +4,217 @@ status: growing
 created: 2026-06-27
 ---
 
-# Probability
+# Probabilidad
 
-## 1. Why This Matters
+## 1. Escenario de aprendizaje
 
-Machine learning is fundamentally about making predictions under uncertainty. Will this customer churn? Is this email spam? What is the next word in this sentence? None of these questions have deterministic answers — they are all **probabilistic**.
+Construyes un clasificador de spam que predice con un 90% de confianza que un correo es spam. ¿Qué significa realmente ese 90%? ¿Deberías actuar con esa predicción? Construyes un modelo de diagnóstico médico que detecta una enfermedad rara con un 99% de sensibilidad. Un paciente da positivo — ¿qué probabilidad tiene realmente de estar enfermo? (Spoiler: mucho menos del 99%.)
 
-Every ML model outputs probabilities, whether explicitly (logistic regression gives $P(y=1|x)$) or implicitly (a classifier's decision threshold implies a probability cutoff). Understanding probability lets you:
-- Interpret model outputs correctly
-- Design loss functions (cross-entropy is derived from likelihood)
-- Understand [[Bayesian Inference|Bayesian methods]] (which treat model weights as distributions)
-- Detect when your model is uncertain vs confident but wrong
+El machine learning se trata fundamentalmente de hacer predicciones bajo incertidumbre. ¿Este cliente va a cancelar? ¿Este email es spam? ¿Cuál es la siguiente palabra en esta oración? Ninguna de estas preguntas tiene respuestas deterministas — todas son **probabilísticas**.
+
+Cada modelo de ML produce probabilidades, ya sea explícitamente (regresión logística da $P(y=1|x)$) o implícitamente (el umbral de decisión de un clasificador implica un punto de corte de probabilidad). Entender la probabilidad te permite:
+- Interpretar correctamente las salidas del modelo
+- Diseñar funciones de pérdida (la entropía cruzada se deriva de la verosimilitud)
+- Entender [[Bayesian Inference|métodos Bayesianos]] (que tratan los pesos del modelo como distribuciones)
+- Detectar cuándo tu modelo está inseguro vs confiado pero equivocado
 
 ---
 
-## 2. Foundations
+## 2. Fundamentos
 
-### 2.1 The Three Axioms (Kolmogorov)
+### 2.1 Los tres axiomas (Kolmogorov)
 
-1. $P(A) \geq 0$ — probabilities are non-negative
-2. $P(\Omega) = 1$ — the probability of "something happening" is 1
-3. $P(A \cup B) = P(A) + P(B)$ if $A$ and $B$ are disjoint (mutually exclusive)
+1. $P(A) \geq 0$ — las probabilidades son no negativas
+2. $P(\Omega) = 1$ — la probabilidad de que "algo suceda" es 1
+3. $P(A \cup B) = P(A) + P(B)$ si $A$ y $B$ son disjuntos (mutuamente excluyentes)
 
-From these three simple rules, all of probability theory follows.
+A partir de estas tres reglas simples, se sigue toda la teoría de la probabilidad.
 
-### 2.2 Visualizing Probability
+### 2.2 Visualizando la probabilidad
 
-Think of a **Venn diagram**. The sample space $\Omega$ is the entire rectangle. An event $A$ is a region inside. $P(A)$ is the area of $A$ divided by the total area.
+Piensa en un **diagrama de Venn**. El espacio muestral $\Omega$ es el rectángulo completo. Un evento $A$ es una región dentro. $P(A)$ es el área de $A$ dividida por el área total.
 
-- $P(A \cup B)$: area covered by $A$ or $B$ (or both)
-- $P(A \cap B)$: area where $A$ and $B$ overlap
-- If $A \cap B = \emptyset$ (no overlap), they are mutually exclusive
+- $P(A \cup B)$: área cubierta por $A$ o $B$ (o ambos)
+- $P(A \cap B)$: área donde $A$ y $B$ se superponen
+- Si $A \cap B = \emptyset$ (sin superposición), son mutuamente excluyentes
 
-### 2.3 The Addition Rule
+### 2.3 La regla de la suma
 
 $$P(A \cup B) = P(A) + P(B) - P(A \cap B)$$
 
-We subtract the intersection because it was counted twice.
+Restamos la intersección porque fue contada dos veces.
 
 ---
 
-## 3. Conditional Probability and Bayes
+## 3. Probabilidad condicional y Bayes
 
-### 3.1 Conditional Probability
+### 3.1 Probabilidad condicional
 
 $$P(A|B) = \frac{P(A \cap B)}{P(B)}$$
 
-**Read as**: "probability of $A$ given that $B$ happened."
+**Se lee como**: "probabilidad de $A$ dado que $B$ ocurrió."
 
-**Intuition**: if you know $B$ is true, the only part of the Venn diagram that matters is the $B$ region. $P(A|B)$ is the fraction of $B$ that overlaps with $A$.
+**Intuición**: si sabes que $B$ es cierto, la única parte del diagrama de Venn que importa es la región $B$. $P(A|B)$ es la fracción de $B$ que se superpone con $A$.
 
-**Concrete example**: In a medical test:
-- $P(\text{disease}) = 0.01$ (1% of population has the disease)
-- $P(\text{positive}|\text{disease}) = 0.99$ (test catches 99% of cases)
-- $P(\text{positive}|\text{no disease}) = 0.05$ (5% false positive rate)
+**Ejemplo concreto**: En una prueba médica:
+- $P(\text{enfermedad}) = 0.01$ (1% de la población tiene la enfermedad)
+- $P(\text{positivo}|\text{enfermedad}) = 0.99$ (la prueba detecta el 99% de los casos)
+- $P(\text{positivo}|\text{no enfermedad}) = 0.05$ (5% de tasa de falsos positivos)
 
-If you test positive, what is $P(\text{disease}|\text{positive})$?
+Si das positivo, ¿cuál es $P(\text{enfermedad}|\text{positivo})$?
 
-Most people guess 99%. The correct answer is much lower because the disease is rare. We will compute it with Bayes.
+La mayoría de la gente adivina 99%. La respuesta correcta es mucho más baja porque la enfermedad es rara. Lo calcularemos con Bayes.
 
-### 3.2 Bayes Theorem
+### 3.2 Teorema de Bayes
 
 $$P(A|B) = \frac{P(B|A) \cdot P(A)}{P(B)}$$
 
-**Let us compute the medical test example**:
+**Calculemos el ejemplo de la prueba médica**:
 
-$$P(\text{disease}|\text{positive}) = \frac{0.99 \times 0.01}{0.99 \times 0.01 + 0.05 \times 0.99}$$
+$$P(\text{enfermedad}|\text{positivo}) = \frac{0.99 \times 0.01}{0.99 \times 0.01 + 0.05 \times 0.99}$$
 
 $$= \frac{0.0099}{0.0099 + 0.0495} = \frac{0.0099}{0.0594} \approx 0.167$$
 
-**Only 16.7%!** Even with a positive test, there is an 83.3% chance you do NOT have the disease. This is because the disease is rare and the test has a 5% false positive rate.
+**¡Solo 16.7%!** Incluso con una prueba positiva, hay un 83.3% de probabilidad de que NO tengas la enfermedad. Esto se debe a que la enfermedad es rara y la prueba tiene un 5% de falsos positivos.
 
-This is why understanding Bayes is essential for interpreting ML model outputs — especially in imbalanced classification.
+Por eso entender Bayes es esencial para interpretar las salidas de modelos de ML — especialmente en clasificación desbalanceada.
 
-### 3.3 The Bayesian Framework for ML
+### 3.3 El marco Bayesiano para ML
 
-Bayes theorem provides a framework for learning from data:
+El teorema de Bayes proporciona un marco para aprender de los datos:
 
-$$P(\text{model}|\text{data}) = \frac{P(\text{data}|\text{model}) \cdot P(\text{model})}{P(\text{data})}$$
+$$P(\text{modelo}|\text{datos}) = \frac{P(\text{datos}|\text{modelo}) \cdot P(\text{modelo})}{P(\text{datos})}$$
 
-- **Prior** $P(\text{model})$: what we believe before seeing data
-- **Likelihood** $P(\text{data}|\text{model})$: how well the model explains the data
-- **Posterior** $P(\text{model}|\text{data})$: what we believe after seeing data
-- **Evidence** $P(\text{data})$: how probable the data is under all models (normalization)
+- **Prior** $P(\text{modelo})$: lo que creemos antes de ver los datos
+- **Likelihood** $P(\text{datos}|\text{modelo})$: qué tan bien el modelo explica los datos
+- **Posterior** $P(\text{modelo}|\text{datos})$: lo que creemos después de ver los datos
+- **Evidence** $P(\text{datos})$: qué tan probables son los datos bajo todos los modelos (normalización)
 
-**Maximum Likelihood Estimation (MLE)**: find the model that maximizes $P(\text{data}|\text{model})$ — equivalent to minimizing cross-entropy loss.
+**Estimación de Máxima Verosimilitud (MLE)**: encuentra el modelo que maximiza $P(\text{datos}|\text{modelo})$ — equivalente a minimizar la pérdida de entropía cruzada.
 
-**Maximum A Posteriori (MAP)**: find the model that maximizes $P(\text{model}|\text{data})$ — equivalent to MLE with regularization.
+**Máximo a Posteriori (MAP)**: encuentra el modelo que maximiza $P(\text{modelo}|\text{datos})$ — equivalente a MLE con regularización.
 
 ---
 
-## 4. Random Variables
+## 4. Variables aleatorias
 
-### 4.1 Intuition
+### 4.1 Intuición
 
-A random variable is not a variable that "varies randomly." It is a **function that maps outcomes to numbers**.
+Una variable aleatoria no es una variable que "varía aleatoriamente." Es una **función que mapea resultados a números**.
 
-- **Discrete**: countable outcomes (coin flip → $\{0, 1\}$, dice → $\{1, 2, 3, 4, 5, 6\}$)
-- **Continuous**: outcomes in a range (temperature, height, price)
+- **Discreta**: resultados contables (lanzar moneda → $\{0, 1\}$, dado → $\{1, 2, 3, 4, 5, 6\}$)
+- **Continua**: resultados en un rango (temperatura, altura, precio)
 
-### 4.2 Probability Distributions
+### 4.2 Distribuciones de probabilidad
 
-A distribution tells you how likely each value is.
+Una distribución te dice qué tan probable es cada valor.
 
-**For discrete variables**: Probability Mass Function (PMF)
+**Para variables discretas**: Función de Masa de Probabilidad (PMF)
 
 $$P(X = k) = ...$$
 
-**For continuous variables**: Probability Density Function (PDF)
+**Para variables continuas**: Función de Densidad de Probabilidad (PDF)
 
 $$P(a \leq X \leq b) = \int_a^b f(x) dx$$
 
-Note: $P(X = \text{exact value}) = 0$ for continuous variables. You can only talk about ranges.
+Nota: $P(X = \text{valor exacto}) = 0$ para variables continuas. Solo puedes hablar de rangos.
 
-### 4.3 Expectation and Variance
+### 4.3 Esperanza y Varianza
 
-**Expected value** (the "average" you would see over infinite samples):
+**Valor esperado** (el "promedio" que verías después de infinitas muestras):
 
-$$\text{Discrete: } E[X] = \sum x \cdot P(X=x)$$
-$$\text{Continuous: } E[X] = \int x \cdot f(x) dx$$
+$$\text{Discreto: } E[X] = \sum x \cdot P(X=x)$$
+$$\text{Continuo: } E[X] = \int x \cdot f(x) dx$$
 
-**Variance** (how spread out the distribution is):
+**Varianza** (qué tan dispersa está la distribución):
 
 $$\text{Var}[X] = E[(X - E[X])^2] = E[X^2] - E[X]^2$$
 
-**Standard deviation**: $\text{Std}[X] = \sqrt{\text{Var}[X]}$
+**Desviación estándar**: $\text{Std}[X] = \sqrt{\text{Var}[X]}$
 
-### 4.4 Linearity of Expectation
+### 4.4 Linealidad de la Esperanza
 
 $$E[aX + bY] = aE[X] + bE[Y]$$
 
-This holds **always**, even if $X$ and $Y$ are not independent. This property is incredibly useful for deriving results in ML.
+Esto se cumple **siempre**, incluso si $X$ e $Y$ no son independientes. Esta propiedad es increíblemente útil para derivar resultados en ML.
 
 ---
 
-## 5. Key Distributions
+## 5. Distribuciones clave
 
 ### 5.1 Bernoulli
 
 $$P(X=1) = p, \quad P(X=0) = 1-p$$
 
-- **Use**: binary outcome (click / no click, spam / not spam)
+- **Uso**: resultado binario (clic / no clic, spam / no spam)
 - $E[X] = p$, $\text{Var}[X] = p(1-p)$
 
 ### 5.2 Binomial
 
 $$P(X = k) = \binom{n}{k} p^k (1-p)^{n-k}$$
 
-- Number of successes in $n$ independent Bernoulli trials
+- Número de éxitos en $n$ ensayos Bernoulli independientes
 - $E[X] = np$, $\text{Var}[X] = np(1-p)$
 
-### 5.3 Normal (Gaussian)
+### 5.3 Normal (Gaussiana)
 
 $$f(x) = \frac{1}{\sigma\sqrt{2\pi}} e^{-\frac{1}{2}(\frac{x-\mu}{\sigma})^2}$$
 
-This is the **most important distribution** in statistics and ML.
+Esta es la **distribución más importante** en estadística y ML.
 
-**Why?**
-- **Central Limit Theorem**: the sum of many independent random variables is approximately normal, regardless of their original distribution
-- Many natural phenomena follow a normal distribution (heights, measurement errors)
-- It is the assumption behind linear regression, Gaussian Processes, and VAEs
+**¿Por qué?**
+- **Teorema del Límite Central**: la suma de muchas variables aleatorias independientes es aproximadamente normal, independientemente de su distribución original
+- Muchos fenómenos naturales siguen una distribución normal (alturas, errores de medición)
+- Es el supuesto detrás de la regresión lineal, Procesos Gaussianos y VAEs
 
-**Properties**:
-- Symmetric around $\mu$
-- 68% of data within $\mu \pm \sigma$
-- 95% within $\mu \pm 2\sigma$
-- 99.7% within $\mu \pm 3\sigma$
+**Propiedades**:
+- Simétrica alrededor de $\mu$
+- 68% de los datos dentro de $\mu \pm \sigma$
+- 95% dentro de $\mu \pm 2\sigma$
+- 99.7% dentro de $\mu \pm 3\sigma$
 
-### 5.4 Other Important Distributions
+### 5.4 Otras distribuciones importantes
 
-| Distribution | Use Case | Parameters |
+| Distribución | Caso de uso | Parámetros |
 |---|---|---|
-| **Poisson** | Count of events in fixed time (e.g., website visits per minute) | $\lambda$ (rate) |
-| **Exponential** | Time between events (e.g., time between customer arrivals) | $\lambda$ |
-| **Uniform** | Every value equally likely (e.g., random initialization) | $a, b$ |
-| **Beta** | Prior for probabilities (conjugate prior for Bernoulli) | $\alpha, \beta$ |
+| **Poisson** | Conteo de eventos en tiempo fijo (ej. visitas al sitio por minuto) | $\lambda$ (tasa) |
+| **Exponential** | Tiempo entre eventos (ej. tiempo entre llegadas de clientes) | $\lambda$ |
+| **Uniform** | Cada valor igualmente probable (ej. inicialización aleatoria) | $a, b$ |
+| **Beta** | Prior para probabilidades (prior conjugado para Bernoulli) | $\alpha, \beta$ |
 
-### 5.5 Central Limit Theorem (CLT)
+### 5.5 Teorema del Límite Central (TLC)
 
-**Statement**: The distribution of the sample mean $\bar{X} = \frac{1}{n}\sum X_i$ approaches a normal distribution as $n \to \infty$, regardless of the original distribution of $X$.
+**Enunciado**: La distribución de la media muestral $\bar{X} = \frac{1}{n}\sum X_i$ se aproxima a una distribución normal a medida que $n \to \infty$, independientemente de la distribución original de $X$.
 
-**Why this matters**: it justifies using the normal distribution for confidence intervals, hypothesis tests, and many ML methods, even when the underlying data is not normal.
+**Por qué importa**: justifica el uso de la distribución normal para intervalos de confianza, pruebas de hipótesis y muchos métodos de ML, incluso cuando los datos subyacentes no son normales.
 
 ---
 
-## 6. Joint, Marginal, and Conditional
+## 6. Conjunta, Marginal y Condicional
 
-### 6.1 Joint Distribution
+### 6.1 Distribución conjunta
 
-$P(X=x, Y=y)$ — probability both events happen simultaneously.
+$P(X=x, Y=y)$ — probabilidad de que ambos eventos ocurran simultáneamente.
 
-### 6.2 Marginal Distribution
+### 6.2 Distribución marginal
 
 $$P(X=x) = \sum_y P(X=x, Y=y)$$
 
-"Summing out" the other variable. This is how you get the distribution of one variable from a joint distribution.
+"Sumando" la otra variable. Así es como se obtiene la distribución de una variable a partir de una distribución conjunta.
 
-### 6.3 Independence
+### 6.3 Independencia
 
 $$P(X, Y) = P(X) P(Y)$$
 
-If $X$ and $Y$ are independent, knowing $X$ tells you nothing about $Y$.
+Si $X$ e $Y$ son independientes, saber $X$ no te dice nada sobre $Y$.
 
-In ML, we often **assume** independence when it is not true (Naive Bayes, i.i.d. assumption). The art is knowing when this assumption is good enough.
+En ML, a menudo **asumimos** independencia cuando no es cierta (Naive Bayes, supuesto i.i.d.). El arte está en saber cuándo esta suposición es suficientemente buena.
 
-### 6.4 Law of Total Probability
+### 6.4 Ley de Probabilidad Total
 
 $$P(A) = \sum_i P(A|B_i) P(B_i)$$
 
-A way to compute $P(A)$ by considering all possible scenarios $B_i$.
+Una forma de calcular $P(A)$ considerando todos los escenarios posibles $B_i$.
 
 ---
 

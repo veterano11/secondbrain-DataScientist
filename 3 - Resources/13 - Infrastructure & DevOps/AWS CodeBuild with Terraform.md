@@ -6,7 +6,7 @@ created: 2026-06-28
 
 # AWS CodeBuild con Terraform
 
-## El objetivo
+## 1. Escenario de aprendizaje
 
 Al final de esta nota, tendrás un pipeline en AWS CodeBuild que:
 
@@ -15,7 +15,7 @@ Al final de esta nota, tendrás un pipeline en AWS CodeBuild que:
 
 Tu infraestructura se despliega desde código, con revisión, sin que nadie ejecute comandos manualmente.
 
-## Requisitos previos
+## 2. Requisitos previos
 
 Antes de empezar, necesitas tener claro:
 
@@ -24,7 +24,7 @@ Antes de empezar, necesitas tener claro:
 - Un repo en GitHub (o CodeCommit) con tu código Terraform
 - Cuenta AWS con permisos para CodeBuild, S3, CloudWatch Logs, IAM
 
-## Arquitectura del pipeline
+## 3. Arquitectura del pipeline
 
 ```
 [GitHub PR] → CodeBuild (plan) → publica resultado
@@ -37,7 +37,7 @@ Antes de empezar, necesitas tener claro:
 
 Cada ejecución de CodeBuild corre Terraform en un entorno efímero (contenedor). Por eso el backend remoto es obligatorio — el state no puede vivir en el build.
 
-## 1. Política IAM para CodeBuild
+## 4. Política IAM para CodeBuild
 
 CodeBuild necesita permisos para:
 
@@ -99,7 +99,7 @@ CodeBuild necesita permisos para:
 
 Crea un rol IAM para CodeBuild con esta política. Lo usarás en el proyecto de CodeBuild.
 
-## 2. Estructura del repositorio
+## 5. Estructura del repositorio
 
 ```
 infra-repo/
@@ -117,7 +117,7 @@ infra-repo/
 └── .tfversion            ← contiene "1.9.0"
 ```
 
-## 3. Buildspec — el corazón del pipeline
+## 6. Buildspec — el corazón del pipeline
 
 CodeBuild usa un archivo `buildspec.yml` que define los pasos de construcción.
 
@@ -199,7 +199,7 @@ Diferencias clave entre plan.yml y apply.yml:
 | Auto-approve | No aplica | `-auto-approve` |
 | Artefacto | Guarda plan como evidencia | No necesita |
 
-## 4. Crear el proyecto CodeBuild
+## 7. Crear el proyecto CodeBuild
 
 ### Opción A: Desde la consola AWS
 
@@ -256,7 +256,7 @@ resource "aws_codebuild_project" "terraform_plan" {
 }
 ```
 
-## 5. Configurar webhooks (PR triggers)
+## 8. Configurar webhooks (PR triggers)
 
 Para que CodeBuild se ejecute automáticamente en cada PR, necesitas un webhook.
 
@@ -287,7 +287,7 @@ resource "aws_codebuild_webhook" "plan" {
 }
 ```
 
-## 6. Segundo proyecto: apply en merge
+## 9. Segundo proyecto: apply en merge
 
 Crea un proyecto similar pero con:
 
@@ -340,7 +340,7 @@ resource "aws_codebuild_webhook" "apply" {
 }
 ```
 
-## 7. Plan de aprobación (opcional pero recomendado)
+## 10. Plan de aprobación (opcional pero recomendado)
 
 Para producción, probablemente quieras que `apply` no sea automático. Una forma común:
 
@@ -363,7 +363,7 @@ CodePipeline:
 
 Pero si estás empezando, el flujo automático plan → apply es suficiente para un entorno dev.
 
-## 8. Variables de entorno en CodeBuild
+## 11. Variables de entorno en CodeBuild
 
 Nunca quemes secretos (AWS access keys) en el buildspec. En su lugar:
 
@@ -386,7 +386,7 @@ environment_variables:
     type: PARAMETER_STORE
 ```
 
-## 9. Plan de respuesta a fallos
+## 12. Plan de respuesta a fallos
 
 Posibles fallos y cómo debuguearlos:
 
@@ -398,7 +398,7 @@ Posibles fallos y cómo debuguearlos:
 | `AccessDenied` → S3 | Rol IAM sin permisos | Revisa la política IAM del rol |
 | Terraform no instalado | `install` phase falló | Verifica que `wget` funciona en el contenedor |
 
-## 10. Ejemplo completo del flujo
+## 13. Ejemplo completo del flujo
 
 ```
 1. Developer: git checkout -b feature/agregar-sg
@@ -415,7 +415,7 @@ Posibles fallos y cómo debuguearlos:
 12. Infraestructura actualizada. Todo en código, todo revisado.
 ```
 
-## Common Pitfalls
+## 11. Common Mistakes
 
 - **State remoto no configurado**: CodeBuild ejecuta desde un contenedor efímero. Sin backend remoto, el state se pierde al terminar el build. La automatización del CLI es un pilar de [[CLI & Productivity]].
 - **Lock conflicts**: si haces push frecuente, dos builds pueden intentar apply simultáneamente. Configura la cola de CodeBuild para ejecutar un build a la vez.

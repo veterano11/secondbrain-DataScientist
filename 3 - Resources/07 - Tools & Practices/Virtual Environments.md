@@ -6,153 +6,153 @@ created: 2026-06-27
 
 # Virtual Environments
 
-## 1. Why This Matters
+## 1. Escenario de aprendizaje
 
-Every data science project depends on a specific set of packages at specific versions. One project needs `scikit-learn==1.2`, another needs `scikit-learn==1.5`. Without isolation, these requirements conflict — you can only have one version installed system-wide. See [[Python for Data Science]] for language-level context.
+Trabajas en dos proyectos de ciencia de datos. El primero necesita `scikit-learn==1.2` por compatibilidad con un pipeline legacy; el segundo requiere `scikit-learn==1.5` para usar las últimas funcionalidades. Sin entornos aislados, solo puedes tener una versión instalada a nivel de sistema —uno de los dos proyectos se rompe.
 
-Virtual environments solve this by creating **isolated Python environments** per project. Each environment has its own packages, independent of every other environment and the system Python.
-
----
-
-## 2. The Problem
-
-```
-Project A: needs pandas 1.5, numpy 1.24
-Project B: needs pandas 2.0, numpy 1.26
-
-Without environments: can only install ONE version
-→ Project A or B breaks
-```
-
-**Solution**:
-```
-Project A: .venv/A/ → pandas 1.5, numpy 1.24
-Project B: .venv/B/ → pandas 2.0, numpy 1.26
-Each environment is isolated.
-```
+Los entornos virtuales resuelven este conflicto creando espacios aislados de Python por proyecto, cada uno con sus propias dependencias sin interferencias.
 
 ---
 
-## 3. Tools
+## 2. El Problema
 
-### 3.1 venv (Built-in)
+```
+Proyecto A: necesita pandas 1.5, numpy 1.24
+Proyecto B: necesita pandas 2.0, numpy 1.26
 
-Combine with [[CLI & Productivity]] aliases for faster environment switching.
+Sin entornos: solo se puede instalar UNA versión
+→ El proyecto A o B se rompe
+```
+
+**Solución**:
+```
+Proyecto A: .venv/A/ → pandas 1.5, numpy 1.24
+Proyecto B: .venv/B/ → pandas 2.0, numpy 1.26
+Cada entorno está aislado.
+```
+
+---
+
+## 3. Herramientas
+
+### 3.1 venv (Incorporado)
+
+Combínalo con [[CLI & Productivity]] y sus alias para cambios rápidos de entorno.
 
 ```bash
-# Create environment
+# Crear entorno
 python -m venv .venv
 
-# Activate
+# Activar
 source .venv/bin/activate    # Linux/Mac
 .venv\Scripts\activate       # Windows
 
-# Install packages
+# Instalar paquetes
 pip install pandas scikit-learn
 
-# Record dependencies
+# Registrar dependencias
 pip freeze > requirements.txt
 
-# Reproduce on another machine
+# Reproducir en otra máquina
 pip install -r requirements.txt
 
-# Deactivate
+# Desactivar
 deactivate
 ```
 
-**When to use**: small projects, simple dependencies, when you want zero external tools.
+**Cuándo usarlo**: proyectos pequeños, dependencias simples, cuando no quieres herramientas externas.
 
 ### 3.2 Conda
 
 ```bash
-# Create environment
+# Crear entorno
 conda create -n myenv python=3.11
 
-# Activate
+# Activar
 conda activate myenv
 
-# Install
+# Instalar
 conda install pandas scikit-learn
 
-# Export
+# Exportar
 conda env export > environment.yml
 
-# Reproduce
+# Reproducir
 conda env create -f environment.yml
 ```
 
-**Advantages**: handles non-Python dependencies (CUDA, C libraries), good for data science stacks.
+**Ventajas**: maneja dependencias no Python (CUDA, librerías C), ideal para stacks de ciencia de datos.
 
-**Disadvantages**: slower, larger, different package index than PyPI.
+**Desventajas**: más lento, más pesado, índice de paquetes distinto al de PyPI.
 
 ### 3.3 Poetry
 
 ```bash
-# Initialize
+# Inicializar
 poetry new myproject
 poetry init
 
-# Add dependencies
+# Agregar dependencias
 poetry add pandas scikit-learn
 
-# Install from lockfile
+# Instalar desde lockfile
 poetry install
 
-# Build and publish
+# Compilar y publicar
 poetry build
 poetry publish
 ```
 
-**Advantages**: deterministic builds (lockfile), dependency resolution, build system.
+**Ventajas**: builds deterministas (lockfile), resolución de dependencias, sistema de empaquetado.
 
-**Disadvantages**: learning curve, slower resolution.
+**Desventajas**: curva de aprendizaje, resolución más lenta.
 
 ### 3.4 uv
 
 ```bash
-# Create environment
+# Crear entorno
 uv venv
 
-# Install
+# Instalar
 uv pip install pandas scikit-learn
 
-# Sync from requirements
+# Sincronizar desde requirements
 uv pip sync requirements.txt
 ```
 
-**Advantages**: 10-100× faster than pip, modern, compatible with pip's requirements format.
+**Ventajas**: 10–100 veces más rápido que pip, moderno, compatible con el formato de requirements de pip.
 
 ---
 
-## 4. Reproducible Environments
+## 4. Entornos Reproducibles
 
-### 4.1 Requirements Files
+### 4.1 Archivos de Requirements
 
 ```
-# requirements.in (direct dependencies, no versions pinned)
+# requirements.in (dependencias directas, sin versiones fijas)
 pandas
 scikit-learn
 torch
 
-# requirements.txt (pinned with hashes, generated)
+# requirements.txt (versiones fijas con hashes, generado)
 pandas==2.0.3 --hash=sha256:abc123...
 scikit-learn==1.3.0 --hash=sha256:def456...
 ```
 
-**Generate with**:
+**Generar con**:
 ```bash
 pip-compile requirements.in  # pip-tools
 uv pip compile requirements.in -o requirements.txt  # uv
 ```
 
-### 4.2 Virtual Environment Location
+### 4.2 Ubicación del Entorno Virtual
 
-Common conventions:
-- `.venv/` in the project root (current best practice)
+Convenciones comunes:
+- `.venv/` en la raíz del proyecto (práctica actual recomendada)
 - `venv/`
 - `env/`
 
-Add the virtual environment to `.gitignore`:
+Agrega el entorno virtual a `.gitignore`:
 ```
 # .gitignore
 .venv/
@@ -162,17 +162,17 @@ env/
 
 ---
 
-## 5. Best Practices
+## 5. Buenas Prácticas
 
-1. **Always use a virtual environment**: no exceptions. System-wide packages are for system tools only.
+1. **Usa siempre un entorno virtual**: sin excepciones. Los paquetes del sistema son solo para herramientas del sistema.
 
-2. **Commit requirements.txt or lockfile**: anyone cloning the repo can reproduce the environment. Use [[Code Quality]] tools to validate dependency files.
+2. **Incluye requirements.txt o lockfile en el repositorio**: cualquiera que clone el repo puede reproducir el entorno. Usa herramientas de [[Code Quality]] para validar los archivos de dependencias.
 
-3. **Use Python 3.11+**: older versions (3.7, 3.8) are end-of-life and missing features.
+3. **Usa Python 3.11+**: las versiones anteriores (3.7, 3.8) llegaron al final de su vida útil y carecen de funcionalidades modernas.
 
-4. **One environment per project**: do not share environments across projects.
+4. **Un entorno por proyecto**: no compartas entornos entre proyectos.
 
-5. **Document the setup**: a README should say how to create and activate the environment.
+5. **Documenta la configuración**: un README debería explicar cómo crear y activar el entorno.
 
 ---
 

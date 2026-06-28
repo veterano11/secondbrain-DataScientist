@@ -4,162 +4,160 @@ status: growing
 created: 2026-06-27
 ---
 
-# Calculus
+# Cálculo
 
-## 1. Why This Matters
+## 1. Escenario de aprendizaje
 
-Machine learning is **[[Gradient-Based Optimization|optimization]]**. Every model you train — from linear regression to GPT — is solving an optimization problem: find the parameters that minimize the error (the loss function). And the primary tool for optimization is the **derivative**.
+Estás entrenando una red neuronal profunda y ajustas la tasa de aprendizaje: 0.1 hace que la pérdida explote a infinito, 0.001 hace que el entrenamiento avance tan lento que nunca termina, pero 0.01 funciona perfectamente. ¿Por qué? La respuesta está en el cálculo. El descenso por gradiente, que es el algoritmo que entrena casi todas las redes neuronales, no es más que repetir pequeños pasos en la dirección opuesta a la derivada. La retropropagación, que calcula cómo cada peso contribuyó al error, es solo la aplicación repetida de la **regla de la cadena** del cálculo.
 
-Gradient descent, which is the algorithm that trains almost every neural network, is nothing more than repeatedly taking small steps in the direction opposite to the derivative. Backpropagation, which computes how each weight contributed to the error, is just repeated application of the **chain rule** from calculus.
-
-Without calculus, there is no learning. You can train models with scikit-learn without thinking about derivatives, but the moment you want to understand why a learning rate of 0.01 works better than 0.1, or why Adam converges faster than SGD, or why your loss exploded after layer 50 — you need calculus.
+El machine learning es **optimización**. Cada modelo que entrenas — desde regresión lineal hasta GPT — resuelve un problema de optimización: encontrar los parámetros que minimizan el error (la función de pérdida). Y la herramienta principal para la optimización es la **derivada**. Sin cálculo, no hay aprendizaje.
 
 ---
 
-## 2. Derivatives — The Rate of Change
+## 2. Derivadas — La tasa de cambio
 
-### 2.1 Intuition
+### 2.1 Intuición
 
-The derivative tells you **how fast something is changing** at a specific point. If you are driving and your speedometer reads 60 km/h, that is a derivative: the rate of change of your position with respect to time.
+La derivada te dice **qué tan rápido está cambiando algo** en un punto específico. Si estás conduciendo y tu velocímetro marca 60 km/h, eso es una derivada: la tasa de cambio de tu posición con respecto al tiempo.
 
-In ML, the derivative of the loss with respect to a weight tells you: "if I increase this weight by a tiny amount, does the loss go up or down, and by how much?"
+En ML, la derivada de la pérdida con respecto a un peso te dice: "si aumento este peso una cantidad muy pequeña, ¿la pérdida sube o baja, y en qué medida?"
 
-Formally:
+Formalmente:
 
 $$f'(x) = \lim_{h \to 0} \frac{f(x + h) - f(x)}{h}$$
 
-**Visual description**: draw the curve $f(x)$. At point $x$, draw a tangent line. The slope of that line is $f'(x)$. Positive slope → increasing. Negative slope → decreasing. Steeper slope → faster change.
+**Descripción visual**: dibuja la curva $f(x)$. En el punto $x$, traza una recta tangente. La pendiente de esa recta es $f'(x)$. Pendiente positiva → creciente. Pendiente negativa → decreciente. Pendiente más pronunciada → cambio más rápido.
 
-### 2.2 Key Derivative Rules
+### 2.2 Reglas de derivación clave
 
-**Power rule**: $\frac{d}{dx} x^n = n x^{n-1}$
-- Example: $\frac{d}{dx} x^2 = 2x$, $\frac{d}{dx} x^3 = 3x^2$
+**Regla de la potencia**: $\frac{d}{dx} x^n = n x^{n-1}$
+- Ejemplo: $\frac{d}{dx} x^2 = 2x$, $\frac{d}{dx} x^3 = 3x^2$
 
-**Exponential**: $\frac{d}{dx} e^x = e^x$
-- This is special: the exponential function is its own derivative
-- It is why the Sigmoid function $\sigma(x) = \frac{1}{1 + e^{-x}}$ has a simple derivative: $\sigma'(x) = \sigma(x)(1 - \sigma(x))$
+**Exponencial**: $\frac{d}{dx} e^x = e^x$
+- Esto es especial: la función exponencial es su propia derivada
+- Es por eso que la función Sigmoide $\sigma(x) = \frac{1}{1 + e^{-x}}$ tiene una derivada simple: $\sigma'(x) = \sigma(x)(1 - \sigma(x))$
 
-**Logarithm**: $\frac{d}{dx} \ln x = \frac{1}{x}$
-- Used in cross-entropy loss calculations
+**Logaritmo**: $\frac{d}{dx} \ln x = \frac{1}{x}$
+- Se usa en cálculos de pérdida de entropía cruzada (cross-entropy)
 
-**Chain rule**: $\frac{d}{dx} f(g(x)) = f'(g(x)) \cdot g'(x)$
-- This is **the fundamental rule for deep learning**
+**Regla de la cadena**: $\frac{d}{dx} f(g(x)) = f'(g(x)) \cdot g'(x)$
+- Esta es **la regla fundamental para el deep learning**
 
-### 2.3 Partial Derivatives
+### 2.3 Derivadas parciales
 
-When a function has multiple inputs (like a neural network with many weights), you need **partial derivatives**. The partial derivative $\frac{\partial f}{\partial x_i}$ measures how $f$ changes when only $x_i$ changes, keeping everything else fixed.
+Cuando una función tiene múltiples entradas (como una red neuronal con muchos pesos), necesitas **derivadas parciales**. La derivada parcial $\frac{\partial f}{\partial x_i}$ mide cómo cambia $f$ cuando solo cambia $x_i$, manteniendo todo lo demás fijo.
 
-**Example**: $f(x, y) = x^2 y + y^3$
+**Ejemplo**: $f(x, y) = x^2 y + y^3$
 - $\frac{\partial f}{\partial x} = 2xy$
 - $\frac{\partial f}{\partial y} = x^2 + 3y^2$
 
-### 2.4 The Gradient
+### 2.4 El Gradiente
 
-The **gradient** $\nabla f$ is a vector of all partial derivatives:
+El **gradiente** $\nabla f$ es un vector de todas las derivadas parciales:
 
 $$\nabla f = \begin{bmatrix} \frac{\partial f}{\partial x_1} & \frac{\partial f}{\partial x_2} & ... & \frac{\partial f}{\partial x_n} \end{bmatrix}$$
 
-**Intuition**: the gradient points in the direction of **steepest ascent**. If you want to increase $f$ as fast as possible, follow the gradient. If you want to decrease $f$ (minimize the loss), follow the **negative gradient**.
+**Intuición**: el gradiente apunta en la dirección de **máximo ascenso**. Si quieres aumentar $f$ lo más rápido posible, sigue el gradiente. Si quieres disminuir $f$ (minimizar la pérdida), sigue el **gradiente negativo**.
 
-This is literally what gradient descent does:
+Esto es literalmente lo que hace el descenso por gradiente:
 
 $$w_{t+1} = w_t - \eta \nabla L(w_t)$$
 
 ---
 
-## 3. Gradient Descent — The Learning Algorithm
+## 3. Descenso por Gradiente — El algoritmo de aprendizaje
 
-### 3.1 How It Works
+### 3.1 Cómo funciona
 
-Imagine you are blindfolded on a mountain and want to reach the valley below. You feel the ground with your foot to find which direction goes downhill (the gradient), take a step in that direction, and repeat. The size of your step is the **learning rate**.
+Imagina que estás con los ojos vendados en una montaña y quieres llegar al valle. Sientes el suelo con el pie para encontrar qué dirección va cuesta abajo (el gradiente), das un paso en esa dirección y repites. El tamaño de tu paso es la **tasa de aprendizaje**.
 
-**Algorithm**:
-1. Start with random weights $w$
-2. Compute the loss $L(w)$ over your training data
-3. Compute the gradient $\nabla L(w)$ — direction of steepest increase
-4. Update: $w = w - \eta \nabla L(w)$ (step opposite to gradient)
-5. Repeat until the loss stops decreasing
+**Algoritmo**:
+1. Comienza con pesos aleatorios $w$
+2. Calcula la pérdida $L(w)$ sobre tus datos de entrenamiento
+3. Calcula el gradiente $\nabla L(w)$ — dirección de máximo incremento
+4. Actualiza: $w = w - \eta \nabla L(w)$ (paso opuesto al gradiente)
+5. Repite hasta que la pérdida deje de disminuir
 
-### 3.2 The Learning Rate $\eta$
+### 3.2 La tasa de aprendizaje $\eta$
 
-This is the most important hyperparameter.
+Este es el hiperparámetro más importante.
 
-- **Too large**: you overshoot the minimum. The loss may even diverge (explode to infinity).
-- **Too small**: you make painfully slow progress. Training takes forever.
-- **Just right**: you converge efficiently.
+- **Demasiado grande**: te pasas del mínimo. La pérdida puede incluso divergir (explotar a infinito).
+- **Demasiado pequeño**: avanzas dolorosamente lento. El entrenamiento toma una eternidad.
+- **Justo el correcto**: converves eficientemente.
 
-In practice, learning rates typically range from $10^{-6}$ to $10^{-1}$, depending on the model and task.
+En la práctica, las tasas de aprendizaje típicamente van de $10^{-6}$ a $10^{-1}$, dependiendo del modelo y la tarea.
 
-### 3.3 Stochastic Gradient Descent (SGD)
+### 3.3 Descenso por Gradiente Estocástico (SGD)
 
-Computing the gradient over ALL training data (full batch) is expensive when you have millions of examples. SGD uses a **mini-batch** (e.g., 32 or 256 samples) to estimate the gradient.
+Calcular el gradiente sobre TODOS los datos de entrenamiento (batch completo) es costoso cuando tienes millones de ejemplos. SGD usa un **mini-batch** (ej. 32 o 256 muestras) para estimar el gradiente.
 
-Why this works: the gradient over a random mini-batch is an **unbiased estimate** of the true gradient. It is noisy, but each step is much cheaper, so overall progress is faster.
+Por qué funciona: el gradiente sobre un mini-batch aleatorio es una **estimación insesgada** del gradiente verdadero. Es ruidoso, pero cada paso es mucho más barato, por lo que el progreso general es más rápido.
 
-### 3.4 Variants
+### 3.4 Variantes
 
-| Optimizer | Key Idea |
+| Optimizador | Idea clave |
 |---|---|
-| **SGD + Momentum** | Accumulate past gradient directions to smooth updates and escape local minima |
-| **Adam** | Adaptive learning rate per parameter + momentum. Most common default. |
-| **AdamW** | Adam with decoupled weight decay. Better for transformers. |
-| **RMSprop** | Adaptive learning rate. Works well for RNNs. |
+| **SGD + Momentum** | Acumula direcciones de gradiente pasadas para suavizar las actualizaciones y escapar de mínimos locales |
+| **Adam** | Tasa de aprendizaje adaptativa por parámetro + momentum. El valor predeterminado más común. |
+| **AdamW** | Adam con decaimiento de peso desacoplado. Mejor para transformers. |
+| **RMSprop** | Tasa de aprendizaje adaptativa. Funciona bien para RNNs. |
 
 ---
 
-## 4. Backpropagation — The Chain Rule in Action
+## 4. Retropropagación — La regla de la cadena en acción
 
-### 4.1 The Problem
+### 4.1 El problema
 
-A neural network is a composition of many functions:
+Una red neuronal es una composición de muchas funciones:
 
 $$y = f_4(f_3(f_2(f_1(x))))$$
 
-To train it, we need the gradient of the loss with respect to **every weight** in every layer. For a 50-layer network with millions of weights, that seems impossible.
+Para entrenarla, necesitamos el gradiente de la pérdida con respecto a **cada peso** en cada capa. Para una red de 50 capas con millones de pesos, eso parece imposible.
 
-### 4.2 The Solution — Chain Rule
+### 4.2 La solución — Regla de la cadena
 
-The chain rule lets us decompose the gradient of a composition into a product of simpler gradients:
+La regla de la cadena nos permite descomponer el gradiente de una composición en un producto de gradientes más simples:
 
 $$\frac{\partial L}{\partial w_1} = \frac{\partial L}{\partial y} \cdot \frac{\partial y}{\partial h_4} \cdot \frac{\partial h_4}{\partial h_3} \cdot \frac{\partial h_3}{\partial h_2} \cdot \frac{\partial h_2}{\partial w_1}$$
 
-**Concrete example** with a 2-layer network:
+**Ejemplo concreto** con una red de 2 capas:
 
 ```
 x → (W₁, b₁) → h₁ → σ(h₁) → (W₂, b₂) → ŷ → Loss(y, ŷ)
 ```
 
-To update $W_1$, we compute:
+Para actualizar $W_1$, calculamos:
 $$\frac{\partial L}{\partial W_1} = \frac{\partial L}{\partial \hat{y}} \cdot \frac{\partial \hat{y}}{\partial h_1} \cdot \frac{\partial h_1}{\partial W_1}$$
 
-Backpropagation computes this efficiently by:
-1. **Forward pass**: compute all activations (store them)
-2. **Backward pass**: compute gradients from the last layer backwards, reusing previously computed gradients
+La retropropagación calcula esto eficientemente mediante:
+1. **Pase hacia adelante (forward pass)**: calcula todas las activaciones (almacénalas)
+2. **Pase hacia atrás (backward pass)**: calcula los gradientes desde la última capa hacia atrás, reutilizando gradientes previamente calculados
 
-### 4.3 Vanishing and Exploding Gradients
+### 4.3 Gradientes vanishing y exploding
 
-**Vanishing gradients**: when the chain rule multiplies many small numbers (< 1), the gradient becomes exponentially smaller as you go back through layers. Early layers barely learn.
+**Gradientes vanishing (desvanecientes)**: cuando la regla de la cadena multiplica muchos números pequeños (< 1), el gradiente se vuelve exponencialmente más pequeño a medida que retrocedes por las capas. Las primeras capas apenas aprenden.
 
-- Cause: sigmoid/tanh activations (derivative max = 0.25). After 50 layers: $0.25^{50} \approx 10^{-30}$
-- Fix: ReLU activation, residual connections (ResNet), proper initialization
+- Causa: activaciones sigmoid/tanh (derivada máxima = 0.25). Después de 50 capas: $0.25^{50} \approx 10^{-30}$
+- Solución: activación ReLU, conexiones residuales (ResNet), inicialización adecuada
 
-**Exploding gradients**: when gradients become exponentially larger in early layers.
+**Gradientes exploding (explosivos)**: cuando los gradientes se vuelven exponencialmente más grandes en las primeras capas.
 
-- Cause: poor initialization, deep networks without normalization
-- Fix: gradient clipping (cap the gradient norm), better initialization (He, Xavier), batch normalization
+- Causa: mala inicialización, redes profundas sin normalización
+- Solución: recorte de gradiente (limitar la norma del gradiente), mejor inicialización (He, Xavier), batch normalization
 
 ---
 
-## 5. Integrals — A Brief Note
+## 5. Integrales — Una breve nota
 
-You will not compute integrals directly in ML nearly as often as derivatives, but they appear in:
+No calcularás integrales directamente en ML tan a menudo como derivadas, pero aparecen en:
 
-- **Expected value**: $E[X] = \int x \cdot p(x) dx$
-- **Marginalization**: $p(x) = \int p(x, y) dy$
-- **KL divergence**: measures difference between two probability distributions
-- **[[Bayesian Inference]]**: computing posterior probabilities often involves intractable integrals, which is why we use approximations (MCMC, variational inference)
+- **Valor esperado**: $E[X] = \int x \cdot p(x) dx$
+- **Marginalización**: $p(x) = \int p(x, y) dy$
+- **Divergencia KL**: mide la diferencia entre dos distribuciones de probabilidad
+- **[[Bayesian Inference]]**: calcular probabilidades posteriores a menudo implica integrales intratables, por lo que usamos aproximaciones (MCMC, inferencia variacional)
 
-The key intuition: an integral is the **area under a curve**. If the curve is a probability distribution, the integral over a range gives the probability of that range.
+La intuición clave: una integral es el **área bajo una curva**. Si la curva es una distribución de probabilidad, la integral sobre un rango da la probabilidad de ese rango.
 
 ---
 

@@ -6,11 +6,9 @@ created: 2026-06-27
 
 # RNNs & Sequence Models
 
-## 1. Why This Matters
+## 1. Escenario de aprendizaje
 
-Much of the data we care about is **sequential**: text (sequences of words/tokens), audio (samples over time), time series (stock prices, sensor readings), video (frames), DNA (base pairs). Sequential data has structure — the order of elements carries meaning.
-
-RNNs were the first neural architecture designed to handle sequences of variable length by maintaining a **hidden state** that acts as memory.
+Estás construyendo un modelo de traducción automática: convertir oraciones en inglés a español. El texto es secuencial — el orden de las palabras importa, y las oraciones pueden tener longitudes variables. Las RNNs fueron la primera arquitectura neuronal diseñada para manejar secuencias manteniendo un **estado oculto** que actúa como memoria, procesando cada palabra y actualizando el estado interno. Sin embargo, las RNNs tienen limitaciones graves con secuencias largas, lo que llevó a innovaciones como LSTMs, GRUs y finalmente Transformers.
 
 ---
 

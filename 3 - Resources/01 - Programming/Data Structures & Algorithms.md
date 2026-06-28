@@ -4,64 +4,64 @@ status: growing
 created: 2026-06-27
 ---
 
-# Data Structures & Algorithms
+# Estructuras de Datos y Algoritmos
 
-## 1. Why This Matters
+## 1. Escenario de aprendizaje
 
-Data structures are about **organizing data for efficient access and modification**. The difference between O(1) and O(n) lookup might not matter on 100 rows, but on 100 million rows it is the difference between milliseconds and hours.
+Trabajas en una empresa de comercio electrónico con 10 millones de productos. El equipo de negocio te pide: "encuentra productos similares a este en menos de 100 milisegundos". Usar una lista para buscar entre 10 millones de elementos toma segundos; un conjunto (hash set) lo hace en microsegundos. La diferencia entre O(1) y O(n) no importa con 100 filas, pero con 100 millones de filas es la diferencia entre milisegundos y horas. Elegir la estructura de datos correcta es la habilidad más práctica que puedes desarrollar.
 
-In data science, understanding data structures helps you:
-- Choose the right container for your data (list, set, dict, array)
-- Know why pandas is fast (it uses NumPy arrays under the hood)
-- Design efficient feature engineering loops
-- Understand database indexing (hash indexes, B-trees)
-- Pass coding interviews — but more importantly, write efficient production code
+En ciencia de datos, entender las estructuras de datos te ayuda a:
+- Elegir el contenedor adecuado para tus datos (lista, conjunto, diccionario, array)
+- Saber por qué pandas es rápido (usa arrays de NumPy internamente)
+- Diseñar bucles de ingeniería de características eficientes
+- Entender la indexación de bases de datos (índices hash, B-trees)
+- Aprobar entrevistas técnicas — pero más importante, escribir código de producción eficiente
 
 ---
 
-## 2. Big O Notation — The Language of Performance
+## 2. Notación Big O — El lenguaje del rendimiento
 
-Big O describes how runtime or memory grows **as input size increases**.
+Big O describe cómo crecen el tiempo de ejecución o la memoria **a medida que aumenta el tamaño de la entrada**.
 
-### 2.1 The Intuition
+### 2.1 La intuición
 
-Do not count exact operations — count **how the algorithm scales**.
+No cuentes operaciones exactas — cuenta **cómo escala el algoritmo**.
 
-| Notation | Name | If input doubles... |
+| Notación | Nombre | Si la entrada se duplica... |
 |---|---|---|
-| O(1) | Constant | Time stays the same |
-| O(log n) | Logarithmic | Time increases by 1 step |
-| O(n) | Linear | Time doubles |
-| O(n log n) | Linearithmic | Time slightly more than doubles |
-| O(n²) | Quadratic | Time quadruples |
-| O(2ⁿ) | Exponential | Time becomes enormous |
+| O(1) | Constante | El tiempo permanece igual |
+| O(log n) | Logarítmica | El tiempo aumenta en 1 paso |
+| O(n) | Lineal | El tiempo se duplica |
+| O(n log n) | Linealítmica | El tiempo aumenta un poco más del doble |
+| O(n²) | Cuadrática | El tiempo se cuadruplica |
+| O(2ⁿ) | Exponencial | El tiempo se vuelve enorme |
 
-### 2.2 Concrete Examples
+### 2.2 Ejemplos concretos
 
 ```python
-# O(1) — constant time
+# O(1) — tiempo constante
 def get_first(items):
-    return items[0]          # direct memory access
+    return items[0]          # acceso directo a memoria
 
-# O(n) — linear time
+# O(n) — tiempo lineal
 def contains(items, target):
-    for item in items:       # might check all items
+    for item in items:       # podría revisar todos los elementos
         if item == target:
             return True
     return False
 
-# O(n²) — quadratic time
+# O(n²) — tiempo cuadrático
 def pairwise_distance(points):
     result = []
-    for p1 in points:        # n times
-        for p2 in points:    # n times = n² total
+    for p1 in points:        # n veces
+        for p2 in points:    # n veces = n² total
             result.append(dist(p1, p2))
     return result
 
-# O(log n) — logarithmic time
+# O(log n) — tiempo logarítmico
 def binary_search(sorted_list, target):
     low, high = 0, len(sorted_list) - 1
-    while low <= high:       # halves the search space each iteration
+    while low <= high:       # divide el espacio de búsqueda a la mitad cada iteración
         mid = (low + high) // 2
         if sorted_list[mid] == target:
             return mid
@@ -72,155 +72,155 @@ def binary_search(sorted_list, target):
     return -1
 ```
 
-### 2.3 Why Big O Matters in Data Science
+### 2.3 Por qué importa Big O en ciencia de datos
 
-| Operation | Data Structure | Big O | Example |
+| Operación | Estructura de datos | Big O | Ejemplo |
 |---|---|---|---|
-| Lookup by key | dict | O(1) | Feature lookup, caching |
-| Lookup by index | list | O(1) | Accessing training samples |
-| Membership test | set | O(1) | Checking if ID exists |
-| Membership test | list | O(n) | Slow for large lists |
-| Sort | list | O(n log n) | Sorting features by importance |
-| Find max/min | list | O(n) | Finding best/worst case |
+| Búsqueda por clave | dict | O(1) | Búsqueda de características, caché |
+| Búsqueda por índice | list | O(1) | Acceso a muestras de entrenamiento |
+| Prueba de pertenencia | set | O(1) | Verificar si un ID existe |
+| Prueba de pertenencia | list | O(n) | Lento para listas grandes |
+| Ordenamiento | list | O(n log n) | Ordenar características por importancia |
+| Encontrar máximo/mínimo | list | O(n) | Encontrar el mejor/peor caso |
 
-The lesson: if you need to check membership frequently, use a **set** (O(1)) not a **list** (O(n)).
+La lección: si necesitas verificar pertenencia frecuentemente, usa un **set** (O(1)), no una **list** (O(n)).
 
 ---
 
-## 3. Essential Data Structures
+## 3. Estructuras de datos esenciales
 
-### 3.1 Array / List
+### 3.1 Array / Lista
 
-- **Memory**: contiguous block of memory
-- **Access**: O(1) by index (direct memory address calculation)
-- **Insert/delete at end**: O(1) amortized
-- **Insert/delete at beginning**: O(n) (shift all subsequent elements)
+- **Memoria**: bloque contiguo de memoria
+- **Acceso**: O(1) por índice (cálculo directo de dirección de memoria)
+- **Insertar/eliminar al final**: O(1) amortizado
+- **Insertar/eliminar al inicio**: O(n) (desplazar todos los elementos siguientes)
 
-**In Python**: `list` is a dynamic array. When it runs out of space, it allocates ~1.125× more memory and copies everything — hence "amortized" O(1) for append.
+**En Python**: `list` es un array dinámico. Cuando se queda sin espacio, asigna ~1.125× más memoria y copia todo — de ahí el O(1) "amortizado" para append.
 
 ```python
 arr = [1, 2, 3]
-arr.append(4)            # O(1) amortized
-arr.insert(0, 0)         # O(n) — shift everything
+arr.append(4)            # O(1) amortizado
+arr.insert(0, 0)         # O(n) — desplaza todo
 ```
 
-**NumPy arrays**: fixed type, contiguous memory, cache-friendly. Much faster for numerical operations because operations are vectorized (run in C).
+**Arrays de NumPy**: tipo fijo, memoria contigua, amigables con la caché. Mucho más rápidos para operaciones numéricas porque las operaciones están vectorizadas (se ejecutan en C).
 
 ```python
 arr = np.array([1, 2, 3])
-arr * 2                  # vectorized — runs in C, not Python
+arr * 2                  # vectorizado — se ejecuta en C, no en Python
 ```
 
-### 3.2 Hash Table (dict / set)
+### 3.2 Tabla Hash (dict / set)
 
-**How it works**: a hash function maps keys to array indices. Collisions are handled by chaining (multiple keys at the same index stored in a linked list).
+**Cómo funciona**: una función hash mapea claves a índices del array. Las colisiones se manejan mediante encadenamiento (varias claves en el mismo índice almacenadas en una lista enlazada).
 
-- **Insert**: O(1) average, O(n) worst-case (many collisions)
-- **Lookup**: O(1) average, O(n) worst-case
-- **Delete**: O(1) average
+- **Insertar**: O(1) promedio, O(n) peor caso (muchas colisiones)
+- **Buscar**: O(1) promedio, O(n) peor caso
+- **Eliminar**: O(1) promedio
 
-**The magic**: good hash functions distribute keys evenly, making worst-case practically impossible.
+**La magia**: las buenas funciones hash distribuyen las claves uniformemente, haciendo que el peor caso sea prácticamente imposible.
 
 ```python
 lookup = {"alice": 25, "bob": 30, "charlie": 35}
-lookup["alice"]           # O(1) — hash "alice", jump to that slot
+lookup["alice"]           # O(1) — hashea "alice", salta a esa posición
 
-# set is a dict with only keys (no values)
+# set es un dict solo con claves (sin valores)
 ids = {101, 102, 103}
 102 in ids                # O(1)
 ```
 
-### 3.3 Stack (LIFO)
+### 3.3 Pila (LIFO)
 
-Last-In-First-Out. In Python, a `list` works perfectly as a stack.
+Último en entrar, primero en salir. En Python, una `list` funciona perfectamente como pila.
 
 ```python
 stack = []
 stack.append(1)           # push
 stack.append(2)
-stack.pop()               # 2 — last in, first out
+stack.pop()               # 2 — último en entrar, primero en salir
 ```
 
-**Use cases**: depth-first search, undo operations, parentheses matching.
+**Casos de uso**: búsqueda en profundidad, operaciones de deshacer, verificación de paréntesis.
 
-### 3.4 Queue (FIFO)
+### 3.4 Cola (FIFO)
 
-First-In-First-Out. Use `collections.deque` for O(1) append/pop from both ends.
+Primero en entrar, primero en salir. Usa `collections.deque` para O(1) en append/pop desde ambos extremos.
 
 ```python
 from collections import deque
 
 queue = deque()
-queue.append(1)            # enqueue (right side)
+queue.append(1)            # encolar (lado derecho)
 queue.append(2)
-queue.popleft()            # 1 — first in, first out
+queue.popleft()            # 1 — primero en entrar, primero en salir
 ```
 
-**Use cases**: breadth-first search, task scheduling, streaming data.
+**Casos de uso**: búsqueda en anchura, planificación de tareas, datos en streaming.
 
-### 3.5 Tree
+### 3.5 Árbol
 
-A hierarchical structure with a root and children.
+Una estructura jerárquica con una raíz e hijos.
 
-**Binary Search Tree (BST)**:
-- Left child < parent < right child
-- Search: O(log n) average, O(n) worst-case (unbalanced)
-- Balanced variants (AVL, Red-Black) guarantee O(log n)
+**Árbol Binario de Búsqueda (BST)**:
+- Hijo izquierdo < padre < hijo derecho
+- Búsqueda: O(log n) promedio, O(n) peor caso (desequilibrado)
+- Variantes balanceadas (AVL, Rojo-Negro) garantizan O(log n)
 
-In data science, trees appear as **decision trees** (and their ensembles: Random Forest, XGBoost). [[Object-Oriented Programming]] covers implementing tree structures with classes.
+En ciencia de datos, los árboles aparecen como **árboles de decisión** (y sus ensembles: Random Forest, XGBoost). [[Object-Oriented Programming]] cubre la implementación de estructuras de árbol con clases.
 
-### 3.6 Heap (Priority Queue)
+### 3.6 Heap (Cola de Prioridad)
 
-Always gives you the smallest (min-heap) or largest (max-heap) element.
+Siempre te da el elemento más pequeño (min-heap) o más grande (max-heap).
 
 ```python
 import heapq
 
 data = [5, 3, 7, 1, 9]
 heapq.heapify(data)        # min-heap: [1, 3, 7, 5, 9]
-heapq.heappop(data)        # 1 (smallest)
-heapq.heappush(data, 2)    # O(log n) insert
+heapq.heappop(data)        # 1 (el más pequeño)
+heapq.heappush(data, 2)    # inserción O(log n)
 ```
 
-**Use cases**: finding top-k elements, Dijkstra's algorithm, priority scheduling.
+**Casos de uso**: encontrar los k elementos principales, algoritmo de Dijkstra, planificación por prioridad.
 
 ---
 
-## 4. Key Algorithms for Data Science
+## 4. Algoritmos clave para ciencia de datos
 
-### 4.1 Sorting
+### 4.1 Ordenamiento
 
-Python uses **Timsort** (O(n log n) worst-case), a hybrid of merge sort and insertion sort optimized for real-world data (which often has partial order).
+Python usa **Timsort** (O(n log n) peor caso), una combinación de merge sort e insertion sort optimizada para datos del mundo real (que a menudo tienen orden parcial).
 
 ```python
-sorted_list = sorted(unsorted_list)       # returns new list
-unsorted_list.sort()                      # in-place sort
+sorted_list = sorted(unsorted_list)       # retorna una nueva lista
+unsorted_list.sort()                      # ordena in-place
 ```
 
-### 4.2 Searching
+### 4.2 Búsqueda
 
-- **Linear search**: O(n) — unsorted data
-- **Binary search**: O(log n) — requires sorted data
+- **Búsqueda lineal**: O(n) — datos no ordenados
+- **Búsqueda binaria**: O(log n) — requiere datos ordenados
 
 ```python
 import bisect
 
 sorted_data = [1, 3, 5, 7, 9]
-pos = bisect.bisect_left(sorted_data, 6)  # 3 (between 5 and 7)
+pos = bisect.bisect_left(sorted_data, 6)  # 3 (entre 5 y 7)
 ```
 
-### 4.3 Dynamic Programming
+### 4.3 Programación Dinámica
 
-"Solve a problem by breaking it into overlapping subproblems and solving each once."
+"Resolver un problema dividiéndolo en subproblemas superpuestos y resolviendo cada uno una sola vez."
 
-**Fibonacci — naive (exponential) vs DP (linear)**:
+**Fibonacci — naive (exponencial) vs DP (lineal)**:
 
 ```python
-# Without DP: O(2ⁿ) — recomputes same values exponentially
+# Sin DP: O(2ⁿ) — recalcula los mismos valores exponencialmente
 def fib_naive(n):
     return n if n <= 1 else fib_naive(n-1) + fib_naive(n-2)
 
-# With memoization: O(n) — each value computed once
+# Con memoización: O(n) — cada valor se calcula una vez
 from functools import lru_cache
 
 @lru_cache(maxsize=None)
@@ -228,7 +228,7 @@ def fib_memo(n):
     return n if n <= 1 else fib_memo(n-1) + fib_memo(n-2)
 ```
 
-**In data science**: edit distance (NLP), Viterbi algorithm (HMM), dynamic time warping (time series), sequence alignment (bioinformatics). [[Functional Programming]]'s pure functions align naturally with DP's stateless subproblems.
+**En ciencia de datos**: distancia de edición (NLP), algoritmo de Viterbi (HMM), dynamic time warping (series temporales), alineamiento de secuencias (bioinformática). [[Functional Programming]] y sus funciones puras se alinean naturalmente con los subproblemas sin estado de la programación dinámica.
 
 ---
 

@@ -6,191 +6,193 @@ created: 2026-06-27
 
 # Retrieval-Augmented Generation
 
-## 1. Why This Matters
+## 1. Escenario de aprendizaje
 
-LLMs have a fundamental limitation: their knowledge is frozen at the time of training, a consequence of how the [[Transformer Architecture]] stores knowledge in weights. They do not know about recent events, proprietary data, or private documents. They hallucinate when asked about unfamiliar topics.
+Tu empresa quiere construir un chatbot que responda preguntas sobre su documentación interna de 10,000 páginas. El modelo base solo conoce información hasta su fecha de entrenamiento y no sabe nada de tus productos. Reentrenar el modelo sería prohibitivamente caro y lento. RAG resuelve esto: cada vez que un usuario hace una pregunta, buscas los documentos relevantes y se los pasas al modelo como contexto. El modelo ya no necesita saberlo todo — solo necesita leer lo que le das.
 
-RAG solves this by giving the model **access to external knowledge** at inference time. Instead of relying solely on the model's parameters, we retrieve relevant documents and feed them as context. This grounds the model's output in real, current, verifiable information.
+Los LLMs tienen una limitación fundamental: su conocimiento está congelado en el momento del entrenamiento, una consecuencia de cómo la [[Transformer Architecture]] almacena conocimiento en los pesos. No saben sobre eventos recientes, datos propietarios o documentos privados. Alucinan cuando se les pregunta sobre temas desconocidos.
 
-RAG is the standard approach for enterprise LLM applications — customer support, document Q&A, codebase assistants, and research tools.
+RAG soluciona esto dando al modelo **acceso a conocimiento externo** en tiempo de inferencia. En lugar de depender únicamente de los parámetros del modelo, recuperamos documentos relevantes y los proporcionamos como contexto. Esto fundamenta la salida del modelo en información real, actual y verificable.
 
----
-
-## 2. The RAG Architecture
-
-```
-Query → Embedder → Vector DB → Retrieved Chunks → LLM → Answer
-```
-
-### 2.1 Step-by-Step
-
-1. **Indexing** (offline): split documents into chunks → embed each chunk → store in vector DB
-2. **Querying** (online): embed the user's question → search vector DB for similar chunks → retrieve top-k
-3. **Generation** (online): format prompt with retrieved chunks as context → LLM generates answer
-
-### 2.2 The Key Insight
-
-RAG does NOT update the LLM's parameters. It changes only the **context window**. This means:
-- No GPU training needed
-- Can update knowledge instantly (just add new documents to the vector DB)
-- The base model stays unchanged — no risk of catastrophic forgetting
+RAG es el enfoque estándar para aplicaciones empresariales de LLM — atención al cliente, preguntas y respuestas sobre documentos, asistentes de código y herramientas de investigación.
 
 ---
 
-## 3. Chunking
+## 2. La Arquitectura RAG
 
-### 3.1 Why Chunking Matters
+```
+Consulta → Embedder → Vector DB → Fragmentos Recuperados → LLM → Respuesta
+```
 
-Documents are too long to fit in a context window. Even if they could, retrieval works better on focused segments (chunks) than on entire documents.
+### 2.1 Paso a Paso
 
-### 3.2 Strategies
+1. **Indexación** (offline): dividir documentos en fragmentos → embedding de cada fragmento → almacenar en vector DB
+2. **Consulta** (online): embedding de la pregunta del usuario → buscar en vector DB fragmentos similares → recuperar top-k
+3. **Generación** (online): formatear prompt con fragmentos recuperados como contexto → el LLM genera la respuesta
 
-| Strategy | Description | Best For |
+### 2.2 La Clave
+
+RAG NO actualiza los parámetros del LLM. Cambia solo la **ventana de contexto**. Esto significa:
+- No se necesita entrenamiento con GPU
+- Puede actualizar el conocimiento al instante (solo añade nuevos documentos al vector DB)
+- El modelo base permanece sin cambios — sin riesgo de olvido catastrófico
+
+---
+
+## 3. Fragmentación (Chunking)
+
+### 3.1 Por qué Importa la Fragmentación
+
+Los documentos son demasiado largos para caber en una ventana de contexto. Incluso si pudieran, la recuperación funciona mejor en segmentos enfocados (fragmentos) que en documentos completos.
+
+### 3.2 Estrategias
+
+| Estrategia | Descripción | Mejor Para |
 |---|---|---|
-| **Fixed size** | Split every N characters/tokens with overlap | Simple, fast |
-| **Semantic** | Split at natural boundaries (sentences, paragraphs) | Coherent chunks |
-| **Recursive** | Hierarchical splitting (document → sections → paragraphs) | Structured docs |
-| **Agentic** | LLM decides where to split | Adaptive, slower |
+| **Tamaño fijo** | Dividir cada N caracteres/tokens con solapamiento | Simple, rápido |
+| **Semántica** | Dividir en límites naturales (oraciones, párrafos) | Fragmentos coherentes |
+| **Recursiva** | División jerárquica (documento → secciones → párrafos) | Docs estructurados |
+| **Agentiva** | El LLM decide dónde dividir | Adaptativo, más lento |
 
-### 3.3 Best Practices
+### 3.3 Mejores Prácticas
 
-- **Overlap**: 10-20% overlap between chunks ensures no information is lost at boundaries
-- **Size**: 256-1024 tokens is the sweet spot — large enough to contain complete ideas, small enough for precise retrieval
-- **Metadata**: store source, title, page number, section with each chunk for citation and filtering
+- **Solapamiento**: 10-20% de solapamiento entre fragmentos asegura que no se pierda información en los límites
+- **Tamaño**: 256-1024 tokens es el punto ideal — suficientemente grande para contener ideas completas, suficientemente pequeño para recuperación precisa
+- **Metadatos**: almacenar fuente, título, número de página, sección con cada fragmento para citación y filtrado
 
 ---
 
 ## 4. Embeddings
 
-### 4.1 What Embeddings Do
+### 4.1 Qué Hacen los Embeddings
 
-Convert text into a dense vector (e.g., 768 or 1536 dimensions) where semantic similarity corresponds to vector similarity, computed by [[Neural Networks]].
+Convertir texto en un vector denso (ej., 768 o 1536 dimensiones) donde la similitud semántica corresponde a la similitud vectorial, calculada por [[Neural Networks]].
 
 $$\text{sim}(q, d) = \cos(q, d) = \frac{q \cdot d}{\|q\| \|d\|}$$
 
-- "cat" and "kitten" → high cosine similarity
-- "cat" and "computer" → low cosine similarity
+- "gato" y "gatito" → alta similitud coseno
+- "gato" y "computadora" → baja similitud coseno
 
-### 4.2 Popular Embedding Models
+### 4.2 Modelos de Embedding Populares
 
-| Model | Dimensions | Best For |
+| Modelo | Dimensiones | Mejor Para |
 |---|---|---|
-| `text-embedding-3-small` (OpenAI) | 512-1536 | General purpose |
-| `text-embedding-3-large` (OpenAI) | 256-3072 | High accuracy |
-| `BGE-base` (BAAI) | 768 | Open source, good quality |
-| `E5-mistral` (Microsoft) | 4096 | High accuracy |
-| `gte-large` (Alibaba) | 1024 | Open source |
-| `nomic-embed-text` (Nomic) | 768 | Local, efficient |
+| `text-embedding-3-small` (OpenAI) | 512-1536 | Propósito general |
+| `text-embedding-3-large` (OpenAI) | 256-3072 | Alta precisión |
+| `BGE-base` (BAAI) | 768 | Código abierto, buena calidad |
+| `E5-mistral` (Microsoft) | 4096 | Alta precisión |
+| `gte-large` (Alibaba) | 1024 | Código abierto |
+| `nomic-embed-text` (Nomic) | 768 | Local, eficiente |
 
-### 4.3 Embedding Best Practices
+### 4.3 Mejores Prácticas de Embeddings
 
-- **Normalize embeddings**: ensures cosine similarity behaves consistently
-- **Multi-task**: some models benefit from prefixing the query with "Represent this sentence for search: "
-- **Dimension reduction**: embedding models often support reducing dimensions (e.g., 1536 → 256) with minimal quality loss
+- **Normalizar embeddings**: asegura que la similitud coseno se comporte consistentemente
+- **Multi-tarea**: algunos modelos se benefician de prefijar la consulta con "Representa esta oración para búsqueda: "
+- **Reducción de dimensiones**: los modelos de embedding a menudo soportan reducir dimensiones (ej., 1536 → 256) con pérdida mínima de calidad
 
 ---
 
-## 5. Retrieval
+## 5. Recuperación
 
-### 5.1 Dense Retrieval (Embedding Similarity)
+### 5.1 Recuperación Densa (Similitud de Embeddings)
 
-Search by vector similarity. Understands semantics — "car" matches "vehicle" and "automobile."
+Búsqueda por similitud vectorial. Entiende semántica — "coche" coincide con "vehículo" y "automóvil."
 
-**Pros**: semantic understanding
-**Cons**: requires good embedding model, can miss exact keyword matches
+**Pros**: comprensión semántica
+**Contras**: requiere un buen modelo de embedding, puede perder coincidencias exactas de palabras clave
 
-### 5.2 Sparse Retrieval (BM25)
+### 5.2 Recuperación Dispersa (BM25)
 
-Search by keyword overlap. Exact word matches get higher scores.
+Búsqueda por coincidencia de palabras clave. Las coincidencias exactas obtienen puntuaciones más altas.
 
-**Pros**: no training needed, fast, great for proper nouns and exact phrases
-**Cons**: no semantic understanding
+**Pros**: no necesita entrenamiento, rápido, excelente para nombres propios y frases exactas
+**Contras**: sin comprensión semántica
 
-### 5.3 Hybrid Retrieval
+### 5.3 Recuperación Híbrida
 
-Combine both:
+Combinar ambas:
 
-$$\text{score} = \alpha \cdot \text{sim}_{\text{dense}} + (1-\alpha) \cdot \text{sim}_{\text{sparse}}$$
+$$\text{puntaje} = \alpha \cdot \text{sim}_{\text{densa}} + (1-\alpha) \cdot \text{sim}_{\text{dispersa}}$$
 
-Best of both worlds: semantic understanding + exact match. $\alpha$ is typically tuned using [[Statistics]] methods on a validation set (0.5-0.8).
+Lo mejor de ambos mundos: comprensión semántica + coincidencia exacta. $\alpha$ se ajusta típicamente usando métodos de [[Statistics]] en un conjunto de validación (0.5-0.8).
 
-### 5.4 Advanced Retrieval
+### 5.4 Recuperación Avanzada
 
-| Technique | Description |
+| Técnica | Descripción |
 |---|---|
-| **Multi-query** | Generate multiple query variations, retrieve for each, deduplicate |
-| **HyDE** | Generate a "hypothetical document" that answers the query, then retrieve by its embedding |
-| **RAPTOR** | Build hierarchical summaries of the corpus, retrieve at appropriate level |
-| **ColBERT** | Late interaction — fine-grained token-level matching |
-| **Self-RAG** | Retrieve → generate → reflect on quality → refine |
+| **Multi-consulta** | Generar múltiples variaciones de la consulta, recuperar para cada una, deduplicar |
+| **HyDE** | Generar un "documento hipotético" que responda la consulta, luego recuperar por su embedding |
+| **RAPTOR** | Construir resúmenes jerárquicos del corpus, recuperar al nivel apropiado |
+| **ColBERT** | Interacción tardía — coincidencia detallada a nivel de token |
+| **Self-RAG** | Recuperar → generar → reflexionar sobre calidad → refinar |
 
 ---
 
-## 6. Generation
+## 6. Generación
 
-### 6.1 The Prompt Structure
+### 6.1 La Estructura del Prompt
 
 ```
-System: You are a helpful assistant. Answer the question based ONLY on the provided context.
-If the context does not contain enough information, say "I don't have enough information."
+System: Eres un asistente útil. Responde la pregunta basándote SOLO en el contexto proporcionado.
+Si el contexto no contiene suficiente información, di "No tengo suficiente información."
 
-Context:
-{retrieved_chunks}
+Contexto:
+{fragmentos_recuperados}
 
-Question: {query}
-Answer:
+Pregunta: {consulta}
+Respuesta:
 ```
 
-### 6.2 Prompt Engineering for RAG
+### 6.2 Ingeniería de Prompts para RAG
 
-- **Emphasize context reliance**: "Only use the context below. Do not use your own knowledge."
-- **Handle missing information**: "If the context does not answer the question, say 'Not found in the provided documents.'"
-- **Request citations**: "For each claim, cite the source in brackets [source]."
-- **Define output format**: JSON, bullet points, or prose depending on the application.
+- **Enfatizar dependencia del contexto**: "Usa solo el contexto a continuación. No uses tu propio conocimiento."
+- **Manejar información faltante**: "Si el contexto no responde la pregunta, di 'No encontrado en los documentos proporcionados.'"
+- **Solicitar citas**: "Para cada afirmación, cita la fuente entre corchetes [fuente]."
+- **Definir formato de salida**: JSON, viñetas o prosa según la aplicación.
 
 ---
 
-## 7. Evaluation
+## 7. Evaluación
 
-| Metric | What It Measures |
+| Métrica | Qué Mide |
 |---|---|
-| **Retrieval precision** | % of retrieved chunks that are relevant |
-| **Retrieval recall** | % of relevant chunks that were retrieved |
-| **MRR** | Mean Reciprocal Rank — how high the first relevant result ranks |
-| **NDCG** | Normalized Discounted Cumulative Gain — ranking quality |
-| **Answer relevance** | Is the generated answer useful for the query? |
-| **Faithfulness** | Does the answer align with the retrieved context? |
-| **Context precision** | Are all context pieces used by the generator? |
+| **Precisión de recuperación** | % de fragmentos recuperados que son relevantes |
+| **Recall de recuperación** | % de fragmentos relevantes que fueron recuperados |
+| **MRR** | Mean Reciprocal Rank — qué tan alto rankea el primer resultado relevante |
+| **NDCG** | Normalized Discounted Cumulative Gain — calidad del ranking |
+| **Relevancia de respuesta** | ¿La respuesta generada es útil para la consulta? |
+| **Fidelidad** | ¿La respuesta se alinea con el contexto recuperado? |
+| **Precisión del contexto** | ¿Todos los fragmentos de contexto son usados por el generador? |
 
-**RAGAS** is a dedicated evaluation framework for RAG systems, building on general [[LLM Evaluation]] principles and providing automated metrics for both retrieval and generation quality.
+**RAGAS** es un framework de evaluación dedicado para sistemas RAG, basado en principios generales de [[LLM Evaluation]] y proporcionando métricas automatizadas tanto para la calidad de recuperación como de generación.
 
 ---
 
 ## 8. Common Mistakes
 
-1. **Chunks that are too large**: a 5000-token chunk dilutes relevant information and wastes context window space.
+1. **Fragmentos demasiado grandes**: un fragmento de 5000 tokens diluye la información relevante y desperdicia espacio en la ventana de contexto.
 
-2. **Not filtering by metadata**: retrieving from irrelevant sections or outdated documents adds noise. Filter by date, source, or category.
+2. **No filtrar por metadatos**: recuperar de secciones irrelevantes o documentos desactualizados añade ruido. Filtra por fecha, fuente o categoría.
 
-3. **Ignoring chunk order**: if the answer requires combining information from multiple chunks, their order in the context matters.
+3. **Ignorar el orden de los fragmentos**: si la respuesta requiere combinar información de múltiples fragmentos, su orden en el contexto importa.
 
-4. **Over-relying on the LLM's internal knowledge**: the model may ignore retrieved context and answer from its own training data. The prompt must explicitly prioritize context.
+4. **Depender demasiado del conocimiento interno del LLM**: el modelo puede ignorar el contexto recuperado y responder desde sus propios datos de entrenamiento. El prompt debe priorizar explícitamente el contexto.
 
-5. **No evaluation of retrieval quality**: if retrieval misses relevant chunks, generation cannot be good. Measure retrieval metrics separately.
+5. **Sin evaluación de la calidad de recuperación**: si la recuperación omite fragmentos relevantes, la generación no puede ser buena. Mide las métricas de recuperación por separado.
 
 ---
 
 ## 9. Check Your Understanding
 
-1. A user asks "What did the CEO say about Q4 results in the 2025 annual report?" but your knowledge base only indexes through 2024. What happens? (No relevant chunks retrieved → model says "Not found.")
+1. Un usuario pregunta "¿Qué dijo el CEO sobre los resultados del Q4 en el informe anual de 2025?" pero tu base de conocimiento solo indexa hasta 2024. ¿Qué sucede? (No se recuperan fragmentos relevantes → el modelo dice "No encontrado.")
 
-2. Why does chunk overlap matter? (Information at boundaries can be split across chunks — overlap ensures continuity.)
+2. ¿Por qué importa el solapamiento de fragmentos? (La información en los límites puede dividirse entre fragmentos — el solapamiento asegura continuidad.)
 
-3. Your RAG system retrieves 10 chunks but only 2 are relevant. What do you improve? (Retrieval — better embeddings, reranking, or better chunking.)
+3. Tu sistema RAG recupera 10 fragmentos pero solo 2 son relevantes. ¿Qué mejoras? (Recuperación — mejores embeddings, re-ranking o mejor fragmentación.)
 
-4. BM25 matches exact keywords. Dense retrieval matches semantic meaning. When would BM25 perform better? (Proper nouns, product codes, exact technical terms.)
+4. BM25 coincide con palabras clave exactas. La recuperación densa coincide con significado semántico. ¿Cuándo funcionaría mejor BM25? (Nombres propios, códigos de producto, términos técnicos exactos.)
 
-5. A user asks a question that requires combining information from 2 different documents. How does a standard RAG system handle this? (Both chunks are retrieved if similar to the query; the LLM combines them.)
+5. Un usuario hace una pregunta que requiere combinar información de 2 documentos diferentes. ¿Cómo maneja esto un sistema RAG estándar? (Ambos fragmentos se recuperan si son similares a la consulta; el LLM los combina.)
 
 ---
 
@@ -202,6 +204,6 @@ RAG grounds LLM outputs in external knowledge by retrieving relevant chunks and 
 
 ## 11. Where to Go Next
 
-- [[Prompt Engineering]] — Designing effective RAG prompts
-- [[Fine-tuning]] — An alternative approach for domain adaptation
-- [[Agentic Systems]] — Multi-step RAG with tool use
+- [[Prompt Engineering]] — Diseñando prompts efectivos para RAG
+- [[Fine-tuning]] — Un enfoque alternativo para adaptación de dominio
+- [[Agentic Systems]] — RAG multi-paso con uso de herramientas

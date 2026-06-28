@@ -6,7 +6,7 @@ created: 2026-06-28
 
 # Terraform State & Backends
 
-## Por qué el state es tu activo más valioso
+## 1. Escenario de aprendizaje
 
 Cuando ejecutaste `terraform apply`, Terraform creó un archivo `terraform.tfstate`. Ese archivo contiene un mapeo exacto entre tu código y los recursos reales en AWS:
 
@@ -42,7 +42,7 @@ Sin este archivo, Terraform no sabe que `mi-logs-20260628` fue creado por él. S
 
 > **Escenario real**: ejecutas Terraform desde tu laptop, creas 20 recursos. Tu laptop muere. El state estaba en el disco local. Ahora tienes 20 recursos en AWS que Terraform no puede gestionar. No sabes cuáles creó él y cuáles existían antes. La única solución es importar cada recurso manualmente.
 
-## Backend remoto: la solución
+## 2. Backend remoto: la solución
 
 Como viste en [[Terraform Foundations]], el state debe vivir fuera de tu máquina. En lugar de guardarlo en tu disco, lo guardas en **S3**. Así:
 
@@ -66,7 +66,7 @@ terraform {
 
 > **Orden crítico**: primero debes crear el bucket S3 y la tabla DynamoDB. Puedes hacerlo con Terraform usando backend local, y luego migrar. O crearlos a mano una sola vez. No puedes usar S3 como backend si el bucket aún no existe.
 
-## Paso a paso: migrar de local a remoto
+## 3. Paso a paso: migrar de local a remoto
 
 ### 1. Crear bucket y tabla DynamoDB
 
@@ -148,7 +148,7 @@ Terraform will automatically use this backend for all operations.
 
 A partir de ahora, cada `terraform plan` y `apply` lee y escribe el state desde S3.
 
-## DynamoDB Locking: evitar corrupción
+## 4. DynamoDB Locking: evitar corrupción
 
 Cuando trabajas en equipo con [[Git]] (o desde CI/CD), dos procesos pueden ejecutar `terraform apply` al mismo tiempo. El que escribe primero actualiza el state. El segundo escribe sobre un state desactualizado → corrupción o recursos duplicados.
 
@@ -190,7 +190,7 @@ Tienes tres opciones:
 
 **NUNCA fuerces unlock si hay un apply en progreso. Corromperás el state.**
 
-## State para múltiples entornos
+## 5. State para múltiples entornos
 
 Con backend remoto, cada entorno tiene su propio state:
 
@@ -235,7 +235,7 @@ terraform init -backend-config=backend.hcl -backend-config="key=dev/terraform.tf
 terraform init -backend-config=backend.hcl -backend-config="key=prod/terraform.tfstate"
 ```
 
-## Terraform Workspaces (alternativa más simple)
+## 6. Terraform Workspaces (alternativa más simple)
 
 Workspaces permite usar el mismo código con states separados sin cambiar archivos:
 
@@ -270,7 +270,7 @@ resource "aws_s3_bucket" "logs" {
 
 **Workspaces son útiles para proyectos pequeños. Para equipos grandes, prefiere directorios separados o repos separados por entorno.**
 
-## Common Pitfalls
+## 7. Common Mistakes
 
 - **Bucket S3 borrado accidentalmente**: si borras el bucket que contiene el state, pierdes todo. Activa versioning y MFA delete. Haz backups periódicos.
 - **Lock ídem**: si forzas unlock mientras un build de CodeBuild está ejecutando apply, el state se corrompe. Siempre verifica primero.

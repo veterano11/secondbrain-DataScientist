@@ -6,11 +6,9 @@ created: 2026-06-27
 
 # Supervised Learning
 
-## 1. Why This Matters
+## 1. Escenario de aprendizaje
 
-Supervised learning is the most commercially important branch of machine learning. If an ML system makes a prediction — whether it is "will this customer churn?", "is this image a cat?", or "what is the next word?" — it is almost certainly a supervised learning model.
-
-The idea is simple: learn a mapping from inputs $x$ to outputs $y$ using labeled examples $(x_i, y_i)$. But the simplicity of the concept belies the depth of the algorithms, the subtlety of evaluation, and the care needed to avoid overfitting.
+Imagina que trabajas en un banco y te piden predecir si un cliente va a dejar el servicio (churn) con base en su historial de transacciones, llamadas al soporte y productos contratados. Tienes miles de ejemplos de clientes pasados donde ya sabes si se fueron o se quedaron. Eso es supervised learning: aprendes un mapeo de entradas $x$ (datos del cliente) a salidas $y$ (churn o no churn) usando ejemplos etiquetados $(x_i, y_i)$. Pero la simplicidad del concepto esconde la profundidad de los algoritmos, la sutileza de la evaluación y el cuidado necesario para evitar overfitting.
 
 ---
 

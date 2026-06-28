@@ -6,11 +6,9 @@ created: 2026-06-27
 
 # Convolutional Neural Networks
 
-## 1. Why This Matters
+## 1. Escenario de aprendizaje
 
-CNNs changed computer vision forever. Before CNNs (2012), image classification used hand-crafted features. After AlexNet, the paradigm shifted to learning visual features directly from pixels.
-
-But CNNs also apply beyond images — they work on any data with **spatial or temporal structure**: audio (1D over time), text (1D over characters), video (3D over space+time), and even graphs (with modifications).
+Trabajas en una aplicación de diagnóstico médico por imágenes. Tienes radiografías de tórax y necesitas clasificarlas automáticamente para detectar neumonía. Antes de las CNNs (2012), la clasificación de imágenes usaba características diseñadas a mano (bordes, texturas, colores). Después de AlexNet, el paradigma cambió a aprender características visuales directamente de los píxeles. Las CNNs aplican más allá de las imágenes — funcionan con cualquier dato que tenga **estructura espacial o temporal**: audio (1D en el tiempo), texto (1D sobre caracteres), video (3D espacio+tiempo) e incluso grafos (con modificaciones).
 
 ---
 

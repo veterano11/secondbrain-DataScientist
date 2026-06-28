@@ -4,47 +4,47 @@ status: growing
 created: 2026-06-27
 ---
 
-# Linear Algebra
+# Álgebra Lineal
 
-## 1. Why This Matters
+## 1. Escenario de aprendizaje
 
-Every time you train an ML model, you are doing linear algebra. When you ask ChatGPT to generate text, every token is a vector and the attention mechanism is a series of matrix multiplications. When you run PCA, you are decomposing a covariance matrix into its fundamental components. Linear algebra **is the language in which machine learning is written**. Without it, models are black boxes. With it, you see that everything is vectors being transformed.
+Estás entrenando un modelo de transformers para generar texto. Cada token que produces es un vector, y el mecanismo de atención no es más que una serie de multiplicaciones de matrices. Cuando ejecutas PCA para reducir la dimensionalidad de tus datos, estás descomponiendo una matriz de covarianza en sus componentes fundamentales. Sin álgebra lineal, los modelos son cajas negras. Con ella, ves que todo son vectores siendo transformados.
 
-In this note we build from simple vectors to the most powerful decompositions, always connecting to how they are used in ML.
+Cada vez que entrenas un modelo de ML, estás haciendo álgebra lineal. El álgebra lineal **es el lenguaje en el que está escrito el machine learning**. En esta nota construimos desde vectores simples hasta las descomposiciones más poderosas, siempre conectando con cómo se usan en ML.
 
 ---
 
-## 2. Vectors
+## 2. Vectores
 
-### 2.1 Intuition
+### 2.1 Intuición
 
-A vector is an **arrow in space** with a direction and a magnitude. But it is also an **ordered list of numbers**. Both views are the same.
+Un vector es una **flecha en el espacio** con una dirección y una magnitud. Pero también es una **lista ordenada de números**. Ambas visiones son equivalentes.
 
-Imagine a point on a 2D Cartesian plane. The vector $v = (3, 4)$ means "walk 3 units right and 4 up". That is a vector.
+Imagina un punto en un plano cartesiano 2D. El vector $v = (3, 4)$ significa "camina 3 unidades a la derecha y 4 hacia arriba". Eso es un vector.
 
-Every row of your dataset $X$ is a vector. If your dataset has 100 people with 5 measurements (age, height, income, education, hours_slept), each person is a vector in $\mathbb{R}^5$. You cannot visualize 5 dimensions, but mathematically it works exactly like 2 or 3.
+Cada fila de tu conjunto de datos $X$ es un vector. Si tu dataset tiene 100 personas con 5 mediciones (edad, altura, ingresos, educación, horas_dormidas), cada persona es un vector en $\mathbb{R}^5$. No puedes visualizar 5 dimensiones, pero matemáticamente funciona exactamente igual que 2 o 3.
 
-### 2.2 Formal Definition and Operations
+### 2.2 Definición formal y operaciones
 
-A vector $v \in \mathbb{R}^n$ is an ordered tuple of $n$ real numbers.
+Un vector $v \in \mathbb{R}^n$ es una tupla ordenada de $n$ números reales.
 
-**Addition**: $v + w = (v_1 + w_1, v_2 + w_2, ...)$ — component by component. Place one arrow at the tip of the other.
+**Suma**: $v + w = (v_1 + w_1, v_2 + w_2, ...)$ — componente por componente. Coloca una flecha en la punta de la otra.
 
-**Scalar multiplication**: $c \cdot v = (c \cdot v_1, c \cdot v_2, ...)$ — stretch or shrink the arrow. If $c < 0$, reverse direction.
+**Multiplicación escalar**: $c \cdot v = (c \cdot v_1, c \cdot v_2, ...)$ — estira o encoge la flecha. Si $c < 0$, invierte la dirección.
 
-### 2.3 The Dot Product
+### 2.3 El producto punto
 
-This is where the magic begins.
+Aquí es donde comienza la magia.
 
 $$v \cdot w = \sum_{i=1}^n v_i w_i = v_1 w_1 + v_2 w_2 + ... + v_n w_n$$
 
-Equivalently:
+Equivalentemente:
 
 $$v \cdot w = \|v\| \cdot \|w\| \cdot \cos\theta$$
 
-where $\theta$ is the angle between the vectors.
+donde $\theta$ es el ángulo entre los vectores.
 
-**Concrete example**:
+**Ejemplo concreto**:
 ```
 v = [3, 4]
 w = [1, 2]
@@ -57,126 +57,126 @@ cos θ = 11 / (5 × 2.236) = 11 / 11.18 ≈ 0.984
 θ ≈ 10.3°
 ```
 
-**What does the dot product tell us?**
+**¿Qué nos dice el producto punto?**
 
-- **Measures similarity**: if two vectors point in the same direction, the dot product is large and positive. Opposite → negative. Perpendicular → **zero**.
-- **It is the heart of attention in transformers**: $QK^T$ is a matrix of dot products between queries and keys. Each cell $(i, j)$ says "how much does token $i$ relate to token $j$".
-- **It is the basis of cosine similarity**: $\text{cosine sim}(v, w) = \frac{v \cdot w}{\|v\| \|w\|}$, which is what you use in RAG to find similar documents.
+- **Mide similitud**: si dos vectores apuntan en la misma dirección, el producto punto es grande y positivo. Opuesto → negativo. Perpendicular → **cero**.
+- **Es el corazón de la atención en transformers**: $QK^T$ es una matriz de productos punto entre queries y keys. Cada celda $(i, j)$ dice "¿cuánto se relaciona el token $i$ con el token $j$?"
+- **Es la base de la similitud por coseno**: $\text{cosine sim}(v, w) = \frac{v \cdot w}{\|v\| \|w\|}$, que es lo que usas en RAG para encontrar documentos similares.
 
-### 2.4 Norm (Magnitude)
+### 2.4 Norma (Magnitud)
 
-The L2 norm (the most common) is the length of the arrow:
+La norma L2 (la más común) es la longitud de la flecha:
 
 $$\|v\|_2 = \sqrt{\sum v_i^2}$$
 
-For $v = [3, 4]$: $\|v\| = \sqrt{9 + 16} = 5$. This is the hypotenuse of a 3-4-5 triangle.
+Para $v = [3, 4]$: $\|v\| = \sqrt{9 + 16} = 5$. Esta es la hipotenusa de un triángulo 3-4-5.
 
-**L1 norm**: $\|v\|_1 = \sum |v_i| = 3 + 4 = 7$. Used in Lasso regularization — it drives weights to exactly zero.
+**Norma L1**: $\|v\|_1 = \sum |v_i| = 3 + 4 = 7$. Se usa en regularización Lasso — lleva los pesos exactamente a cero.
 
-**Why normalize?** If one feature is "age" (0-100) and another is "income" (0-1,000,000), the dot product will be dominated by income. Normalizing (unit vectors where $\|v\| = 1$) ensures all features weigh equally.
+**¿Por qué normalizar?** Si una característica es "edad" (0-100) y otra es "ingresos" (0-1,000,000), el producto punto estará dominado por los ingresos. Normalizar (vectores unitarios donde $\|v\| = 1$) asegura que todas las características pesen por igual.
 
-### 2.5 Linear Independence
+### 2.5 Independencia lineal
 
-A set of vectors is **linearly independent** if no single vector can be written as a combination of the others.
+Un conjunto de vectores es **linealmente independiente** si ningún vector puede escribirse como combinación de los demás.
 
 ```
 v₁ = [1, 0]
-v₂ = [0, 1]    → Independent (they form a basis)
-v₃ = [2, 3]    → Dependent on v₁ and v₂
+v₂ = [0, 1]    → Independientes (forman una base)
+v₃ = [2, 3]    → Dependiente de v₁ y v₂
 
-Because v₃ = 2·v₁ + 3·v₂
+Porque v₃ = 2·v₁ + 3·v₂
 ```
 
-**Why does this matter?** In ML, linear independence relates to **multicollinearity**. If two features are linearly dependent (or nearly so), your model will have unstable coefficients. That is why we do feature selection and regularization.
+**¿Por qué importa esto?** En ML, la independencia lineal se relaciona con la **multicolinealidad**. Si dos características son linealmente dependientes (o casi), tu modelo tendrá coeficientes inestables. Por eso hacemos selección de características y regularización.
 
 ---
 
 ## 3. Matrices
 
-### 3.1 Intuition
+### 3.1 Intuición
 
-A matrix is a **collection of vectors** organized in rows and columns. But it is also a **transformation**: multiplying a matrix by a vector rotates, scales, and reflects that vector.
+Una matriz es una **colección de vectores** organizados en filas y columnas. Pero también es una **transformación**: multiplicar una matriz por un vector rota, escala y refleja ese vector.
 
-Your dataset $X$ is an $n \times d$ matrix: $n$ rows (samples), $d$ columns (features).
+Tu conjunto de datos $X$ es una matriz $n \times d$: $n$ filas (muestras), $d$ columnas (características).
 
-### 3.2 Matrix-Vector Multiplication
+### 3.2 Multiplicación matriz-vector
 
 $$A \cdot v = w$$
 
-Each element of $w$ is the dot product of a row of $A$ with $v$:
+Cada elemento de $w$ es el producto punto de una fila de $A$ con $v$:
 
 ```
 A = [1 2]    v = [3]    A·v = [1×3 + 2×4] = [11]
     [3 4]        [4]          [3×3 + 4×4]   [25]
 ```
 
-**Visualization**: the matrix transforms space. If you take every point in a square and multiply by a matrix, you get a rotated, stretched parallelogram.
+**Visualización**: la matriz transforma el espacio. Si tomas cada punto de un cuadrado y lo multiplicas por una matriz, obtienes un paralelogramo rotado y estirado.
 
-**In a neural network**: each layer does $h = Wx + b$. $W$ is a matrix that transforms the input vector $x$ into the hidden vector $h$. Learning is finding the right $W$.
+**En una red neuronal**: cada capa hace $h = Wx + b$. $W$ es una matriz que transforma el vector de entrada $x$ en el vector oculto $h$. Aprender es encontrar la $W$ correcta.
 
-### 3.3 Matrix-Matrix Multiplication
+### 3.3 Multiplicación matriz-matriz
 
 $$C = A \cdot B$$
 
-Each column of $C$ is $A$ times the corresponding column of $B$. Or: $C_{ij} = \text{row}_i(A) \cdot \text{col}_j(B)$.
+Cada columna de $C$ es $A$ por la columna correspondiente de $B$. O: $C_{ij} = \text{fila}_i(A) \cdot \text{col}_j(B)$.
 
-**Why define it this way?** Because it represents **composition of transformations**. First transform with $B$, then with $A$. Order matters: $AB \neq BA$ (non-commutative).
+**¿Por qué definirla así?** Porque representa **composición de transformaciones**. Primero transforma con $B$, luego con $A$. El orden importa: $AB \neq BA$ (no conmutativa).
 
-### 3.4 Transpose and Inverse
+### 3.4 Transpuesta e Inversa
 
-- **Transpose** $A^T$: swap rows and columns. $(A^T)_{ij} = A_{ji}$.
-- **Inverse** $A^{-1}$: $A \cdot A^{-1} = I$ (identity). Exists only if $A$ is square and **full-rank**.
+- **Transpuesta** $A^T$: intercambia filas y columnas. $(A^T)_{ij} = A_{ji}$.
+- **Inversa** $A^{-1}$: $A \cdot A^{-1} = I$ (identidad). Existe solo si $A$ es cuadrada y de **rango completo**.
 
-**What does the inverse do?** It undoes the transformation. If $w = A v$, then $v = A^{-1} w$. In linear regression: $\hat{w} = (X^T X)^{-1} X^T y$ — we are "undoing" the mixing to find the coefficients.
+**¿Qué hace la inversa?** Deshace la transformación. Si $w = A v$, entonces $v = A^{-1} w$. En regresión lineal: $\hat{w} = (X^T X)^{-1} X^T y$ — estamos "deshaciendo" la mezcla para encontrar los coeficientes.
 
-### 3.5 Rank
+### 3.5 Rango
 
-The **rank** of a matrix is the number of linearly independent rows/columns. It measures how much information the matrix truly contains.
+El **rango** de una matriz es el número de filas/columnas linealmente independientes. Mide cuánta información contiene realmente la matriz.
 
-- **Rank-deficient**: if you have 1000 features but many are linear combinations of others, the effective rank is much lower.
-- **Full rank**: every row/column contributes new information.
-- A matrix of rank $r$ can be approximated by matrices of lower rank (SVD gives the best approximation).
+- **Rango deficiente**: si tienes 1000 características pero muchas son combinaciones lineales de otras, el rango efectivo es mucho menor.
+- **Rango completo**: cada fila/columna aporta información nueva.
+- Una matriz de rango $r$ puede aproximarse por matrices de rango inferior (SVD da la mejor aproximación).
 
-### 3.6 Trace
+### 3.6 Traza
 
 $$\text{tr}(A) = \sum_i A_{ii}$$
 
-Sum of the diagonal. Appears in properties like $\text{tr}(ABC) = \text{tr}(BCA)$ (cyclic) and in computing total variance explained in PCA.
+Suma de la diagonal. Aparece en propiedades como $\text{tr}(ABC) = \text{tr}(BCA)$ (cíclica) y en el cálculo de la varianza total explicada en PCA.
 
 ---
 
-## 4. Decompositions — The Heart of Linear Algebra for ML
+## 4. Descomposiciones — El corazón del álgebra lineal para ML
 
-### 4.1 Eigenvalues and Eigenvectors
+### 4.1 Eigenvalores y Eigenvectores
 
 $$A v = \lambda v$$
 
-$v$ is an **eigenvector** of $A$, and $\lambda$ is its **eigenvalue**.
+$v$ es un **eigenvector** de $A$, y $\lambda$ es su **eigenvalor**.
 
-**Intuition**: when you apply the transformation $A$ to $v$, the result points in the **same direction**. It only stretches (or shrinks) by factor $\lambda$.
+**Intuición**: cuando aplicas la transformación $A$ a $v$, el resultado apunta en la **misma dirección**. Solo se estira (o encoge) por el factor $\lambda$.
 
-Imagine a matrix that stretches 2D space: the X-axis doubles, the Y-axis stays. The eigenvectors are $[1,0]$ (with $\lambda=2$) and $[0,1]$ (with $\lambda=1$).
+Imagina una matriz que estira el espacio 2D: el eje X se duplica, el eje Y se mantiene. Los eigenvectors son $[1,0]$ (con $\lambda=2$) y $[0,1]$ (con $\lambda=1$).
 
-**Direct application — PCA**:
-1. Compute covariance matrix $\Sigma = \frac{1}{n} X^T X$
-2. Its eigenvectors are the **directions of maximum variance**
-3. Its eigenvalues say **how much variance each direction explains**
-4. Take the $k$ eigenvectors with largest $\lambda$ and project the data → dimensionality reduction
+**Aplicación directa — PCA**:
+1. Calcula la matriz de covarianza $\Sigma = \frac{1}{n} X^T X$
+2. Sus eigenvectors son las **direcciones de máxima varianza**
+3. Sus eigenvalores indican **cuánta varianza explica cada dirección**
+4. Toma los $k$ eigenvectors con mayor $\lambda$ y proyecta los datos → reducción de dimensionalidad
 
-**Spectral Theorem**: if $A$ is symmetric ($A = A^T$, like covariance), its eigenvectors are orthogonal. This makes everything more manageable.
+**Teorema Espectral**: si $A$ es simétrica ($A = A^T$, como la covarianza), sus eigenvectors son ortogonales. Esto hace todo más manejable.
 
-### 4.2 Singular Value Decomposition (SVD)
+### 4.2 Descomposición en Valores Singulares (SVD)
 
 $$A = U \Sigma V^T$$
 
-This is the **most powerful** of all decompositions.
+Esta es la **más poderosa** de todas las descomposiciones.
 
-**Geometric intuition**: every linear transformation decomposes into three steps:
-1. **Rotation** ($V^T$) — reorient space
-2. **Scaling** ($\Sigma$) — stretch/shrink each axis by its singular value
-3. **Another rotation** ($U$) — rotate to the final coordinate system
+**Intuición geométrica**: toda transformación lineal se descompone en tres pasos:
+1. **Rotación** ($V^T$) — reorienta el espacio
+2. **Escalamiento** ($\Sigma$) — estira/encoge cada eje por su valor singular
+3. **Otra rotación** ($U$) — rota al sistema de coordenadas final
 
-**Concrete example**:
+**Ejemplo concreto**:
 ```
 A = [3 1]
     [1 3]
@@ -186,29 +186,29 @@ U = [0.707 -0.707]    Σ = [4 0]    V^T = [0.707  0.707]
     [0.707  0.707]        [0 2]          [-0.707 0.707]
 ```
 
-The singular values are $\sigma_1 = 4$, $\sigma_2 = 2$. The first explains $\frac{4}{4+2} = 66.7\%$ of the "energy" of the matrix.
+Los valores singulares son $\sigma_1 = 4$, $\sigma_2 = 2$. El primero explica $\frac{4}{4+2} = 66.7\%$ de la "energía" de la matriz.
 
-**Why is SVD so important?**
+**¿Por qué es tan importante SVD?**
 
-| Application | How it uses SVD |
+| Aplicación | Cómo usa SVD |
 |---|---|
-| **PCA** | PCA = SVD of the centered matrix. Components = $V$, variance = $\Sigma^2$ |
-| **Recommendation** | Netflix Prize: factorize user-item matrix with truncated SVD |
-| **Compression** | Keep only the $k$ largest singular values (10× smaller, slightly lower quality) |
-| **Denoising** | Noise lives in small components; removing them = filtering |
-| **LLM Embeddings** | Word2vec, GloVe — factorizing co-occurrence matrices is SVD |
-| **Matrix Completion** | Predict missing entries (as in recommendation) |
+| **PCA** | PCA = SVD de la matriz centrada. Componentes = $V$, varianza = $\Sigma^2$ |
+| **Recomendación** | Premio Netflix: factorizar matriz usuario-item con SVD truncado |
+| **Compresión** | Conserva solo los $k$ valores singulares más grandes (10× más pequeño, calidad ligeramente inferior) |
+| **Denoising** | El ruido vive en los componentes pequeños; eliminarlos = filtrar |
+| **Embeddings de LLM** | Word2vec, GloVe — factorizar matrices de co-ocurrencia es SVD |
+| **Completación de matrices** | Predecir entradas faltantes (como en recomendación) |
 
-### 4.3 Cholesky Decomposition
+### 4.3 Descomposición de Cholesky
 
 $$A = L L^T$$
 
-For symmetric positive-definite matrices (like covariance).
+Para matrices simétricas definidas positivas (como la covarianza).
 
-**Why is it useful?**
-- Solve linear systems fast ($Ax = b$ in $O(n^2)$ with Cholesky vs $O(n^3)$ with inverse)
-- Sample from multivariate Gaussian distributions
-- Gaussian Processes
+**¿Por qué es útil?**
+- Resuelve sistemas lineales rápido ($Ax = b$ en $O(n^2)$ con Cholesky vs $O(n^3)$ con inversa)
+- Muestrear de distribuciones Gaussianas multivariadas
+- Procesos Gaussianos
 
 ---
 

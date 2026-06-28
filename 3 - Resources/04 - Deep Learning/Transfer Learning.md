@@ -6,11 +6,9 @@ created: 2026-06-27
 
 # Transfer Learning
 
-## 1. Why This Matters
+## 1. Escenario de aprendizaje
 
-Training a deep neural network from scratch requires millions of labeled examples, days of GPU time, and significant expertise. Transfer learning — starting from a model already trained on a large generic dataset — reduces this to hundreds of examples and hours of fine-tuning on a single GPU.
-
-Virtually every practical deep learning application uses transfer learning. It is not a specialized technique; it is the standard practice.
+Tienes 500 imágenes de rayos X para clasificar entre neumonía y normal. Entrenar una red neuronal profunda desde cero requeriría millones de imágenes etiquetadas, días de GPU y experiencia significativa. Transfer learning — comenzar desde un modelo ya entrenado en un gran conjunto de datos genérico (como ImageNet) — reduce esto a cientos de ejemplos y horas de fine-tuning en una sola GPU. Prácticamente toda aplicación práctica de deep learning usa transfer learning. No es una técnica especializada; es la práctica estándar.
 
 ---
 

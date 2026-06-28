@@ -6,43 +6,29 @@ created: 2026-06-27
 
 # Testing for Data Science
 
-## 1. Why This Matters
+## 1. Escenario de aprendizaje
 
-ML code has a reputation for being hard to test. Models are stochastic, data is messy, and the final output depends on many intermediate steps. But the **consequences of untested ML code are severe**: wrong predictions, silent data corruption, models that fail in production without crashing.
+Trabajas en un modelo de clasificación para producción. Un día, el accuracy cae de 92 % a 70 % sin que salte ningún error en el código. El problema es que los datos de entrada cambiaron silenciosamente —una columna comenzó a llegar con 40 % de valores nulos— y ningún test lo detectó. En ciencia de datos, el código no testeado es una bomba de tiempo: errores silenciosos, datos corruptos, modelos que fallan en producción sin crashear.
 
-Testing in data science is not optional — it is the difference between "works on my machine" and "works reliably in production."
+El testing en ciencia de datos no es opcional —es la diferencia entre "funciona en mi máquina" y "funciona de forma confiable en producción".
 
 ---
 
-## 2. The Testing Pyramid for ML
+## 2. La Pirámide de Testing para ML
 
 ```
     /\
-   /  \          E2E / smoke tests (few, expensive)
+   /  \          Tests E2E / smoke (pocos, costosos)
   /    \
- / Unit \         Unit tests (many, fast, cheap)
+ / Unit \        Tests unitarios (muchos, rápidos, baratos)
 /________\
 ```
 
-ML adds two extra layers: data tests and model tests. Use [[CLI & Productivity]] tools to run tests efficiently from the terminal.
+ML agrega dos capas extra: tests de datos y tests de modelo. Usa herramientas de [[CLI & Productivity]] para ejecutar tests eficientemente desde la terminal.
 
-### 2.1 Unit Tests
+### 2.1 Tests Unitarios
 
-Test individual functions in isolation (see [[Python Fundamentals]] for testing basics):
-
-```python
-# test_preprocessing.py
-def test_clean_text():
-    assert clean_text("  Hello!  ") == "hello"
-    assert clean_text("") == ""
-    assert clean_text(None) is None
-
-def test_normalize():
-    arr = [1, 2, 3, 4, 5]
-    normalized = normalize(arr)
-    assert abs(normalized.mean()) < 1e-10
-    assert abs(normalized.std() - 1.0) < 1e-10
-```
+Prueba funciones individuales de forma aislada (consulta [[Python Fundamentals]] para conceptos básicos de testing):
 
 ```python
 # test_preprocessing.py
@@ -58,14 +44,28 @@ def test_normalize():
     assert abs(normalized.std() - 1.0) < 1e-10
 ```
 
-**What to test**:
-- Edge cases: empty input, NaN, None, extreme values
-- Boundary conditions: min/max, single element
-- Expected transformations: "output should have property X"
+```python
+# test_preprocessing.py
+def test_clean_text():
+    assert clean_text("  Hello!  ") == "hello"
+    assert clean_text("") == ""
+    assert clean_text(None) is None
 
-### 2.2 Data Tests
+def test_normalize():
+    arr = [1, 2, 3, 4, 5]
+    normalized = normalize(arr)
+    assert abs(normalized.mean()) < 1e-10
+    assert abs(normalized.std() - 1.0) < 1e-10
+```
 
-Test the data itself:
+**Qué testear**:
+- Casos borde: entrada vacía, NaN, None, valores extremos
+- Condiciones límite: mínimo/máximo, un solo elemento
+- Transformaciones esperadas: "la salida debe tener la propiedad X"
+
+### 2.2 Tests de Datos
+
+Prueba los datos mismos:
 
 ```python
 # test_data.py
@@ -84,11 +84,11 @@ def test_cardinality():
     assert set(df["category"].unique()).issubset(valid_categories)
 ```
 
-**Tools**: Great Expectations, Pandera.
+**Herramientas**: Great Expectations, Pandera.
 
-### 2.3 Model Tests
+### 2.3 Tests de Modelo
 
-Test model behavior:
+Prueba el comportamiento del modelo:
 
 ```python
 # test_model.py
@@ -99,7 +99,7 @@ def test_model_improves_over_baseline():
     assert accuracy > baseline
 
 def test_expected_direction():
-    # If 'age' increases, 'risk' should not decrease
+    # Si 'age' aumenta, 'risk' no debería disminuir
     inputs = df.copy()
     inputs["age"] = inputs["age"] * 1.1
     new_preds = model.predict(inputs)
@@ -111,16 +111,16 @@ def test_prediction_range():
     assert (preds <= 1).all()
 ```
 
-Log test results with [[Experiment Tracking]] to monitor model performance over time.
+Registra los resultados de tests con [[Experiment Tracking]] para monitorear el rendimiento del modelo a lo largo del tiempo.
 
-### 2.4 Integration Tests
+### 2.4 Tests de Integración
 
-Test the full pipeline end-to-end:
+Prueba el pipeline completo de extremo a extremo:
 
 ```python
 # test_pipeline.py
 def test_end_to_end():
-    # Use a small dataset
+    # Usar un conjunto pequeño de datos
     X_small = X_train[:100]
     y_small = y_train[:100]
 
@@ -134,28 +134,28 @@ def test_end_to_end():
 
 ---
 
-## 3. Using pytest
+## 3. Usando pytest
 
 ```python
-# Run all tests
+# Ejecutar todos los tests
 pytest
 
-# Run a specific file
+# Ejecutar un archivo específico
 pytest tests/test_preprocessing.py
 
-# Run tests matching a name
+# Ejecutar tests que coincidan con un nombre
 pytest -k "clean"
 
-# Verbose output
+# Salida detallada
 pytest -v
 
-# Check code coverage
+# Ver cobertura de código
 pytest --cov=src tests/
 ```
 
 ---
 
-## 4. CI/CD for ML
+## 4. CI/CD para ML
 
 ```yaml
 # .github/workflows/test.yml
@@ -182,15 +182,15 @@ jobs:
 
 ---
 
-## 5. What NOT to Test
+## 5. Qué NO Testear
 
-| Don't test | Why |
+| No testear | Por qué |
 |---|---|
-| Exact model output (e.g., "accuracy = 0.85") | Stochastic — will flake |
-| Internal implementation details | Changes break tests unnecessarily |
-| Very large datasets in CI | Slow, expensive |
+| La salida exacta del modelo (ej.: "accuracy = 0.85") | Es estocástico — dará falsos fallos |
+| Detalles internos de implementación | Los cambios rompen tests innecesariamente |
+| Datos muy grandes en CI | Lento y costoso |
 
-**Test properties, not exact values.**
+**Prueba propiedades, no valores exactos.**
 
 ---
 

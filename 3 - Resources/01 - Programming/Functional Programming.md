@@ -4,30 +4,30 @@ status: growing
 created: 2026-06-27
 ---
 
-# Functional Programming
+# Programación Funcional
 
-## 1. Why This Matters
+## 1. Escenario de aprendizaje
 
-Functional programming (FP) is not just an academic curiosity — it is the **natural paradigm for data processing**. Every pandas operation (`map`, `apply`, `groupby`), every Spark transformation, and every NumPy vectorized operation follows functional principles.
+Tienes datos sin procesar de múltiples fuentes: CSVs, APIs, bases de datos. Necesitas aplicar una secuencia de transformaciones: limpiar valores nulos, normalizar columnas, codificar variables categóricas y calcular métricas. Cada transformación debe ser testeable de forma independiente y el pipeline completo debe poder ejecutarse en paralelo sin efectos secundarios. La programación funcional (FP) no es solo una curiosidad académica — es el **paradigma natural para el procesamiento de datos**.
 
-If OOP is about organizing code around **objects** (state + behavior), FP is about organizing code around **data transformations** (input → output, without side effects). Understanding FP makes you write more predictable, testable, and parallelizable data code.
+Cada operación de pandas (`map`, `apply`, `groupby`), cada transformación de Spark y cada operación vectorizada de NumPy sigue principios funcionales. Si OOP se trata de organizar código alrededor de **objetos** (estado + comportamiento), FP se trata de organizar código alrededor de **transformaciones de datos** (entrada → salida, sin efectos secundarios). Entender FP te permite escribir código de datos más predecible, testeable y paralelizable.
 
 ---
 
-## 2. Core Concepts
+## 2. Conceptos fundamentales
 
-### 2.1 Pure Functions
+### 2.1 Funciones puras
 
-A pure function has two properties:
-1. **Same input → same output** (no hidden state)
-2. **No side effects** (does not modify external state)
+Una función pura tiene dos propiedades:
+1. **Misma entrada → misma salida** (sin estado oculto)
+2. **Sin efectos secundarios** (no modifica el estado externo)
 
 ```python
-# Pure
+# Pura
 def add(a, b):
     return a + b
 
-# Impure — depends on external state
+# Impura — depende del estado externo
 total = 0
 def add_to_total(x):
     global total
@@ -35,45 +35,45 @@ def add_to_total(x):
     return total
 ```
 
-**Why pure functions matter in data science:**
-- **Testable**: no setup needed, just call with inputs and check outputs
-- **Cachable**: same input always gives same output → `@functools.lru_cache`
-- **Parallelizable**: no shared state, safe to run in any order
-- **Composable**: combine small functions into larger ones — [[Testing for Data Science]] leverages these properties for reliable tests
+**Por qué importan las funciones puras en ciencia de datos:**
+- **Testeables**: sin configuración previa, solo llamar con entradas y verificar salidas
+- **Almacenables en caché**: la misma entrada siempre da la misma salida → `@functools.lru_cache`
+- **Paralelizables**: sin estado compartido, seguras para ejecutar en cualquier orden
+- **Componibles**: combina funciones pequeñas en otras más grandes — [[Testing for Data Science]] aprovecha estas propiedades para pruebas confiables
 
-### 2.2 Immutability
+### 2.2 Inmutabilidad
 
-Data should not be modified — instead, create new data with the changes applied.
+Los datos no deben modificarse — en su lugar, crea nuevos datos con los cambios aplicados.
 
 ```python
-# Mutable (OOP style)
-df["new_col"] = df["a"] + df["b"]   # modifies df in place
+# Mutable (estilo OOP)
+df["new_col"] = df["a"] + df["b"]   # modifica df in-place
 
-# Immutable (FP style)
-new_df = df.assign(new_col=df["a"] + df["b"])  # returns new DataFrame
+# Immutable (estilo FP)
+new_df = df.assign(new_col=df["a"] + df["b"])  # retorna un nuevo DataFrame
 ```
 
-**Why immutability matters:**
-- Prevents accidental mutation (a common source of bugs)
-- Makes code easier to reason about (data only flows forward)
-- Enables change detection (compare old vs new)
+**Por qué importa la inmutabilidad:**
+- Previene la mutación accidental (una fuente común de errores)
+- Hace que el código sea más fácil de razonar (los datos solo fluyen hacia adelante)
+- Permite la detección de cambios (comparar versión antigua vs nueva)
 
-In pandas: `df.assign()` (immutable) vs `df["col"] = ...` (mutable). In PyTorch: `tensor.clone()` and `torch.no_grad()` enforce separation between computation and modification.
+En pandas: `df.assign()` (inmutable) vs `df["col"] = ...` (mutable). En PyTorch: `tensor.clone()` y `torch.no_grad()` imponen la separación entre cómputo y modificación.
 
-### 2.3 First-Class and Higher-Order Functions
+### 2.3 Funciones de primera clase y de orden superior
 
-**First-class functions**: functions are values — they can be assigned to variables, passed as arguments, and returned from other functions.
+**Funciones de primera clase**: las funciones son valores — pueden asignarse a variables, pasarse como argumentos y retornarse desde otras funciones.
 
 ```python
 def square(x): return x ** 2
 def cube(x): return x ** 3
 
-operations = [square, cube]  # functions in a list
+operations = [square, cube]  # funciones en una lista
 for op in operations:
     print(op(3))             # 9, 27
 ```
 
-**Higher-order functions**: functions that take other functions as arguments or return functions.
+**Funciones de orden superior**: funciones que toman otras funciones como argumentos o retornan funciones.
 
 ```python
 def apply_transformation(func, data):
@@ -82,42 +82,42 @@ def apply_transformation(func, data):
 apply_transformation(square, [1, 2, 3])  # [1, 4, 9]
 ```
 
-This is the foundation of `map`, `filter`, `reduce`, and pandas `apply`.
+Esta es la base de `map`, `filter`, `reduce` y `apply` de pandas.
 
 ---
 
-## 3. The Three Pillars: Map, Filter, Reduce
+## 3. Los tres pilares: Map, Filter, Reduce
 
-These three functions form the core of data processing in FP.
+Estas tres funciones forman el núcleo del procesamiento de datos en FP.
 
-### 3.1 map — Transform Each Element
+### 3.1 map — Transformar cada elemento
 
-**Pattern**: take a collection, apply a function to each element, return a new collection of the same size.
+**Patrón**: tomar una colección, aplicar una función a cada elemento, retornar una nueva colección del mismo tamaño.
 
 ```python
 numbers = [1, 2, 3, 4, 5]
-squared = list(map(lambda x: x ** 2, numbers))    # FP style
-squared = [x ** 2 for x in numbers]                # Pythonic (preferred)
+squared = list(map(lambda x: x ** 2, numbers))    # estilo FP
+squared = [x ** 2 for x in numbers]                # pitónico (preferido)
 
-# pandas equivalent
+# equivalente en pandas
 df["normalized"] = df["value"].map(lambda x: (x - min_) / (max_ - min_))
 ```
 
-**Pythonic note**: list comprehensions are generally preferred over `map()` in Python because they are more readable. Use `map()` when you already have a named function.
+**Nota pitónica**: las list comprehensions son generalmente preferidas sobre `map()` en Python porque son más legibles. Usa `map()` cuando ya tengas una función con nombre.
 
-### 3.2 filter — Keep Matching Elements
+### 3.2 filter — Conservar elementos que coinciden
 
-**Pattern**: take a collection, keep elements that satisfy a predicate, return a (potentially smaller) collection.
+**Patrón**: tomar una colección, conservar los elementos que satisfacen un predicado, retornar una colección (potencialmente más pequeña).
 
 ```python
 numbers = [1, 2, 3, 4, 5, 6]
 evens = list(filter(lambda x: x % 2 == 0, numbers))  # [2, 4, 6]
-evens = [x for x in numbers if x % 2 == 0]           # Pythonic (preferred)
+evens = [x for x in numbers if x % 2 == 0]           # pitónico (preferido)
 ```
 
-### 3.3 reduce — Accumulate
+### 3.3 reduce — Acumular
 
-**Pattern**: take a collection, combine elements sequentially into a single value.
+**Patrón**: tomar una colección, combinar elementos secuencialmente en un solo valor.
 
 ```python
 from functools import reduce
@@ -125,31 +125,31 @@ from functools import reduce
 numbers = [1, 2, 3, 4]
 product = reduce(lambda a, b: a * b, numbers)  # 1 * 2 * 3 * 4 = 24
 
-# Real-world use: chaining transformations
+# Uso real: encadenar transformaciones
 from functools import reduce
 
 def pipeline(data, *functions):
     return reduce(lambda x, f: f(x), functions, data)
 
 result = pipeline(raw_data, clean, normalize, encode)
-# Equivalent to: encode(normalize(clean(raw_data)))
+# Equivalente a: encode(normalize(clean(raw_data)))
 ```
 
-`reduce` is less common in Python (Clojure, Haskell use it heavily) but invaluable for composing pipelines.
+`reduce` es menos común en Python (Clojure, Haskell lo usan mucho) pero invaluable para componer pipelines.
 
 ---
 
-## 4. Function Composition in Data Science
+## 4. Composición de funciones en ciencia de datos
 
-### 4.1 The Pipeline Pattern
+### 4.1 El patrón Pipeline
 
-FP pipelines chain transformations:
+Los pipelines FP encadenan transformaciones:
 
 ```python
-# Without composition (reads bottom-up or inside-out)
+# Sin composición (se lee de abajo arriba o de adentro hacia afuera)
 predictions = model.predict(encode(normalize(clean(raw_data))))
 
-# With composition (reads top-to-bottom)
+# Con composición (se lee de arriba abajo)
 def compose(*functions):
     def composed(data):
         for f in functions:
@@ -161,11 +161,11 @@ pipeline = compose(clean, normalize, encode, model.predict)
 predictions = pipeline(raw_data)
 ```
 
-This composable pattern is central to [[Python for Data Science]]'s scikit-learn `Pipeline` API.
+Este patrón componible es central para la API `Pipeline` de scikit-learn en [[Python for Data Science]].
 
-### 4.2 Partial Application
+### 4.2 Aplicación parcial
 
-Fix some arguments of a function, creating a new function with fewer arguments:
+Fija algunos argumentos de una función, creando una nueva función con menos argumentos:
 
 ```python
 from functools import partial
@@ -181,7 +181,7 @@ ages_normalized = list(map(scale_age, ages))
 
 ### 4.3 Currying
 
-Convert a function that takes multiple arguments into a chain of functions that each take one argument:
+Convierte una función que toma múltiples argumentos en una cadena de funciones que cada una toma un argumento:
 
 ```python
 def multiply(a):
@@ -193,50 +193,50 @@ double = multiply(2)
 double(5)  # 10
 ```
 
-Rare in Python (common in Haskell, Scala) but useful for creating reusable transformations.
+Raro en Python (común en Haskell, Scala) pero útil para crear transformaciones reutilizables.
 
 ---
 
-## 5. FP vs OOP — Choosing the Right Tool
+## 5. FP vs OOP — Elegir la herramienta correcta
 
-### 5.1 Use Functional Programming When...
+### 5.1 Usa Programación Funcional cuando...
 
-| Scenario | Why FP |
+| Escenario | Por qué FP |
 |---|---|
-| **Data transformation** | Pipeline of pure functions: clean → normalize → encode |
-| **Metric computation** | Stateless: `accuracy(y_true, y_pred)` |
-| **Feature engineering** | Transform → compose → apply |
-| **Parallel processing** | No shared state → safe to run in parallel |
-| **ETL pipelines** | Data in, data out, no side effects |
-| **Validation logic** | Pure functions are trivial to test |
+| **Transformación de datos** | Pipeline de funciones puras: clean → normalize → encode |
+| **Cálculo de métricas** | Sin estado: `accuracy(y_true, y_pred)` |
+| **Ingeniería de características** | Transformar → componer → aplicar |
+| **Procesamiento paralelo** | Sin estado compartido → seguro de ejecutar en paralelo |
+| **Pipelines ETL** | Datos entran, datos salen, sin efectos secundarios |
+| **Lógica de validación** | Las funciones puras son triviales de probar |
 
-### 5.2 Use Object-Oriented Programming When...
+### 5.2 Usa Programación Orientada a Objetos cuando...
 
-| Scenario | Why OOP |
+| Escenario | Por qué OOP |
 |---|---|
-| **Model lifecycle** | Model has state (weights) and behavior (fit, predict) |
-| **Experiment tracking** | Accumulate metrics over time |
-| **User interaction** | Multiple related operations on shared data |
-| **Resource management** | Database connections, file handles |
-| **Plugin/extension systems** | Polymorphism through inheritance |
+| **Ciclo de vida del modelo** | El modelo tiene estado (pesos) y comportamiento (fit, predict) |
+| **Seguimiento de experimentos** | Acumular métricas a lo largo del tiempo |
+| **Interacción con el usuario** | Múltiples operaciones relacionadas sobre datos compartidos |
+| **Gestión de recursos** | Conexiones a bases de datos, manejadores de archivos |
+| **Sistemas de plugins/extensiones** | Polimorfismo a través de herencia |
 
-### 5.3 The Hybrid Approach (Recommended)
+### 5.3 El enfoque híbrido (Recomendado)
 
-Most real data science code uses both:
+La mayoría del código real de ciencia de datos usa ambos:
 
 ```python
-class DataScienceProject:          # OOP: skeleton, state, interface
+class DataScienceProject:          # OOP: esqueleto, estado, interfaz
     def __init__(self, config):
         self.config = config
         self.model = None
 
-    def _clean(self, df):          # FP: pure transformation
+    def _clean(self, df):          # FP: transformación pura
         return df.dropna()
 
-    def _normalize(self, df):      # FP: pure transformation
+    def _normalize(self, df):      # FP: transformación pura
         return (df - df.mean()) / df.std()
 
-    def _build_features(self, df):  # FP: function composition
+    def _build_features(self, df):  # FP: composición de funciones
         return compose(self._clean, self._normalize)(df)
 
     def train(self, X, y):
@@ -245,13 +245,13 @@ class DataScienceProject:          # OOP: skeleton, state, interface
         self.model.fit(X, y)
 ```
 
-**Rule**: use OOP to structure the program, FP to process the data.
+**Regla**: usa OOP para estructurar el programa, FP para procesar los datos.
 
 ---
 
-## 6. Step-by-Step: Refactoring from Imperative to Functional
+## 6. Paso a paso: Refactorizando de imperativo a funcional
 
-**Before** (imperative, hard to parallelize, test, or compose):
+**Antes** (imperativo, difícil de paralelizar, probar o componer):
 
 ```python
 def process_data(data):
@@ -266,23 +266,23 @@ def process_data(data):
     return result
 ```
 
-**After** (functional, composable, testable):
+**Después** (funcional, componible, testeable):
 
 ```python
-def is_adult(row):                                # pure, testable
+def is_adult(row):                                # pura, testeable
     return {**row, "adult": row["age"] > 18}
 
-def log_income(row):                              # pure, testable
+def log_income(row):                              # pura, testeable
     return {**row, "income_log": math.log(row["income"] + 1)}
 
-def process_data(data):                           # composition
+def process_data(data):                           # composición
     return [log_income(is_adult(row)) for row in data]
 
-# Even better: separate concerns
+# Aún mejor: separar responsabilidades
 def transform_row(row):
     return log_income(is_adult(row))
 
-process_data = partial(map, transform_row)        # reusable, composable
+process_data = partial(map, transform_row)        # reutilizable, componible
 ```
 
 ---

@@ -6,7 +6,7 @@ created: 2026-06-28
 
 # Terraform Modules & Project Structure
 
-## El problema del monolito
+## 1. Escenario de aprendizaje
 
 Cuando empiezas, todo tu código Terraform cabe en un solo `main.tf`:
 
@@ -28,7 +28,7 @@ Ahora `terraform plan` tarda 30 segundos aunque solo hayas cambiado una tag. Cua
 
 Los módulos resuelven esto.
 
-## ¿Qué es un módulo?
+## 2. ¿Qué es un módulo?
 
 Un módulo es cualquier directorio con archivos `.tf`. Incluso tu `main.tf` raíz es un módulo (el "root module").
 
@@ -53,7 +53,7 @@ module "web_server" {
 }
 ```
 
-## Paso a paso: crear tu primer módulo
+## 3. Paso a paso: crear tu primer módulo
 
 ### 1. Estructura de directorios
 
@@ -175,7 +175,7 @@ Ventajas:
 - Cambias algo en el módulo → ambos se actualizan
 - Cada uno tiene sus propias variables
 
-## Módulos del Registry (reutilizar lo que ya existe)
+## 4. Módulos del Registry (reutilizar lo que ya existe)
 
 No todo módulo tienes que escribirlo tú. El [Terraform Registry](https://registry.terraform.io/) tiene módulos oficiales y de la comunidad:
 
@@ -200,7 +200,7 @@ Así creas una VPC completa con subnets, route tables, NAT gateway, y más, en ~
 
 **Regla práctica**: si estás escribiendo un módulo de VPC, S3, RDS o EKS desde cero — primero revisa el Registry. El 90% de las veces ya existe.
 
-## Estructura de proyecto recomendada
+## 5. Estructura de proyecto recomendada
 
 A medida que el proyecto crece, usa esta estructura (adaptada de la referencia de HashiCorp):
 
@@ -237,7 +237,7 @@ terraform plan -var-file=terraform.tfvars
 terraform apply -var-file=terraform.tfvars
 ```
 
-## Módulos remotos (con source desde git o HTTP)
+## 6. Módulos remotos (con source desde git o HTTP)
 
 Además de rutas locales, puedes cargar módulos desde:
 
@@ -261,7 +261,7 @@ module "bucket" {
 
 **Ventaja de módulos remotos**: versionados, compartidos entre equipos, y no duplicas código en cada repo.
 
-## Cómo pensar al diseñar módulos
+## 7. Cómo pensar al diseñar módulos
 
 | Buena señal de módulo | Mala señal |
 |----------------------|------------|
@@ -273,7 +273,7 @@ Estos criterios son principios de [[Code Quality]] aplicados a infraestructura.
 
 **No modularices demasiado pronto**. Empieza con un root module sencillo. Cuando veas que repites el mismo bloque de recursos 3+ veces, extráelo a un módulo.
 
-## Common Pitfalls
+## 8. Common Mistakes
 
 - **Módulo sin outputs**: usas un módulo y luego no puedes acceder a los valores de los recursos que creó. Siempre expone outputs útiles.
 - **Source local sin path relativo**: `source = "modules/ec2"` es relativo al sistema de archivos del invocador. Usa `"./modules/ec2"` para ser explícito.

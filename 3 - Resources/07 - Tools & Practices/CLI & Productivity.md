@@ -6,53 +6,53 @@ created: 2026-06-27
 
 # CLI & Productivity
 
-## 1. Why This Matters
+## 1. Escenario de aprendizaje
 
-The command line is the most powerful interface for a data scientist. GUI tools hide complexity; the CLI exposes it. Every time you use a GUI to do something the CLI could do in one command, you are wasting time.
+Necesitas procesar 200 archivos CSV, calcular estadísticas por grupo, filtrar filas con ciertas condiciones y generar un reporte final. Hacerlo manualmente en un notebook te tomaría horas abriendo archivo por archivo. Con una línea de comando bien construida, el mismo trabajo se hace en segundos.
 
-Data science is fundamentally about automating data processing — and the CLI is the ultimate automation interface. A well-crafted one-liner can replace hours of manual work.
-
----
-
-## 2. Essential CLI Tools
-
-### 2.1 File Operations
-
-| Tool | What It Does | Example |
-|---|---|---|
-| `ls` | List files | `ls -la` (detailed listing) |
-| `find` | Find files by name/type | `find . -name "*.csv"` |
-| `fd` | Fast find (alternative) | `fd csv` |
-| `grep / rg` | Search file contents | `rg "accuracy" *.py` |
-| `head / tail` | View file start/end | `tail -f log.txt` (follow) |
-
-### 2.2 Data Processing
-
-| Tool | What It Does | Example |
-|---|---|---|
-| `jq` | Query JSON | `cat data.json \| jq '.results[].name'` |
-| `csvkit` | CSV processing | `csvstat data.csv` (summary stats) |
-| `awk` | Column processing | `awk '{print $1, $3}' file.csv` |
-| `sort / uniq` | Sort and deduplicate | `sort file.csv \| uniq -c` |
-
-### 2.3 Monitoring
-
-| Tool | What It Does | Example |
-|---|---|---|
-| `htop` | Process monitor | See CPU/memory per process |
-| `du` | Disk usage | `du -sh *` (dir sizes) |
-| `df` | Disk free | `df -h` (free space) |
+La línea de comandos es la interfaz más poderosa para un científico de datos. Las interfaces gráficas ocultan la complejidad; la CLI la expone. Cada vez que usas una GUI para algo que la CLI puede hacer en un solo comando, estás perdiendo tiempo.
 
 ---
 
-## 3. Productivity Workflow
+## 2. Herramientas CLI Esenciales
 
-### 3.1 Shell Aliases
+### 2.1 Operaciones con Archivos
 
-Add these to `~/.zshrc` (or `~/.bashrc`):
+| Herramienta | Qué hace | Ejemplo |
+|---|---|---|
+| `ls` | Listar archivos | `ls -la` (listado detallado) |
+| `find` | Buscar archivos por nombre/tipo | `find . -name "*.csv"` |
+| `fd` | Find rápido (alternativa) | `fd csv` |
+| `grep / rg` | Buscar contenido en archivos | `rg "accuracy" *.py` |
+| `head / tail` | Ver inicio/final de archivo | `tail -f log.txt` (seguir) |
+
+### 2.2 Procesamiento de Datos
+
+| Herramienta | Qué hace | Ejemplo |
+|---|---|---|
+| `jq` | Consultar JSON | `cat data.json \| jq '.results[].name'` |
+| `csvkit` | Procesamiento de CSV | `csvstat data.csv` (estadísticas resumidas) |
+| `awk` | Procesamiento de columnas | `awk '{print $1, $3}' file.csv` |
+| `sort / uniq` | Ordenar y deduplicar | `sort file.csv \| uniq -c` |
+
+### 2.3 Monitoreo
+
+| Herramienta | Qué hace | Ejemplo |
+|---|---|---|
+| `htop` | Monitor de procesos | Ver CPU/memoria por proceso |
+| `du` | Uso de disco | `du -sh *` (tamaños de directorios) |
+| `df` | Espacio libre en disco | `df -h` (espacio disponible) |
+
+---
+
+## 3. Flujo de Trabajo Productivo
+
+### 3.1 Alias del Shell
+
+Agrega estos a `~/.zshrc` (o `~/.bashrc`):
 
 ```bash
-# Git shortcuts
+# Atajos de Git
 alias gs="git status"
 alias gc="git commit -m"
 alias gp="git push"
@@ -63,36 +63,36 @@ alias python="python3"
 alias pip="pip3"
 alias jl="jupyter lab"
 
-# Data science
+# Ciencia de datos
 alias df="python -c 'import pandas as pd; pd.read_csv(\"$1\").info()'"
 ```
 
-### 3.2 One-Liner Examples
+### 3.2 Ejemplos de One-Liners
 
 ```bash
-# Find largest CSV files
+# Encontrar los archivos CSV más grandes
 find . -name "*.csv" -exec du -h {} \; | sort -rh | head -10
 
-# Count lines of Python code per directory
+# Contar líneas de código Python por directorio
 find . -name "*.py" | xargs wc -l | sort -rn
 
-# Search for a pattern in notebooks (stripping output)
+# Buscar un patrón en notebooks (eliminando salidas)
 jq '.cells[] | select(.cell_type == "code") | .source[]' notebook.ipynb | rg "train"
 
-# Check GPU usage (Linux)
+# Ver uso de GPU (Linux)
 watch -n 1 nvidia-smi
 
-# Extract column from CSV and compute statistics
+# Extraer columna de CSV y calcular estadísticas
 cut -d, -f3 data.csv | sort -n | awk '{sum+=$1; n++} END {print sum/n}'
 ```
 
 ---
 
-## 4. Python CLI Tools
+## 4. Herramientas CLI de Python
 
 ### 4.1 Click / Typer
 
-Build CLI interfaces for your data scripts (see [[Python for Data Science]] for language context):
+Construye interfaces CLI para tus scripts de datos (consulta [[Python for Data Science]] para contexto del lenguaje):
 
 ```python
 # cli.py
@@ -101,12 +101,12 @@ app = typer.Typer()
 
 @app.command()
 def train(
-    data_path: str = typer.Argument(..., help="Path to training data"),
-    model: str = typer.Option("rf", help="Model type"),
-    lr: float = typer.Option(0.001, help="Learning rate"),
+    data_path: str = typer.Argument(..., help="Ruta a los datos de entrenamiento"),
+    model: str = typer.Option("rf", help="Tipo de modelo"),
+    lr: float = typer.Option(0.001, help="Tasa de aprendizaje"),
 ):
-    """Train a model on the specified data."""
-    print(f"Training {model} on {data_path} with lr={lr}")
+    """Entrena un modelo con los datos especificados."""
+    print(f"Entrenando {model} con {data_path} y lr={lr}")
 
 if __name__ == "__main__":
     app()
@@ -118,7 +118,7 @@ python cli.py train data.csv --model xgboost --lr 0.01
 
 ### 4.2 Rich
 
-Beautiful terminal output:
+Salida de terminal elegante:
 
 ```python
 from rich.console import Console
@@ -126,15 +126,15 @@ from rich.progress import track
 from rich.table import Table
 
 console = Console()
-console.print("[bold green]Training complete![/]")
+console.print("[bold green]¡Entrenamiento completado![/]")
 
-# Progress bar
-for i in track(range(100), description="Training..."):
+# Barra de progreso
+for i in track(range(100), description="Entrenando..."):
     time.sleep(0.01)
 
-# Table
-table = Table(title="Model Comparison")
-table.add_column("Model", style="cyan")
+# Tabla
+table = Table(title="Comparación de Modelos")
+table.add_column("Modelo", style="cyan")
 table.add_column("Accuracy", style="green")
 table.add_row("Random Forest", "0.92")
 table.add_row("XGBoost", "0.94")
@@ -143,18 +143,18 @@ console.print(table)
 
 ---
 
-## 5. Automation
+## 5. Automatización
 
-| Tool | When to Use | Example |
+| Herramienta | Cuándo usarla | Ejemplo |
 |---|---|---|
-| **Make** | Run tasks with dependencies | `make train`, `make test` |
-| **Just** | Simpler Make alternative | `just train` |
-| **Cron** | Scheduled execution | Run training every night at 2 AM |
-| **launchd** | macOS task scheduler | Mac equivalent of cron |
+| **Make** | Ejecutar tareas con dependencias | `make train`, `make test` |
+| **Just** | Alternativa más simple a Make | `just train` |
+| **Cron** | Ejecución programada | Entrenar cada noche a las 2 AM |
+| **launchd** | Programador de tareas de macOS | Equivalente a cron en Mac |
 
-Combine with [[Testing for Data Science]] to run tests via `make test`.
+Combínalo con [[Testing for Data Science]] para ejecutar tests mediante `make test`.
 
-### Makefile Example
+### Ejemplo de Makefile
 
 ```makefile
 .PHONY: train test clean
@@ -173,15 +173,15 @@ clean:
 
 ## 6. Notebooks vs Scripts
 
-| Aspect | Jupyter Notebook | Python Script |
+| Aspecto | Jupyter Notebook | Script de Python |
 |---|---|---|
-| **Exploration** | Excellent | Poor |
-| **Reproducibility** | Poor (state, output) | Excellent |
-| **Version control** | Poor (JSON, outputs) | Excellent |
-| **Automation** | Poor | Excellent |
-| **Debugging** | Moderate | Excellent |
+| **Exploración** | Excelente | Malo |
+| **Reproducibilidad** | Mala (estado, salidas) | Excelente |
+| **Control de versiones** | Malo (JSON, salidas) | Excelente |
+| **Automatización** | Mala | Excelente |
+| **Depuración** | Moderada | Excelente |
 
-**Best practice**: explore in notebooks, productionize in scripts. Use `nbconvert` to extract scripts from notebooks.
+**Mejor práctica**: explora en notebooks, produce en scripts. Usa `nbconvert` para extraer scripts a partir de notebooks.
 
 ---
 

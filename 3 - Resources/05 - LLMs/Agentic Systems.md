@@ -4,80 +4,82 @@ status: growing
 created: 2026-06-27
 ---
 
-# Agentic Systems
+# Sistemas Agentivos
 
-## 1. Why This Matters
+## 1. Escenario de aprendizaje
 
-An LLM by itself is a text generator built on the [[Transformer Architecture]]. You give it text, it gives you text. But when you give it **tools** — web search, code execution, database queries, file access — it becomes an **agent** that can take actions, observe results, and plan multi-step solutions.
+Necesitas un asistente que investigue competidores: que busque en la web sus últimos lanzamientos, lea los artículos, extraiga datos clave y genere un informe comparativo. Un LLM normal solo puede conversar contigo. Pero si le das herramientas — búsqueda web, un lector de páginas, una hoja de cálculo — puede orquestar todo el flujo de trabajo autónomamente. Eso es un sistema agentivo.
 
-Agentic systems are the most exciting frontier in applied LLMs. A well-designed agent can answer questions that require research, write and debug code, manage complex workflows (automating [[CLI & Productivity]] tasks), and act autonomously within defined boundaries.
+Un LLM por sí mismo es un generador de texto construido sobre la [[Transformer Architecture]]. Le das texto, te da texto. Pero cuando le das **herramientas** — búsqueda web, ejecución de código, consultas a bases de datos, acceso a archivos — se convierte en un **agente** que puede tomar acciones, observar resultados y planificar soluciones de múltiples pasos.
 
----
-
-## 2. The Agent Loop
-
-### 2.1 Core Loop
-
-```
-1. Observe (user input or tool output)
-2. Think (reason about what to do next)
-3. Act (respond or call a tool)
-4. Observe (tool result)
-5. Repeat until task is complete
-```
-
-### 2.2 A Concrete Example
-
-```
-User: "What was the stock price of NVIDIA on June 1, 2026?"
-
-LLM thought: I need to search for NVIDIA stock price data.
-Action: search_web(query="NVIDIA stock price June 1 2026")
-Observation: "NVDA closed at $185.42 on June 1, 2026"
-
-LLM thought: I have the answer, I should respond.
-Action: answer("NVIDIA's stock price on June 1, 2026 was $185.42.")
-```
-
-The LLM decides when to use tools and when to respond directly.
+Los sistemas agentivos son la frontera más emocionante en los LLMs aplicados. Un agente bien diseñado puede responder preguntas que requieren investigación, escribir y depurar código, gestionar flujos de trabajo complejos (automatizando tareas de [[CLI & Productivity]]), y actuar autónomamente dentro de límites definidos.
 
 ---
 
-## 3. Tool Use
+## 2. El Bucle del Agente
 
-### 3.1 Tool Design
+### 2.1 Bucle Principal
 
-Each tool needs:
-- **Name**: descriptive and unique
-- **Description**: explains when and how to use the tool
-- **Parameters**: schema (JSON Schema) defining inputs
-- **Implementation**: the actual function that runs
+```
+1. Observar (entrada del usuario o salida de herramienta)
+2. Pensar (razonar sobre qué hacer a continuación)
+3. Actuar (responder o llamar a una herramienta)
+4. Observar (resultado de la herramienta)
+5. Repetir hasta que la tarea esté completa
+```
+
+### 2.2 Un Ejemplo Concreto
+
+```
+Usuario: "¿Cuál era el precio de la acción de NVIDIA el 1 de junio de 2026?"
+
+Pensamiento del LLM: Necesito buscar datos del precio de la acción de NVIDIA.
+Acción: buscar_web(consulta="precio acción NVIDIA 1 junio 2026")
+Observación: "NVDA cerró a $185.42 el 1 de junio de 2026"
+
+Pensamiento del LLM: Tengo la respuesta, debo responder.
+Acción: respuesta("El precio de la acción de NVIDIA el 1 de junio de 2026 fue $185.42.")
+```
+
+El LLM decide cuándo usar herramientas y cuándo responder directamente.
+
+---
+
+## 3. Uso de Herramientas
+
+### 3.1 Diseño de Herramientas
+
+Cada herramienta necesita:
+- **Nombre**: descriptivo y único
+- **Descripción**: explica cuándo y cómo usar la herramienta
+- **Parámetros**: esquema (JSON Schema) que define las entradas
+- **Implementación**: la función real que se ejecuta
 
 ```python
 tools = [
     {
-        "name": "search_web",
-        "description": "Search the web for current information",
+        "name": "buscar_web",
+        "description": "Buscar en la web información actual",
         "parameters": {
             "type": "object",
             "properties": {
                 "query": {
                     "type": "string",
-                    "description": "The search query"
+                    "description": "La consulta de búsqueda"
                 }
             },
             "required": ["query"]
         }
     },
     {
-        "name": "run_code",
-        "description": "Execute Python code in a sandboxed environment",
+        "name": "ejecutar_codigo",
+        "description": "Ejecutar código Python en un entorno aislado",
         "parameters": {
             "type": "object",
             "properties": {
                 "code": {
                     "type": "string",
-                    "description": "Python code to execute"
+                    "description": "Código Python a ejecutar"
                 }
             },
             "required": ["code"]
@@ -86,9 +88,9 @@ tools = [
 ]
 ```
 
-### 3.2 Function Calling
+### 3.2 Llamada a Funciones
 
-LLMs that support **function calling** (GPT-4, Claude, Llama 3.1+) can output structured tool calls:
+Los LLMs que soportan **function calling** (GPT-4, Claude, Llama 3.1+) pueden generar llamadas a herramientas estructuradas:
 
 ```json
 {
@@ -97,164 +99,164 @@ LLMs that support **function calling** (GPT-4, Claude, Llama 3.1+) can output st
       "id": "call_abc123",
       "type": "function",
       "function": {
-        "name": "search_web",
-        "arguments": "{\"query\": \"NVIDIA stock price June 1 2026\"}"
+        "name": "buscar_web",
+        "arguments": "{\"query\": \"precio acción NVIDIA 1 junio 2026\"}"
       }
     }
   ]
 }
 ```
 
-The framework executes the tool and returns the result to the LLM.
+El framework ejecuta la herramienta y devuelve el resultado al LLM.
 
 ---
 
-## 4. Reasoning Patterns
+## 4. Patrones de Razonamiento
 
-### 4.1 ReAct (Reasoning + Acting)
+### 4.1 ReAct (Razonamiento + Acción)
 
-The most common pattern — interleave reasoning and actions:
+El patrón más común — intercalar razonamiento y acciones:
 
 ```
-Thought: I need to find the capital of France.
-Action: search("capital of France")
-Observation: Paris
-Thought: I found the answer. Now I should respond.
-Action: answer("The capital of France is Paris.")
+Pensamiento: Necesito encontrar la capital de Francia.
+Acción: buscar("capital de Francia")
+Observación: París
+Pensamiento: Encontré la respuesta. Ahora debo responder.
+Acción: respuesta("La capital de Francia es París.")
 ```
 
-### 4.2 Plan-and-Execute
+### 4.2 Planificar y Ejecutar
 
-1. LLM generates a multi-step plan:
+1. El LLM genera un plan de múltiples pasos:
    ```
    Plan:
-   1. Search for the company's latest quarterly report
-   2. Extract revenue and profit numbers
-   3. Compare with previous quarter
-   4. Summarize the results
+   1. Buscar el último informe trimestral de la empresa
+   2. Extraer cifras de ingresos y ganancias
+   3. Comparar con el trimestre anterior
+   4. Resumir los resultados
    ```
-2. Execute each step sequentially
-3. Re-plan if a step fails
+2. Ejecutar cada paso secuencialmente
+3. Re-planificar si un paso falla
 
-### 4.3 Reflection
+### 4.3 Reflexión
 
-After completing a task, the agent reflects on the quality of its solution:
+Después de completar una tarea, el agente reflexiona sobre la calidad de su solución:
 
 ```
-Thought: My analysis found a 15% revenue increase.
-But I only looked at one quarter. For a complete picture,
-I should also check year-over-year growth.
-Action: search("revenue Q2 2025 vs Q2 2024")
+Pensamiento: Mi análisis encontró un aumento de ingresos del 15%.
+Pero solo miré un trimestre. Para tener una imagen completa,
+también debería verificar el crecimiento interanual.
+Acción: buscar("ingresos Q2 2025 vs Q2 2024")
 ```
 
-Reflection is what separates simple agents from effective ones.
+La reflexión es lo que separa a los agentes simples de los efectivos.
 
 ---
 
-## 5. Multi-Agent Systems
+## 5. Sistemas Multi-Agente
 
-### 5.1 Why Multiple Agents?
+### 5.1 ¿Por Qué Múltiples Agentes?
 
-- **Specialization**: one agent researches, another writes, a third reviews
-- **Debate**: agents challenge each other's reasoning
-- **Oversight**: one agent monitors another for errors or safety issues
+- **Especialización**: un agente investiga, otro escribe, un tercero revisa
+- **Debate**: los agentes desafían el razonamiento de los demás
+- **Supervisión**: un agente monitorea a otro para detectar errores o problemas de seguridad
 
-### 5.2 Common Patterns
+### 5.2 Patrones Comunes
 
-| Pattern | Description | Example |
+| Patrón | Descripción | Ejemplo |
 |---|---|---|
-| **Supervisor** | One agent delegates to specialized workers | Coordinator assigns research, writing, verification tasks |
-| **Debate** | Agents discuss different perspectives | Two agents argue for/against a hypothesis |
-| **RAG team** | Router → retriever → generator → validator | Each step has a specialized agent |
-| **Code team** | Write → review → test → fix — a typical [[Git]] collaboration workflow | Iterative code generation with feedback |
+| **Supervisor** | Un agente delega en trabajadores especializados | Coordinador asigna tareas de investigación, escritura, verificación |
+| **Debate** | Los agentes discuten diferentes perspectivas | Dos agentes argumentan a favor/en contra de una hipótesis |
+| **Equipo RAG** | Enrutador → recuperador → generador → validador | Cada paso tiene un agente especializado |
+| **Equipo de código** | Escribir → revisar → probar → corregir — un flujo de trabajo típico de [[Git]] | Generación iterativa de código con retroalimentación |
 
 ---
 
-## 6. Safety and Guardrails
+## 6. Seguridad y Barreras de Protección
 
-### 6.1 Why Guardrails Matter
+### 6.1 Por Qué Importan las Barreras
 
-Agents can take actions autonomously. Without safeguards, an agent might:
-- Execute destructive code (delete files, make purchases)
-- Access unauthorized data
-- Get stuck in infinite loops (spending money on API calls)
-- Take actions that violate policies
+Los agentes pueden tomar acciones autónomamente. Sin salvaguardas, un agente podría:
+- Ejecutar código destructivo (borrar archivos, hacer compras)
+- Acceder a datos no autorizados
+- Quedar atrapado en bucles infinitos (gastando dinero en llamadas API)
+- Tomar acciones que violen políticas
 
-### 6.2 Implementing Guardrails
+### 6.2 Implementando Barreras
 
-| Mechanism | Description |
+| Mecanismo | Descripción |
 |---|---|
-| **Human-in-the-loop** | Require human approval for critical actions |
-| **Input validation** | Sanitize and validate all user inputs |
-| **Output validation** | Check tool outputs before feeding back to LLM |
-| **Rate limiting** | Cap the number of actions per minute |
-| **Budget limits** | Maximum cost per session |
-| **Allow/deny lists** | Whitelist approved tools and actions |
-| **Sandboxing** | Execute code in isolated environments |
+| **Humano en el bucle** | Requerir aprobación humana para acciones críticas |
+| **Validación de entrada** | Sanitizar y validar todas las entradas del usuario |
+| **Validación de salida** | Verificar las salidas de las herramientas antes de devolverlas al LLM |
+| **Límite de tasa** | Limitar el número de acciones por minuto |
+| **Límites de presupuesto** | Costo máximo por sesión |
+| **Listas de permitir/denegar** | Lista blanca de herramientas y acciones aprobadas |
+| **Aislamiento** | Ejecutar código en entornos aislados |
 
-### 6.3 Example: Budget Limiting
+### 6.3 Ejemplo: Límite de Presupuesto
 
 ```
-Session budget: $0.50
-Action 1: search_web (cost: $0.01)
-Action 2: run_code (cost: $0.02)
-Total: $0.03 remaining: $0.47
+Presupuesto de sesión: $0.50
+Acción 1: buscar_web (costo: $0.01)
+Acción 2: ejecutar_codigo (costo: $0.02)
+Total: $0.03 restante: $0.47
 ...
-Session limit reached: deny further tool calls, ask user
+Límite de sesión alcanzado: denegar más llamadas a herramientas, preguntar al usuario
 ```
 
 ---
 
-## 7. Challenges
+## 7. Desafíos
 
-| Challenge | Description | Mitigation |
+| Desafío | Descripción | Mitigación |
 |---|---|---|
-| **Cost** | Each tool call costs tokens and API calls | Limit steps, batch operations |
-| **Error propagation** | One wrong step corrupts all subsequent steps | Validation, self-correction |
-| **Hallucination in actions** | LLM invents tool outputs | Validate tool outputs |
-| **Looping** | Agent repeats the same action without progress | Max iterations, loop detection |
-| **Context limits** | Long agent runs exceed the context window | Summarize history, trim messages |
+| **Costo** | Cada llamada a herramienta cuesta tokens y llamadas API | Limitar pasos, operaciones por lote |
+| **Propagación de errores** | Un paso incorrecto corrompe todos los pasos siguientes | Validación, autocorrección |
+| **Alucinación en acciones** | El LLM inventa salidas de herramientas | Validar salidas de herramientas |
+| **Bucles** | El agente repite la misma acción sin progreso | Máximo de iteraciones, detección de bucles |
+| **Límites de contexto** | Ejecuciones largas del agente exceden la ventana de contexto | Resumir historial, recortar mensajes |
 
 ---
 
 ## 8. Frameworks
 
-| Framework | Language | Features |
+| Framework | Lenguaje | Características |
 |---|---|---|
-| **LangChain / LangGraph** | [[Python for Data Science]] | Tool use, memory, multi-agent graphs |
-| **CrewAI** | Python | Role-based multi-agent systems |
-| **AutoGen** (Microsoft) | Python | Multi-agent conversations, code execution |
-| **Haystack** | Python | RAG + agent pipelines |
-| **smolagents** (HuggingFace) | Python | Code agents (write and execute Python) |
-| **Vercel AI SDK** | TypeScript | Streaming, tool use for web apps |
+| **LangChain / LangGraph** | [[Python for Data Science]] | Uso de herramientas, memoria, grafos multi-agente |
+| **CrewAI** | Python | Sistemas multi-agente basados en roles |
+| **AutoGen** (Microsoft) | Python | Conversaciones multi-agente, ejecución de código |
+| **Haystack** | Python | Pipelines RAG + agente |
+| **smolagents** (HuggingFace) | Python | Agentes de código (escriben y ejecutan Python) |
+| **Vercel AI SDK** | TypeScript | Streaming, uso de herramientas para apps web |
 
 ---
 
 ## 9. Common Mistakes
 
-1. **Too many tools**: an LLM struggles to choose between 20 tools. Start with 3-5 and expand carefully.
+1. **Demasiadas herramientas**: un LLM tiene dificultades para elegir entre 20 herramientas. Comienza con 3-5 y expande cuidadosamente.
 
-2. **Poor tool descriptions**: the LLM cannot use a tool it does not understand. Write clear, specific descriptions with examples.
+2. **Descripciones de herramientas pobres**: el LLM no puede usar una herramienta que no entiende. Escribe descripciones claras y específicas con ejemplos.
 
-3. **No error handling**: if a tool fails (network error, rate limit), the agent should handle it gracefully, not crash.
+3. **Sin manejo de errores**: si una herramienta falla (error de red, límite de tasa), el agente debe manejarlo adecuadamente, no colapsar.
 
-4. **No max iterations**: an agent can loop indefinitely. Always set a maximum number of steps.
+4. **Sin iteraciones máximas**: un agente puede repetirse indefinidamente. Siempre establece un número máximo de pasos.
 
-5. **Ignoring cost**: each agent step costs money. Set budgets and monitor spending.
+5. **Ignorar el costo**: cada paso del agente cuesta dinero. Establece presupuestos y monitorea el gasto.
 
 ---
 
 ## 10. Check Your Understanding
 
-1. An agent searches the web, finds a result, and responds. How many LLM calls were made? (At least 3: the initial call that decides to search, the observation processing, and the response generation.)
+1. Un agente busca en la web, encuentra un resultado y responde. ¿Cuántas llamadas al LLM se hicieron? (Al menos 3: la llamada inicial que decide buscar, el procesamiento de la observación y la generación de la respuesta.)
 
-2. Why does "human-in-the-loop" improve safety but reduce autonomy? (Requires human approval for actions — safer but slower.)
+2. ¿Por qué "humano en el bucle" mejora la seguridad pero reduce la autonomía? (Requiere aprobación humana para acciones — más seguro pero más lento.)
 
-3. Your agent calls `delete_file` on a production server. What went wrong? (No guardrails — the tool should not exist or should require human approval.)
+3. Tu agente llama a `eliminar_archivo` en un servidor de producción. ¿Qué salió mal? (No había barreras — la herramienta no debería existir o debería requerir aprobación humana.)
 
-4. An agent loops: search → find nothing → search again with same query → repeat. How do you prevent this? (Detect repeated actions, vary search queries, set max iterations.)
+4. Un agente se repite: buscar → no encontrar nada → buscar de nuevo con la misma consulta → repetir. ¿Cómo lo previenes? (Detectar acciones repetidas, variar las consultas de búsqueda, establecer iteraciones máximas.)
 
-5. A multi-agent debate system has two agents arguing opposite positions. How does the system decide who is right? (A third agent or human judge evaluates the arguments.)
+5. Un sistema de debate multi-agente tiene dos agentes discutiendo posiciones opuestas. ¿Cómo decide el sistema quién tiene razón? (Un tercer agente o juez humano evalúa los argumentos.)
 
 ---
 
@@ -266,6 +268,6 @@ Agentic systems extend LLMs from text generators to autonomous actors. The core 
 
 ## 12. Where to Go Next
 
-- [[RAG]] — Agents use retrieval as a tool
-- [[Prompt Engineering]] — Designing effective agent prompts
-- [[Fine-tuning]] — Training models for better tool use
+- [[RAG]] — Los agentes usan recuperación como herramienta
+- [[Prompt Engineering]] — Diseñando prompts efectivos para agentes
+- [[Fine-tuning]] — Entrenando modelos para mejor uso de herramientas

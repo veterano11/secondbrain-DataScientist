@@ -4,99 +4,99 @@ status: growing
 created: 2026-06-27
 ---
 
-# Python Fundamentals
+# Fundamentos de Python
 
-## 1. Why This Matters
+## 1. Escenario de aprendizaje
 
-Python is the language of data science not because it is the fastest (it is not) or the most elegant (debatable), but because it is the **most readable and the most connected**. Every ML library, every deep learning framework, every data tool speaks Python first. Understanding Python deeply means understanding how these tools work under the hood — [[Python for Data Science]] builds on these fundamentals.
+Imagina que acabas de unirte a un equipo de ciencia de datos y te entregan un archivo CSV con 10 millones de registros de clientes. Necesitas limpiar los datos, detectar valores atípicos y calcular métricas de negocio clave, todo antes del final del día. Python no es solo el lenguaje que usarás — es la herramienta que determinará si cumples con el plazo o no. Comprender sus fundamentos (tipos, estructuras de control, funciones, comprensiones de colecciones) marca la diferencia entre escribir código lento y frágil o código eficiente y legible desde el primer intento. [[Python for Data Science]] construye sobre estos fundamentos.
 
 ---
 
-## 2. Core Philosophy
+## 2. Filosofía principal
 
-Python's design is guided by principles summarized in "The Zen of Python" (`import this`):
+El diseño de Python se guía por principios resumidos en "El Zen de Python" (`import this`):
 
-- **Readability counts**: code is written once but read many times
-- **Explicit is better than implicit**: make intentions clear
-- **Simple is better than complex**: prefer straightforward solutions
-- **There should be one — and preferably only one — obvious way to do it**
+- **La legibilidad cuenta**: el código se escribe una vez pero se lee muchas veces
+- **Explícito es mejor que implícito**: haz las intenciones claras
+- **Simple es mejor que complejo**: prefiere soluciones directas
+- **Debe haber una — y preferiblemente solo una — manera obvia de hacerlo**
 
-These principles shape everything from syntax to library design. When you write Python for data science, you are not just writing code — you are communicating intent.
+Estos principios moldean todo, desde la sintaxis hasta el diseño de bibliotecas. Cuando escribes Python para ciencia de datos, no solo estás escribiendo código — estás comunicando una intención.
 
-### 2.1 Key Characteristics
+### 2.1 Características clave
 
-**Dynamic typing**: variables do not declare their type. The type is inferred and can change.
+**Tipado dinámico**: las variables no declaran su tipo. El tipo se infiere y puede cambiar.
 
 ```python
-x = 5        # x is int
-x = "hello"  # now x is str — perfectly valid
+x = 5        # x es int
+x = "hello"  # ahora x es str — perfectamente válido
 ```
 
-This is convenient for exploration but dangerous for production. Type hints (see below) mitigate this.
+Esto es conveniente para exploración pero peligroso para producción. Las anotaciones de tipo (ver más abajo) mitigan esto.
 
-**Everything is an object**: functions are objects, classes are objects, even types are objects. This means you can pass functions as arguments, return them from other functions, and store them in data structures — essential for functional programming and decorators.
+**Todo es un objeto**: las funciones son objetos, las clases son objetos, incluso los tipos son objetos. Esto significa que puedes pasar funciones como argumentos, retornarlas desde otras funciones y almacenarlas en estructuras de datos — esencial para programación funcional y decoradores.
 
-**Indentation defines scope**: blocks are delimited by indentation (4 spaces, not tabs). This enforces readable code.
+**La indentación define el ámbito**: los bloques se delimitan con indentación (4 espacios, no tabulaciones). Esto impone código legible.
 
 ---
 
-## 3. Built-in Types
+## 3. Tipos incorporados
 
-### 3.1 Numeric Types
+### 3.1 Tipos numéricos
 
 ```python
 int:    age = 25
 float:  pi = 3.14159
-complex: c = 3 + 4j    # used in signal processing, rarely in DS
+complex: c = 3 + 4j    # usado en procesamiento de señales, raramente en DS
 ```
 
-Python integers are arbitrary precision — they do not overflow. This is both a blessing (never worry about overflow) and a curse (big integers are slow).
+Los enteros en Python tienen precisión arbitraria — nunca se desbordan. Esto es tanto una bendición (nunca preocuparse por desbordamiento) como una maldición (enteros grandes son lentos).
 
-### 3.2 Sequence Types
+### 3.2 Tipos secuencia
 
-| Type | Mutable? | Ordered? | Duplicates? | Use Case |
+| Tipo | ¿Mutable? | ¿Ordenado? | ¿Duplicados? | Caso de uso |
 |---|---|---|---|---|
-| `list` | Yes | Yes | Yes | General purpose collection |
-| `tuple` | No | Yes | Yes | Fixed data, function returns |
-| `range` | No | Yes | N/A | Looping without storing |
+| `list` | Sí | Sí | Sí | Colección de propósito general |
+| `tuple` | No | Sí | Sí | Datos fijos, retornos de funciones |
+| `range` | No | Sí | N/A | Iterar sin almacenar |
 
-**Lists** are the workhorse of Python data science. They store any type, are dynamically sized, and support efficient appends. However, for numerical data, `numpy.ndarray` is faster and more memory-efficient. [[Data Structures & Algorithms]] explores the performance tradeoffs between these containers.
+**Las listas** son el caballo de batalla de la ciencia de datos en Python. Almacenan cualquier tipo, tienen tamaño dinámico y soportan inserciones eficientes al final. Sin embargo, para datos numéricos, `numpy.ndarray` es más rápido y eficiente en memoria. [[Data Structures & Algorithms]] explora las diferencias de rendimiento entre estos contenedores.
 
-**Tuples** are immutable lists. Use them when the data should not change (e.g., coordinates, function returns).
+**Las tuplas** son listas inmutables. Úsalas cuando los datos no deban cambiar (ej. coordenadas, retornos de funciones).
 
-### 3.3 Mapping and Set Types
+### 3.3 Tipos de mapeo y conjuntos
 
-**dict**: key-value pairs. O(1) average lookup, insert, delete.
+**dict**: pares clave-valor. Búsqueda, inserción y eliminación en O(1) promedio.
 
 ```python
 person = {"name": "Alice", "age": 30, "city": "NYC"}
-person.get("salary", 0)        # safe access with default
-person.setdefault("role", "DS") # set only if missing
+person.get("salary", 0)        # acceso seguro con valor por defecto
+person.setdefault("role", "DS") # asigna solo si no existe
 ```
 
-**set**: unordered unique elements. O(1) membership test.
+**set**: elementos únicos sin orden. Prueba de pertenencia en O(1).
 
 ```python
 unique_ids = {1, 2, 3, 3, 3}  # {1, 2, 3}
-{1, 2} | {2, 3}                # union: {1, 2, 3}
-{1, 2} & {2, 3}                # intersection: {2}
+{1, 2} | {2, 3}                # unión: {1, 2, 3}
+{1, 2} & {2, 3}                # intersección: {2}
 ```
 
 ### 3.4 None
 
-`None` is Python's null value. It is not 0, not False, not an empty string — it is the absence of a value.
+`None` es el valor nulo de Python. No es 0, no es False, no es una cadena vacía — es la ausencia de un valor.
 
 ```python
-result = model.predict(X)  # might return None if something fails
-if result is None:         # always use 'is', not '=='
+result = model.predict(X)  # podría retornar None si algo falla
+if result is None:         # siempre usa 'is', no '=='
     handle_error()
 ```
 
 ---
 
-## 4. Control Flow
+## 4. Flujo de control
 
-### 4.1 Conditionals
+### 4.1 Condicionales
 
 ```python
 if score > 90:
@@ -107,47 +107,47 @@ else:
     grade = "C"
 ```
 
-**Truthiness**: the following evaluate to `False` in boolean context:
+**Valores falsy**: los siguientes evalúan a `False` en contexto booleano:
 - `None`, `False`, `0`, `0.0`, `""`, `[]`, `{}`, `set()`
-- Everything else is `True`
+- Todo lo demás es `True`
 
-This is useful for concise checks:
+Esto es útil para verificaciones concisas:
 ```python
-if not data:        # checks if data is None, empty list, empty dict, etc.
+if not data:        # verifica si data es None, lista vacía, dict vacío, etc.
     data = default_data()
 ```
 
-### 4.2 Loops
+### 4.2 Bucles
 
 ```python
-# For loop — iterate over any iterable
+# Bucle for — itera sobre cualquier iterable
 for item in collection:
     process(item)
 
-# enumerate when you need index
+# enumerate cuando necesitas el índice
 for i, item in enumerate(collection):
     print(f"{i}: {item}")
 
-# zip to iterate multiple collections in parallel
+# zip para iterar múltiples colecciones en paralelo
 for x, y in zip(X, y):
     print(f"Feature: {x}, Label: {y}")
 
-# List comprehension — the Pythonic way to build lists
+# List comprehension — la forma pitónica de construir listas
 squares = [x**2 for x in range(10) if x % 2 == 0]
-# Equivalent to:
+# Equivalente a:
 squares = []
 for x in range(10):
     if x % 2 == 0:
         squares.append(x**2)
 ```
 
-The comprehension is **faster and more readable**. As a rule: if you are building a list by appending in a loop, use a comprehension instead.
+La comprensión es **más rápida y más legible**. Como regla: si estás construyendo una lista agregando elementos en un bucle, usa una comprensión.
 
 ---
 
-## 5. Functions
+## 5. Funciones
 
-### 5.1 Defining Functions
+### 5.1 Definición de funciones
 
 ```python
 def preprocess(data: pd.DataFrame, drop_na: bool = True) -> pd.DataFrame:
@@ -165,10 +165,10 @@ def preprocess(data: pd.DataFrame, drop_na: bool = True) -> pd.DataFrame:
     return data
 ```
 
-- **Type hints** (`data: pd.DataFrame`, `-> pd.DataFrame`) are not enforced at runtime but help readability and enable static analysis with mypy. [[Code Quality]] covers type hints, linting, and static analysis tools.
-- **Docstrings** document what the function does, its parameters, and its return value.
+- **Las anotaciones de tipo** (`data: pd.DataFrame`, `-> pd.DataFrame`) no se aplican en tiempo de ejecución pero ayudan a la legibilidad y permiten análisis estático con mypy. [[Code Quality]] cubre anotaciones de tipo, linting y herramientas de análisis estático.
+- **Los docstrings** documentan qué hace la función, sus parámetros y su valor de retorno.
 
-### 5.2 *args and **kwargs
+### 5.2 *args y **kwargs
 
 ```python
 def train_model(X, y, *args, **kwargs):
@@ -180,19 +180,19 @@ def train_model(X, y, *args, **kwargs):
 train_model(X, y, n_estimators=100, max_depth=5)
 ```
 
-- `*args` captures extra positional arguments as a tuple
-- `**kwargs` captures extra keyword arguments as a dict
+- `*args` captura argumentos posicionales adicionales como una tupla
+- `**kwargs` captura argumentos de palabra clave adicionales como un diccionario
 
-### 5.3 Lambda Functions
+### 5.3 Funciones Lambda
 
-Small anonymous functions for simple operations:
+Funciones anónimas pequeñas para operaciones simples:
 
 ```python
 lambda x: x**2
 lambda x, y: x + y
 ```
 
-Primarily used with `map`, `filter`, `sort`, and pandas `apply`.
+Se usan principalmente con `map`, `filter`, `sort` y `apply` de pandas.
 
 ```python
 df["normalized"] = df["value"].apply(lambda x: (x - min_val) / (max_val - min_val))
@@ -200,11 +200,11 @@ df["normalized"] = df["value"].apply(lambda x: (x - min_val) / (max_val - min_va
 
 ---
 
-## 6. Comprehensions and Generators
+## 6. Comprensiones y generadores
 
-### 6.1 Comprehensions
+### 6.1 Comprensiones
 
-Python has comprehensions for list, dict, and set:
+Python tiene comprensiones para listas, diccionarios y conjuntos:
 
 ```python
 # List comprehension
@@ -216,46 +216,46 @@ Python has comprehensions for list, dict, and set:
 # Set comprehension
 {x**2 for x in [1, 1, 2, 2, 3]}  # {1, 4, 9}
 
-# Nested comprehension (flatten a matrix)
+# Comprensión anidada (aplanar una matriz)
 [x for row in matrix for x in row]
 ```
 
-### 6.2 Generators
+### 6.2 Generadores
 
-Generators produce values **lazily** — one at a time, on demand — without storing the entire sequence in memory.
+Los generadores producen valores **de forma perezosa** — uno a la vez, bajo demanda — sin almacenar toda la secuencia en memoria.
 
 ```python
-# Generator expression (uses (), not [])
-squares = (x**2 for x in range(10_000_000))  # instant, ~0 memory
+# Expresión generadora (usa (), no [])
+squares = (x**2 for x in range(10_000_000))  # instantáneo, ~0 memoria
 list(squares)[:5]  # [0, 1, 4, 9, 16]
 
-# Generator function with yield
+# Función generadora con yield
 def read_large_file(path):
     with open(path) as f:
         for line in f:
-            yield process(line)  # yield, not return
+            yield process(line)  # yield, no return
 
 for processed in read_large_file("huge_data.csv"):
     analyze(processed)
 ```
 
-**When to use generators**: when processing data too large to fit in memory (streaming, large files, infinite sequences).
+**Cuándo usar generadores**: cuando procesas datos demasiado grandes para caber en memoria (streaming, archivos grandes, secuencias infinitas).
 
 ---
 
-## 7. Context Managers
+## 7. Administradores de contexto
 
-Context managers handle setup and teardown automatically:
+Los administradores de contexto manejan la configuración y el cierre automáticamente:
 
 ```python
-with open("file.txt") as f:      # closes file automatically
+with open("file.txt") as f:      # cierra el archivo automáticamente
     content = f.read()
 
-with pd.HDFStore("data.h5") as store:  # closes store automatically
+with pd.HDFStore("data.h5") as store:  # cierra el store automáticamente
     df = store["mydata"]
 ```
 
-You can create your own with `contextlib.contextmanager`:
+Puedes crear los tuyos con `contextlib.contextmanager`:
 
 ```python
 from contextlib import contextmanager
@@ -272,7 +272,7 @@ with timer("training"):
     model.fit(X, y)
 ```
 
-Context managers are widely used in [[CLI & Productivity]] scripts to manage files, subprocesses, and other resources.
+Los administradores de contexto se usan ampliamente en scripts de [[CLI & Productivity]] para manejar archivos, subprocesos y otros recursos.
 
 ---
 

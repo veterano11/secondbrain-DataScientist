@@ -6,16 +6,16 @@ created: 2026-06-27
 
 # Unsupervised Learning
 
-## 1. Why This Matters
+## 1. Escenario de aprendizaje
 
-Not all data comes with labels. Most of the world's data is unlabeled — customer behavior logs, sensor readings, text documents without categories, images without captions. Unsupervised learning finds **structure in this data** without being told what to look for.
+Trabajas en una empresa de comercio electrónico con millones de clientes. Tienes datos de compras, navegación y soporte técnico, pero no tienes etiquetas — nadie te ha dicho "este cliente es de tipo A, este es de tipo B". Necesitas encontrar segmentos de clientes por su comportamiento para personalizar ofertas y campañas de marketing. Sin etiquetas disponibles, el unsupervised learning descubre **estructura oculta en los datos**: agrupa clientes similares, reduce dimensionalidad para visualización y detecta anomalías como fraude.
 
-Three major unsupervised tasks:
-- **Clustering**: group similar items together
-- **Dimensionality reduction**: compress data while preserving structure
-- **Anomaly detection**: find unusual patterns
+Tres grandes tareas no supervisadas:
+- **Clustering**: agrupar ítems similares
+- **Dimensionality reduction**: comprimir datos preservando estructura
+- **Anomaly detection**: encontrar patrones inusuales
 
-These are essential for exploratory data analysis, feature engineering, and understanding your data before applying supervised methods.
+Estas son esenciales para el análisis exploratorio de datos, feature engineering y entender tus datos antes de aplicar métodos supervisados.
 
 ---
 

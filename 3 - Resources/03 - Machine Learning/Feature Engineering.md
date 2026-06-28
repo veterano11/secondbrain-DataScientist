@@ -6,11 +6,9 @@ created: 2026-06-27
 
 # Feature Engineering
 
-## 1. Why This Matters
+## 1. Escenario de aprendizaje
 
-"Coming up with features is difficult, time-consuming, requires expert knowledge. 'Applied machine learning' is basically feature engineering." — Andrew Ng
-
-The best model with bad features will lose to a mediocre model with great features. Feature engineering is where domain knowledge meets data science. It is the process of transforming raw data into inputs that make ML algorithms work effectively.
+Trabajas en una startup de fintech y tienes datos crudos de transacciones: montos, fechas, ubicaciones y tipos de comercio. Tu tarea es predecir si una transacción es fraudulenta. Pero los algoritmos de machine learning no entienden "fecha" o "ubicación" directamente — necesitas transformar estos datos en características numéricas que capturen patrones de fraude. El mejor modelo con malas características perderá contra un modelo mediocre con características excelentes. Feature engineering es donde el conocimiento del dominio se encuentra con la ciencia de datos.
 
 ---
 

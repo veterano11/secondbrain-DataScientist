@@ -4,162 +4,164 @@ status: growing
 created: 2026-06-27
 ---
 
-# ML Pipelines
+# Pipelines de ML
 
-## 1. Why This Matters
+## 1. Escenario de aprendizaje
 
-A model in a Jupyter notebook is not a deployed system. The gap between "works on my machine" and "works reliably in production" is filled by **ML pipelines**: automated, repeatable, and monitored workflows that transform raw data into predictions.
+Tu equipo entrenó un modelo de detección de fraudes en un Jupyter Notebook con precisión del 95%. Pero cuando intentan ponerlo en producción, los datos llegan con formatos diferentes, las transformaciones se aplican distinto y nadie sabe cómo reproducir los resultados del entrenamiento. Pasar de "funciona en mi máquina" a "funciona de manera confiable en producción" requiere automatizar cada paso del flujo: desde que los datos llegan hasta que el modelo genera predicciones.
 
-Pipelines ensure that every step — from data ingestion to model deployment — is automated, tested, and auditable. Without them, ML projects die in production.
+Un modelo en un Jupyter Notebook no es un sistema desplegado. La brecha entre "funciona en mi máquina" y "funciona de manera confiable en producción" se llena con **pipelines de ML**: flujos de trabajo automatizados, repetibles y monitoreados que transforman datos crudos en predicciones.
+
+Los pipelines aseguran que cada paso — desde la ingesta de datos hasta el despliegue del modelo — esté automatizado, probado y sea auditable. Sin ellos, los proyectos de ML mueren en producción.
 
 ---
 
-## 2. Pipeline Stages
+## 2. Etapas del Pipeline
 
 ```
-Data Ingestion → Validation → Transformation → Training → Evaluation → Deploy
+Ingesta de Datos → Validación → Transformación → Entrenamiento → Evaluación → Despliegue
 ```
 
-### 2.1 Data Ingestion
+### 2.1 Ingesta de Datos
 
-Getting data from source systems into the pipeline.
+Obtener datos desde los sistemas fuente hasta el pipeline.
 
-| Pattern | Latency | Tools |
+| Patrón | Latencia | Herramientas |
 |---|---|---|
-| **Batch** | Hourly/Daily | Airflow, cron, scheduled jobs |
-| **Streaming** | Real-time (seconds) | Kafka, Kinesis, Flink |
-| **Trigger-based** | On data arrival | Cloud functions, webhooks |
+| **Batch** | Por hora/día | Airflow, cron, tareas programadas |
+| **Streaming** | Tiempo real (segundos) | Kafka, Kinesis, Flink |
+| **Basado en disparadores** | Al llegar datos | Cloud functions, webhooks |
 
-**Best practices**:
-- Store raw data immutably (never modify the original)
-- Log data source, timestamp, and version
-- Monitor for missing data or delayed arrivals
+**Mejores prácticas**:
+- Almacenar datos crudos de forma inmutable (nunca modificar el original)
+- Registrar fuente, marca de tiempo y versión de los datos
+- Monitorear datos faltantes o llegadas retrasadas
 
-### 2.2 Data Validation
+### 2.2 Validación de Datos
 
-Check data quality before it enters the pipeline.
+Verificar la calidad de los datos antes de que entren al pipeline.
 
 ```
-✓ Schema matches expected columns and types
-✓ Value ranges are within expected bounds
-✓ Missing rate is below threshold
-✓ No duplicate primary keys
+✓ El esquema coincide con columnas y tipos esperados
+✓ Los rangos de valores están dentro de los límites esperados
+✓ La tasa de valores faltantes está por debajo del umbral
+✓ No hay claves primarias duplicadas
 ```
 
-**Tools**: Great Expectations, Pandera, TensorFlow Data Validation. Monitor for [[Data & Concept Drift]] after deployment.
+**Herramientas**: Great Expectations, Pandera, TensorFlow Data Validation. Monitorear [[Data & Concept Drift]] después del despliegue.
 
-**What happens when validation fails**:
-- **Warning**: log and continue (minor issues)
-- **Block**: stop the pipeline (critical issues)
-- **Alert**: notify the team
+**Qué sucede cuando la validación falla**:
+- **Advertencia**: registrar y continuar (problemas menores)
+- **Bloquear**: detener el pipeline (problemas críticos)
+- **Alertar**: notificar al equipo
 
-### 2.3 Transformation (Feature Engineering)
+### 2.3 Transformación (Ingeniería de Características)
 
-Convert raw data into model-ready features.
+Convertir datos crudos en características listas para el modelo.
 
-Always build a **single pipeline** for both training and serving to prevent train/serve skew:
+Construye siempre un **solo pipeline** tanto para entrenamiento como para servicio para evitar desviación entrenamiento/servicio:
 
 ```python
-# BAD: separate code for train and serve
-train_features = scale(X_train)  # different code path
-serve_features = scale(X_serve)  # could diverge over time
+# MALO: código separado para entrenar y servir
+train_features = escalar(X_train)  # ruta de código diferente
+serve_features = escalar(X_serve)  # podría divergir con el tiempo
 
-# GOOD: shared pipeline
+# BUENO: pipeline compartido
 pipeline = StandardScaler()
-pipeline.fit(X_train)              # fit on train
+pipeline.fit(X_train)              # ajustar en entrenamiento
 train_features = pipeline.transform(X_train)
-serve_features = pipeline.transform(X_serve)  # same logic
+serve_features = pipeline.transform(X_serve)  # misma lógica
 ```
 
-### 2.4 Training
+### 2.4 Entrenamiento
 
-- Track every experiment ([[Experiment Tracking]])
-- Log hyperparameters, metrics, and artifacts
-- Version the training data and code
-- Tune and log hyperparameters ([[Hyperparameter Tuning]])
-- Reproduce any previous result
+- Registrar cada experimento ([[Experiment Tracking]])
+- Registrar hiperparámetros, métricas y artefactos
+- Versionar los datos de entrenamiento y el código
+- Ajustar y registrar hiperparámetros ([[Hyperparameter Tuning]])
+- Reproducir cualquier resultado anterior
 
-### 2.5 Evaluation
+### 2.5 Evaluación
 
-- Compare candidate vs champion (current production model)
-- Evaluate on multiple metrics (not just accuracy)
-- Test on held-out data and data slices (see [[Model Evaluation]])
-- Automatically promote if candidate beats champion
+- Comparar candidato vs campeón (modelo actual en producción)
+- Evaluar en múltiples métricas (no solo precisión)
+- Probar en datos reservados y segmentos de datos (ver [[Model Evaluation]])
+- Promover automáticamente si el candidato supera al campeón
 
-### 2.6 Deployment
+### 2.6 Despliegue
 
-| Strategy | Description | When to Use |
+| Estrategia | Descripción | Cuándo Usar |
 |---|---|---|
-| **Shadow** | New model runs in parallel with production, no user impact | Testing reliability |
-| **Canary** | Route small % of traffic to new model | Gradual rollout |
-| **Blue/Green** | Instant switch between old and new | Low-risk deployments |
-| **Rolling** | Gradually replace instances of old model | Zero-downtime updates |
+| **Sombra** | Nuevo modelo corre en paralelo con producción, sin impacto al usuario | Probar fiabilidad |
+| **Canary** | Enrutar pequeño % de tráfico al nuevo modelo | Despliegue gradual |
+| **Blue/Green** | Cambio instantáneo entre modelo antiguo y nuevo | Despliegues de bajo riesgo |
+| **Rolling** | Reemplazar gradualmente instancias del modelo antiguo | Actualizaciones sin tiempo de inactividad |
 
-Validate model changes with [[A-B Testing]] before full rollout.
+Validar cambios de modelo con [[A-B Testing]] antes del despliegue completo.
 
 ---
 
-## 3. Feature Stores
+## 3. Almacenes de Características (Feature Stores)
 
-A **feature store** (Feast, Tecton) solves a common problem: the same feature computed differently in training vs serving.
+Un **feature store** (Feast, Tecton) resuelve un problema común: la misma característica computada de manera diferente en entrenamiento vs servicio.
 
-**What it provides**:
-- **Single definition**: feature logic defined once, used everywhere
-- **Online serving**: low-latency feature retrieval (Redis, DynamoDB)
-- **Offline serving**: batch feature computation for training (S3, BigQuery)
-- **Point-in-time correctness**: features are computed as they were at the prediction time (preventing data leakage)
+**Lo que proporciona**:
+- **Definición única**: lógica de características definida una vez, usada en todas partes
+- **Servicio online**: recuperación de características de baja latencia (Redis, DynamoDB)
+- **Servicio offline**: cómputo batch de características para entrenamiento (S3, BigQuery)
+- **Corrección puntual**: las características se computan como estaban en el momento de la predicción (previniendo fuga de datos)
 
 ```python
-# Feast example
+# Ejemplo con Feast
 features = feature_store.get_online_features(
-    features=["user:age", "user:total_purchases", "item:category"],
+    features=["usuario:edad", "usuario:compras_totales", "item:categoria"],
     entity_rows=[{"user_id": 123, "item_id": 456}]
 ).to_dict()
 ```
 
 ---
 
-## 4. Orchestration
+## 4. Orquestación
 
-Orchestration tools schedule, monitor, and retry pipeline steps.
+Las herramientas de orquestación programan, monitorean y reintentan pasos del pipeline.
 
-| Tool | Key Features |
+| Herramienta | Características Clave |
 |---|---|
-| **Airflow** | DAG-based, mature, large ecosystem |
-| **Prefect** | Python-native, better error handling |
-| **Dagster** | Data-aware, asset-focused |
-| **Kubeflow** | Kubernetes-native, ML-specific |
-| **Flyte** | Type-safe, ML-focused |
+| **Airflow** | Basado en DAG, maduro, ecosistema grande |
+| **Prefect** | Nativo en Python, mejor manejo de errores |
+| **Dagster** | Consciente de datos, enfocado en activos |
+| **Kubeflow** | Nativo de Kubernetes, específico para ML |
+| **Flyte** | Type-safe, enfocado en ML |
 
-All of them model pipelines as **DAGs** (directed acyclic graphs) — steps with dependencies that can run in parallel where possible.
+Todas modelan los pipelines como **DAGs** (grafos acíclicos dirigidos) — pasos con dependencias que pueden ejecutarse en paralelo cuando sea posible.
 
 ---
 
 ## 5. Common Mistakes
 
-1. **Train/serve skew**: different feature engineering code in training and serving. Always use a single pipeline.
+1. **Desviación entrenamiento/servicio**: código de ingeniería de características diferente en entrenamiento y servicio. Usa siempre un solo pipeline.
 
-2. **Not versioning data**: you cannot reproduce a model without knowing which data version it was trained on. Use DVC or similar.
+2. **No versionar datos**: no puedes reproducir un modelo sin saber qué versión de datos se usó para entrenarlo. Usa DVC o similar.
 
-3. **Manual deployment steps**: "someone runs a script" is not a deployment strategy. Automate everything.
+3. **Pasos de despliegue manuales**: "alguien ejecuta un script" no es una estrategia de despliegue. Automatiza todo.
 
-4. **No monitoring between pipeline runs**: a silent failure (data stopped arriving) can go undetected for days. Monitor data freshness.
+4. **Sin monitoreo entre ejecuciones del pipeline**: una falla silenciosa (los datos dejaron de llegar) puede pasar desapercibida por días. Monitorea la frescura de los datos.
 
-5. **Ignoring dependencies**: feature transformations often depend on reference data (lookup tables). Version these too.
+5. **Ignorar dependencias**: las transformaciones de características a menudo dependen de datos de referencia (tablas de búsqueda). Versiona estos también.
 
 ---
 
 ## 6. Check Your Understanding
 
-1. Why should training and serving use the same feature engineering code? (Prevents train/serve skew — differences that degrade serving performance.)
+1. ¿Por qué el entrenamiento y el servicio deberían usar el mismo código de ingeniería de características? (Previene la desviación entrenamiento/servicio — diferencias que degradan el rendimiento en servicio.)
 
-2. A pipeline step fails at 3 AM. What should happen? (Alert the team, retry if transient, block the pipeline if critical.)
+2. Un paso del pipeline falla a las 3 AM. ¿Qué debería suceder? (Alertar al equipo, reintentar si es transitorio, bloquear el pipeline si es crítico.)
 
-3. What is the difference between a feature store and a regular database? (Feature store handles point-in-time correctness, online + offline serving, and feature sharing across teams.)
+3. ¿Cuál es la diferencia entre un feature store y una base de datos regular? (El feature store maneja corrección puntual, servicio online + offline y compartición de características entre equipos.)
 
-4. Your model was trained on data with a "total_spent" feature. In production, this feature is computed differently. What problem do you expect? (Train/serve skew — the model may see different distributions than expected.)
+4. Tu modelo fue entrenado con datos que tenían una característica "gasto_total". En producción, esta característica se computa de manera diferente. ¿Qué problema esperas? (Desviación entrenamiento/servicio — el modelo puede ver distribuciones diferentes a las esperadas.)
 
-5. You deploy a new model via canary deployment. What fraction of traffic do you start with? (Typically 1-5%, then gradually increase while monitoring metrics.)
+5. Despliegas un nuevo modelo mediante despliegue canary. ¿Con qué fracción de tráfico comienzas? (Típicamente 1-5%, luego aumentas gradualmente mientras monitoreas métricas.)
 
 ---
 
@@ -171,6 +173,6 @@ ML pipelines automate the end-to-end ML workflow: ingest → validate → transf
 
 ## 8. Where to Go Next
 
-- [[Experiment Tracking]] — Logging experiments within pipelines
-- [[Model Monitoring]] — Monitoring deployed models
-- [[Feature Engineering]] — Features that flow through the pipeline
+- [[Experiment Tracking]] — Registrando experimentos dentro de pipelines
+- [[Model Monitoring]] — Monitoreando modelos desplegados
+- [[Feature Engineering]] — Características que fluyen a través del pipeline

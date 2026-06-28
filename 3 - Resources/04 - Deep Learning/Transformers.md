@@ -6,11 +6,11 @@ created: 2026-06-27
 
 # Transformers
 
-## 1. Why This Matters
+## 1. Escenario de aprendizaje
 
-The Transformer architecture (Vaswani et al., 2017) is the single most important architectural innovation in deep learning since backpropagation. It replaced RNNs for NLP, then extended to vision (ViT), audio (Whisper), speech (AudioLM), and multi-modal (CLIP, GPT-4V).
+Quieres construir un asistente de chat que entienda y genere texto como un humano. Antes de Transformers, los modelos de lenguaje procesaban palabras una por una (como las RNNs), lo que era lento y perdía contexto en oraciones largas. La arquitectura Transformer (Vaswani et al., 2017) es la innovación arquitectónica más importante en deep learning desde backpropagation. Reemplazó las RNNs para NLP, luego se extendió a visión (ViT), audio (Whisper), habla (AudioLM) y multimodal (CLIP, GPT-4V).
 
-The core insight: **self-attention** lets every token directly attend to every other token, eliminating the sequential bottleneck of RNNs and enabling massive parallelization.
+La idea central: **self-attention** permite que cada token atienda directamente a todos los demás tokens, eliminando el cuello de botella secuencial de las RNNs y habilitando la paralelización masiva.
 
 ---
 

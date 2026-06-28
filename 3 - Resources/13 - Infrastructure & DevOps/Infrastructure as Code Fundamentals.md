@@ -6,7 +6,7 @@ created: 2026-06-28
 
 # Infrastructure as Code Fundamentals
 
-## Por dónde empezamos: el problema
+## 1. Escenario de aprendizaje
 
 Imagina que tienes que levantar un servidor web en AWS. Hoy haces clic en la consola: lanzas una EC2, configuras el security group, asignas una IP elástica, creas un bucket S3 para logs. Todo funciona.
 
@@ -14,13 +14,13 @@ Tres meses después, tu equipo necesita replicar exactamente la misma infraestru
 
 Ese es el problema que resuelve Infrastructure as Code (IaC).
 
-## ¿Qué es Infrastructure as Code?
+## 2. ¿Qué es Infrastructure as Code?
 
 Es la práctica de describir tu infraestructura — servidores, redes, bases de datos, permisos — en archivos de configuración legibles por humanos y por máquinas. Esos archivos son tu "código fuente" de infraestructura: los versionas en git, los revisas en PRs, los ejecutas de forma automatizada.
 
 > **Analogía**: Así como Docker describe un contenedor en un Dockerfile, Terraform describe tu infraestructura cloud en archivos `.tf`.
 
-## ¿Por qué importa? Escenario concreto
+## 3. ¿Por qué importa? Escenario concreto
 
 Sin IaC (click-ops):
 
@@ -41,7 +41,7 @@ prod    → terraform apply con variables de prod
 
 **Los tres entornos son idénticos en estructura**. Lo único que cambia son los parámetros (tamaño de instancia, número de réplicas, etc.).
 
-## Declarativo vs Imperativo
+## 4. Declarativo vs Imperativo
 
 Aquí está la decisión de diseño más importante en IaC.
 
@@ -86,7 +86,7 @@ resource "aws_security_group" "web_sg" {
 
 Pruébalo: no ves `create_security_group()` ni `run_instances()`. Solo ves "quiero que exista una instancia con estas propiedades, y un security group con estas reglas".
 
-## Idempotencia: la propiedad mágica
+## 5. Idempotencia: la propiedad mágica
 
 Una operación es idempotente si ejecutarla una vez o varias produce el mismo resultado.
 
@@ -99,7 +99,7 @@ Terraform CLI es una herramienta central de [[CLI & Productivity]]: con un solo 
 
 Respuesta: no pasa nada. Terraform detecta que el estado real coincide con el deseado y no hace cambios. Eso es idempotencia.
 
-## State: el cerebro de Terraform
+## 6. State: el cerebro de Terraform
 
 Terraform guarda un archivo de **estado** (terraform.tfstate) que mapea los recursos declarados en tu código contra los recursos reales en AWS/GCP/Azure.
 
@@ -119,7 +119,7 @@ Cada vez que ejecutas `terraform plan`, Terraform:
 
 Si el state se pierde, Terraform no sabe qué recursos creó. **El state es tu activo más valioso**.
 
-## GitOps: infraestructura como código + git
+## 7. GitOps: infraestructura como código + git
 
 El flujo de trabajo moderno combina IaC con GitOps:
 
@@ -136,7 +136,7 @@ Ventajas:
 - **Rollback**: `git revert` + `terraform apply` vuelve al estado anterior
 - **Auditoría**: sabes quién cambió qué y cuándo
 
-## Common Pitfalls
+## 8. Common Mistakes
 
 - **No versionar el state**: guardar terraform.tfstate solo en local. Si pierdes el archivo, pierdes el control de tu infraestructura. Remedio: backend remoto (S3 + DynamoDB).
 - **Editar recursos a mano desde la consola AWS**: haces un cambio fuera de Terraform → el código ya no refleja la realidad. Terraform lo revertirá en el próximo apply.

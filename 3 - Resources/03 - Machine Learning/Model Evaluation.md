@@ -6,14 +6,14 @@ created: 2026-06-27
 
 # Model Evaluation
 
-## 1. Why This Matters
+## 1. Escenario de aprendizaje
 
-The most common mistake in ML is **overfitting** — a model that memorizes training data and fails on new data. Proper evaluation is how you detect this. Without rigorous evaluation, you do not know if your model is good or just lucky.
+Has entrenado un modelo para diagnosticar cáncer de mama a partir de imágenes de resonancia. En tus pruebas obtuviste 98% de precisión. Pero al desplegarlo en un hospital real, el modelo falla estrepitosamente: clasifica tumores malignos como benignos. ¿Qué pasó? Hiciste overfitting — tu modelo memorizó los datos de entrenamiento y no generaliza a pacientes nuevos. La evaluación rigurosa es cómo detectas esto. Sin una evaluación adecuada, no sabes si tu modelo es bueno o solo tuvo suerte.
 
-Evaluation answers three questions:
-1. **How good is this model?** (metric)
-2. **Can I trust this number?** (variance of the estimate)
-3. **Will it work on new data?** (generalization)
+Evaluation responde tres preguntas:
+1. **¿Qué tan bueno es este modelo?** (métrica)
+2. **¿Puedo confiar en ese número?** (varianza de la estimación)
+3. **¿Funcionará con datos nuevos?** (generalización)
 
 ---
 

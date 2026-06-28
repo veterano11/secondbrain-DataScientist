@@ -6,22 +6,24 @@ created: 2026-06-27
 
 # Model-Based RL
 
-## Motivation
+## 1. Escenario de aprendizaje
 
-Model-free RL (DQN, PPO) learns directly from experience, requiring millions of interactions. Model-based RL learns a *model* of the environment and uses it for planning — dramatically improving sample efficiency. This is how AlphaGo and MuZero achieve superhuman performance with far fewer real games.
+Imagina que entrenas un agente para jugar un videojuego. Con un enfoque sin modelo (model-free), el agente necesita millones de interacciones con el entorno para aprender algo útil. Pero si el agente pudiera aprender un modelo del entorno —predecir cómo cambia el estado tras cada acción— podría planificar sus movimientos y aprender mucho más rápido. Así funciona AlphaGo: juega miles de partidas contra sí misma en su cabeza, no en el mundo real.
 
-## Core Concepts
+El RL basado en modelos aprende un modelo del entorno y lo usa para planificar, mejorando drásticamente la eficiencia de muestreo. Es la razón por la que AlphaGo y MuZero alcanzan rendimiento sobrehumano con muchas menos partidas reales.
 
-### The Model
+## 2. Conceptos Fundamentales
 
-A model $M$ approximates the environment dynamics:
+### El Modelo
+
+Un modelo $M$ aproxima la dinámica del entorno:
 
 $$M(s, a) \rightarrow (\hat{s}', \hat{r}, \text{done})$$
 
-**Types of models:**
-- **Lookup table** for discrete, small state spaces
-- **Linear regression** for simple dynamics
-- **[[Neural Networks|Neural network]]** for complex dynamics (pixels, physics)
+**Tipos de modelos:**
+- **Tabla de búsqueda** para espacios de estado pequeños y discretos
+- **Regresión lineal** para dinámicas simples
+- **[[Neural Networks|Red neuronal]]** para dinámicas complejas (píxeles, física)
 
 ```python
 class WorldModel(nn.Module):
@@ -41,9 +43,9 @@ class WorldModel(nn.Module):
         return next_state, reward
 ```
 
-### Dyna-Q: Integrating Learning and Planning
+### Dyna-Q: Integrando Aprendizaje y Planificación
 
-Dyna-Q is the simplest model-based algorithm: learn Q from real experience, but also generate *simulated* experience from the model to update Q further.
+Dyna-Q es el algoritmo basado en modelos más simple: aprende Q a partir de experiencia real, pero también genera experiencia *simulada* a partir del modelo para actualizar Q aún más.
 
 ```python
 def dyna_q(env, model, Q, planning_steps=50):
@@ -51,11 +53,11 @@ def dyna_q(env, model, Q, planning_steps=50):
     for step in range(total_steps):
         a = epsilon_greedy(Q[s], epsilon)
         s2, r, done = env.step(a)
-        # Learn model from real experience
+        # Aprender modelo a partir de experiencia real
         model.learn(s, a, s2, r)
-        # Update Q from real experience
+        # Actualizar Q a partir de experiencia real
         Q[s][a] += alpha * (r + gamma * max(Q[s2]) - Q[s][a])
-        # Planning: hallucinate experience from model
+        # Planificación: alucinar experiencia a partir del modelo
         for _ in range(planning_steps):
             s_plan = random_visited_state()
             a_plan = random_action()
@@ -66,12 +68,12 @@ def dyna_q(env, model, Q, planning_steps=50):
 
 ### Monte Carlo Tree Search (MCTS)
 
-The planning algorithm behind AlphaGo. Builds a search tree incrementally:
+El algoritmo de planificación detrás de AlphaGo. Construye un árbol de búsqueda incrementalmente:
 
-1. **Selection**: traverse tree using UCB until a leaf node
-2. **Expansion**: add a new child node
-3. **Rollout**: play randomly from the leaf to estimate value
-4. **Backpropagation**: update visit counts and values up the tree
+1. **Selección**: recorre el árbol usando UCB hasta llegar a un nodo hoja
+2. **Expansión**: agrega un nuevo nodo hijo
+3. **Rollout**: juega aleatoriamente desde la hoja para estimar el valor
+4. **Retropropagación**: actualiza los conteos de visita y los valores hacia arriba en el árbol
 
 ```python
 def mcts(root, num_simulations):
@@ -98,60 +100,60 @@ def mcts(root, num_simulations):
 
 ### MuZero
 
-AlphaGo's successor that learns the model *without* being given the rules:
+El sucesor de AlphaGo que aprende el modelo *sin* conocer las reglas:
 
-- **Representation function**: $h(s_t) \rightarrow \text{hidden state}$
-- **Dynamics function**: $g(h_t, a_{t+1}) \rightarrow (\hat{h}_{t+1}, \hat{r}_{t+1})$
-- **Prediction function**: $f(h_t) \rightarrow (\pi_t, v_t)$
+- **Función de representación**: $h(s_t) \rightarrow \text{estado oculto}$
+- **Función de dinámica**: $g(h_t, a_{t+1}) \rightarrow (\hat{h}_{t+1}, \hat{r}_{t+1})$
+- **Función de predicción**: $f(h_t) \rightarrow (\pi_t, v_t)$
 
-MuZero learns all three from self-play, planning via MCTS in the learned latent space. This means it can master Go, Chess, Shogi, and Atari with the same algorithm.
+MuZero aprende las tres a partir de auto-juego, planificando mediante MCTS en el espacio latente aprendido. Esto le permite dominar Go, Ajedrez, Shogi y Atari con el mismo algoritmo.
 
 ### Dreamer
 
-World Models-based RL for visual control:
+RL basado en modelos para control visual:
 
-1. **World model learning**: train a VAE to compress pixels into latent states, a recurrent predictor for transitions, and a reward predictor
-2. **Behavior learning**: train an actor-critic entirely on *imagination* (latent trajectories from the world model)
+1. **Aprendizaje del modelo del mundo**: entrena un VAE para comprimir píxeles en estados latentes, un predictor recurrente para transiciones y un predictor de recompensa
+2. **Aprendizaje del comportamiento**: entrena un actor-critic enteramente sobre *imaginación* (trayectorias latentes del modelo del mundo)
 
 ```python
-# Conceptual Dreamer loop
+# Bucle conceptual de Dreamer
 for epoch in range(num_epochs):
-    # Collect real data
+    # Recolectar datos reales
     trajectories = collect_data(agent, env)
-    # Train world model on real data
+    # Entrenar modelo del mundo con datos reales
     world_model.train(trajectories)        # VAE + RSSM
-    # Train actor-critic on imagined data
+    # Entrenar actor-critic con datos imaginados
     for _ in range(imagination_steps):
         latent_states = world_model.imagine(initial_states, actor)
         actor.update(latent_states)
         critic.update(latent_states)
 ```
 
-Dreamer achieves comparable performance to model-free methods with 5–50× fewer environment interactions.
+Dreamer logra un rendimiento comparable a los métodos sin modelo con 5–50 veces menos interacciones con el entorno.
 
-### When Model-Based Excels vs When It Fails
+### Cuándo el RL Basado en Modelos Funciona y Cuándo Falla
 
-| Excels | Fails |
-|--------|-------|
-| Simulated environments (games, physics sims) | Real-world with hard-to-model dynamics |
-| Tasks where interaction is expensive (robotics) | Highly stochastic environments |
-| Long-horizon planning needed | When model errors compound catastrophically |
-| Discrete actions with clear rules | Continuous high-dimensional action spaces |
+| Funciona bien | Falla |
+|---|---|
+| Entornos simulados (juegos, simuladores físicos) | Entornos reales con dinámicas difíciles de modelar |
+| Tareas donde la interacción es costosa (robótica) | Entornos altamente estocásticos |
+| Planificación a largo plazo necesaria | Cuando los errores del modelo se acumulan catastróficamente |
+| Acciones discretas con reglas claras | Espacios de acción continuos de alta dimensión |
 
-## Common Pitfalls
+## 3. Common Pitfalls
 
 - **Model exploitation**: the policy exploits errors in the model (does things that the model thinks work but don't in reality). [[Training Techniques|Ensemble models]] help
 - **Compounding error**: one-step prediction is fine, but multi-step rollouts diverge exponentially. Use $\lambda$ returns or short horizons
 - **Computational cost**: planning during inference (MCTS) adds latency; distill the planner into a policy network after training
 - **Reward model bias**: if the learned reward model is wrong, the policy optimizes the wrong thing
 
-## Check Your Understanding
+## 4. Check Your Understanding
 
 1. How does Dyna-Q differ from MuZero's approach to model learning?
 2. Why does MCTS with UCB balance exploration and exploitation during planning?
 3. When would you choose Dreamer over a model-free method like PPO?
 
-## Where to Go Next
+## 5. Where to Go Next
 
 - [[Value-Based Methods]] — Dyna is built on Q-learning
 - [[Policy-Based Methods]] — Dreamer uses actor-critic in imagination

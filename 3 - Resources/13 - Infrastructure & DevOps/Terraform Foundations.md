@@ -6,11 +6,11 @@ created: 2026-06-28
 
 # Terraform Foundations
 
-## Escenario de aprendizaje
+## 1. Escenario de aprendizaje
 
 Vas a desplegar un bucket S3 y una instancia EC2 con Nginx, todo desde tu máquina local. Al terminar esta nota, tendrás claros los conceptos fundamentales y podrás leer y modificar cualquier proyecto Terraform básico.
 
-## Requisitos
+## 2. Requisitos
 
 ```
 Terraform ≥ 1.6    → https://developer.hashicorp.com/terraform/install
@@ -34,7 +34,7 @@ $ aws sts get-caller-identity
 
 Si `aws sts get-caller-identity` falla, no puedes seguir. Detente y configura AWS CLI primero.
 
-## 1. HCL — HashiCorp Configuration Language
+## 3. HCL — HashiCorp Configuration Language
 
 Terraform usa HCL. No es JSON ni YAML, aunque se parece más a YAML. Bloques con llaves y argumentos con `=`:
 
@@ -58,7 +58,7 @@ Estructura general:
 
 El **nombre local** (`mi_bucket`) es interno de Terraform. Otros recursos se refieren a él como `aws_s3_bucket.mi_bucket`. El nombre real en AWS lo defines con el argumento `bucket`.
 
-## 2. Tu primer main.tf
+## 4. Tu primer main.tf
 
 Crea un directorio vacío y dentro pon esto:
 
@@ -87,7 +87,7 @@ resource "aws_s3_bucket" "logs" {
 
 > **Atención**: el nombre del bucket S3 debe ser único en toda AWS (no solo en tu cuenta). Incluye tu nombre o un sufijo único.
 
-## 3. terraform init — descargar providers
+## 5. terraform init — descargar providers
 
 ```bash
 $ terraform init
@@ -116,7 +116,7 @@ mi-proyecto/
 └── .terraform.lock.hcl    ← lock file (versiona esto en git)
 ```
 
-## 4. terraform plan — qué va a pasar
+## 6. terraform plan — qué va a pasar
 
 ```bash
 $ terraform plan
@@ -149,7 +149,7 @@ El plan **no ejecuta nada**. Solo te muestra lo que haría. Siempre revisa el pl
 
 > **Pregunta**: ¿por qué `id` dice "(known after apply)"? Porque Terraform no sabe el ID del bucket hasta que AWS lo crea. Algunos valores solo se conocen en tiempo de ejecución.
 
-## 5. terraform apply — ejecutar
+## 7. terraform apply — ejecutar
 
 ```bash
 $ terraform apply
@@ -184,7 +184,7 @@ mi-proyecto/
 
 **Nunca edites terraform.tfstate a mano. Nunca.**
 
-## 6. terraform destroy — limpiar
+## 8. terraform destroy — limpiar
 
 ```bash
 $ terraform destroy
@@ -198,7 +198,7 @@ Destroy complete! Resources: 1 destroyed.
 
 **Cuidado**: `terraform destroy` borra TODO lo que está en el state. En producción nunca ejecutes esto sin revisar el plan.
 
-## 7. Variables — no quemes valores
+## 9. Variables — no quemes valores
 
 Hasta ahora los valores están hardcodeados. Las variables hacen el código reutilizable:
 
@@ -255,7 +255,7 @@ $ terraform plan -var-file=prod.tfvars
 # usa otro archivo de variables
 ```
 
-## 8. Outputs — qué información sacar
+## 10. Outputs — qué información sacar
 
 Los outputs exprimen información útil después del apply:
 
@@ -294,7 +294,7 @@ $ terraform output --json
 
 Esto es útil para scripts que necesitan valores de infraestructura.
 
-## 9. Data Sources — leer infraestructura existente
+## 11. Data Sources — leer infraestructura existente
 
 No todo lo creas con Terraform. A veces necesitas referenciar algo que ya existe (una VPC, un AMI):
 
@@ -317,7 +317,7 @@ resource "aws_instance" "web" {
 
 Los data sources se leen en cada `plan` y `apply`, pero no crean ni modifican nada.
 
-## 10. Dependencias implícitas y explícitas
+## 12. Dependencias implícitas y explícitas
 
 Terraform descubre automáticamente el orden de creación. Si declaras:
 
@@ -342,7 +342,7 @@ resource "aws_instance" "web" {
 
 Usa `depends_on` cuando Terraform no puede inferir la dependencia (por ejemplo, si pasas el nombre del bucket como string plano en vez de usar `aws_s3_bucket.logs.id`).
 
-## Flujo de trabajo completo (resumen ejecutable)
+## 13. Flujo de trabajo completo (resumen ejecutable)
 
 ```bash
 # 1. Crear proyecto
@@ -362,7 +362,7 @@ terraform destroy
 
 Estos comandos forman el núcleo de tu [[CLI & Productivity]] con Terraform. Cada vez que modificas archivos `.tf`, repites `plan → apply`. No necesitas volver a correr `init` a menos que agregues providers.
 
-## Common Pitfalls
+## 14. Common Mistakes
 
 - **Olvidar `terraform init`**: el error clásico. Clonas un repo con [[Git|Terraform]] y ejecutas plan sin init. Terraform se queja de que no encuentra los providers.
 - **Bucket name no único**: S3 exige nombres globalmente únicos. Si ves `BucketAlreadyExists`, cambia el nombre.

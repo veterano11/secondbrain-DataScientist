@@ -4,139 +4,141 @@ status: growing
 created: 2026-06-27
 ---
 
-# Data & Concept Drift
+# Deriva de Datos y Concepto
 
-## 1. Why This Matters
+## 1. Escenario de aprendizaje
 
-No data distribution stays static. Customer behavior evolves. Markets shift. Seasons change. A model trained on last year's data will inevitably face different patterns today. Understanding drift — when and why it happens — is essential for keeping models reliable in production.
+Tu modelo de predicción de riesgo crediticio se entrenó cuando las tasas de interés estaban en 3%. Ahora las tasas subieron al 8%. Un perfil de cliente que antes era "bajo riesgo" de repente es "riesgo medio" — los mismos ingresos y puntaje crediticio ahora tienen mayor probabilidad de default porque pagar la deuda es más caro. La relación entre los datos y lo que predices cambió. Eso es deriva de concepto. Si no la detectas, tu modelo está tomando decisiones incorrectas sin que nadie lo sepa.
+
+Ninguna distribución de datos permanece estática. El comportamiento del cliente evoluciona. Los mercados cambian. Las estaciones varían. Un modelo entrenado con datos del año pasado inevitablemente enfrentará patrones diferentes hoy. Entender la deriva — cuándo y por qué sucede — es esencial para mantener modelos fiables en producción.
 
 ---
 
-## 2. Data Drift (Covariate Shift)
+## 2. Deriva de Datos (Covariate Shift)
 
-### 2.1 Definition
+### 2.1 Definición
 
-The input distribution changes: $P_{\text{train}}(X) \neq P_{\text{prod}}(X)$, but $P(y|X)$ stays the same.
+La distribución de entrada cambia: $P_{\text{entrenamiento}}(X) \neq P_{\text{producción}}(X)$, pero $P(y|X)$ permanece igual.
 
-**Example**: a fraud detection model trained on transaction data from 2023 sees transactions from 2024. Average transaction amounts increase by 15% due to inflation. The model has never seen this distribution of amounts.
+**Ejemplo**: un modelo de detección de fraudes entrenado con datos de transacciones de 2023 ve transacciones de 2024. Los montos promedio de transacciones aumentan un 15% debido a la inflación. El modelo nunca ha visto esta distribución de montos.
 
-### 2.2 Common Causes
+### 2.2 Causas Comunes
 
-| Cause | Example |
+| Causa | Ejemplo |
 |---|---|
-| **Seasonality** | Holiday shopping patterns, weather-dependent behavior |
-| **User evolution** | Users become more sophisticated over time |
-| **External events** | COVID, economic recession, competitor changes |
-| **Data pipeline changes** | New sensor, new logging format, upstream data changes |
-| **Sampling bias** | Training data was collected differently than production data |
+| **Estacionalidad** | Patrones de compras navideñas, comportamiento dependiente del clima |
+| **Evolución del usuario** | Los usuarios se vuelven más sofisticados con el tiempo |
+| **Eventos externos** | COVID, recesión económica, cambios de competidores |
+| **Cambios en el pipeline de datos** | Nuevo sensor, nuevo formato de registro, cambios en datos upstream |
+| **Sesgo de muestreo** | Los datos de entrenamiento se recolectaron de manera diferente a los datos de producción |
 
-### 2.3 Detection
+### 2.3 Detección
 
 **Population Stability Index (PSI)**:
 
 $$\text{PSI} = \sum_i (p_i - q_i) \cdot \ln\left(\frac{p_i}{q_i}\right)$$
 
-- $p_i$: proportion in production bin $i$
-- $q_i$: proportion in reference (training) bin $i$
-- PSI < 0.1: no significant change
-- PSI 0.1-0.2: moderate change (investigate)
-- PSI > 0.2: significant drift (take action)
+- $p_i$: proporción en el intervalo de producción $i$
+- $q_i$: proporción en el intervalo de referencia (entrenamiento) $i$
+- PSI < 0.1: sin cambio significativo
+- PSI 0.1-0.2: cambio moderado (investigar)
+- PSI > 0.2: deriva significativa (tomar acción)
 
-**KS Test**: compare the cumulative distribution of reference and production data for continuous features.
+**KS Test**: compara la distribución acumulada de los datos de referencia y producción para características continuas.
 
-**Wasserstein Distance**: measures the "work" needed to transform one distribution into another. More sensitive than PSI for some patterns.
+**Distancia de Wasserstein**: mide el "trabajo" necesario para transformar una distribución en otra. Más sensible que PSI para algunos patrones.
 
-### 2.4 Mitigation
+### 2.4 Mitigación
 
-- **Retrain**: periodically retrain on fresh data
-- **Adaptive model**: use online learning to update continuously
-- **Robust features**: engineer features that are stable across time (see [[Feature Engineering]])
-- **Monitor**: detect drift early and alert the team
+- **Reentrenar**: reentrenar periódicamente con datos frescos
+- **Modelo adaptativo**: usar aprendizaje online para actualizarse continuamente
+- **Características robustas**: diseñar características que sean estables a lo largo del tiempo (ver [[Feature Engineering]])
+- **Monitorear**: detectar deriva temprano y alertar al equipo
 
 ---
 
-## 3. Concept Drift
+## 3. Deriva de Concepto
 
-### 3.1 Definition
+### 3.1 Definición
 
-The relationship between inputs and target changes: $P_{\text{train}}(y|X) \neq P_{\text{prod}}(y|X)$.
+La relación entre entradas y objetivo cambia: $P_{\text{entrenamiento}}(y|X) \neq P_{\text{producción}}(y|X)$.
 
-**Example**: a credit risk model trained when interest rates were low. Now rates are high. The same income and credit score profile that was "low risk" before is now "medium risk" because higher rates increase default probability.
+**Ejemplo**: un modelo de riesgo crediticio entrenado cuando las tasas de interés eran bajas. Ahora las tasas son altas. El mismo perfil de ingresos y puntaje crediticio que era "bajo riesgo" antes ahora es "riesgo medio" porque las tasas más altas aumentan la probabilidad de default.
 
-### 3.2 Types of Concept Drift
+### 3.2 Tipos de Deriva de Concepto
 
 ```
-Sudden:    ▁▁▁▁▁▁▁███   (fraud rule change overnight)
-Gradual:   ▁▁▁▁▂▃▄▅▆▇█   (user preferences evolve slowly)
-Recurring: ▁▁▃▁▁▃▁▁▃▁▁▃  (seasonal patterns repeat)
+Súbita:    ▁▁▁▁▁▁▁███   (cambio de regla de fraude de la noche a la mañana)
+Gradual:   ▁▁▁▁▂▃▄▅▆▇█   (las preferencias del usuario evolucionan lentamente)
+Recurrente: ▁▁▃▁▁▃▁▁▃▁▁▃  (los patrones estacionales se repiten)
 ```
 
-### 3.3 Detection
+### 3.3 Detección
 
-Concept drift is harder to detect than data drift because it requires ground truth.
+La deriva de concepto es más difícil de detectar que la deriva de datos porque requiere datos reales.
 
-**Methods**:
-- **Monitor prediction errors**: when errors increase, concept drift is likely
-- **Monitor residual distribution**: if errors become biased (e.g., always overpredicting)
-- **Monitor model confidence**: if the model becomes less certain on predictions
-- **Monitor feature importance**: if important features change over time (SHAP-based detection)
-
----
-
-## 4. Local vs Global Drift
-
-**Global drift**: the entire population shifts. Easy to detect (large sample size).
-
-**Local drift**: only a segment of the population shifts. Harder to detect (smaller sample size, but potentially catastrophic for that segment).
-
-**Example**: a medical diagnosis model performs well overall but starts failing for elderly patients (a small segment). Global metrics look fine, but the model is harmful for a specific group.
-
-**Detection**: monitor performance by segments — age groups, regions, customer tiers. Use [[Model Evaluation]] to assess each segment independently.
+**Métodos**:
+- **Monitorear errores de predicción**: cuando los errores aumentan, es probable que haya deriva de concepto
+- **Monitorear distribución de residuos**: si los errores se vuelven sesgados (ej., siempre sobreprediciendo)
+- **Monitorear confianza del modelo**: si el modelo se vuelve menos seguro en sus predicciones
+- **Monitorear importancia de características**: si las características importantes cambian con el tiempo (detección basada en SHAP)
 
 ---
 
-## 5. Retraining Strategies
+## 4. Deriva Local vs Global
 
-| Strategy | How It Works | Pros | Cons |
+**Deriva global**: toda la población cambia. Fácil de detectar (tamaño de muestra grande).
+
+**Deriva local**: solo un segmento de la población cambia. Más difícil de detectar (tamaño de muestra más pequeño, pero potencialmente catastrófico para ese segmento).
+
+**Ejemplo**: un modelo de diagnóstico médico funciona bien en general pero empieza a fallar en pacientes ancianos (un segmento pequeño). Las métricas globales se ven bien, pero el modelo es perjudicial para un grupo específico.
+
+**Detección**: monitorear el rendimiento por segmentos — grupos de edad, regiones, niveles de cliente. Usar [[Model Evaluation]] para evaluar cada segmento independientemente.
+
+---
+
+## 5. Estrategias de Reentrenamiento
+
+| Estrategia | Cómo Funciona | Pros | Contras |
 |---|---|---|---|
-| **Scheduled** | Retrain every N days/weeks | Simple, predictable | May be too slow for sudden drift |
-| **Performance-triggered** | Retrain when accuracy drops | Reacts to real degradation | Requires ground truth |
-| **Drift-triggered** | Retrain when drift is detected | Proactive | Does not guarantee performance improvement |
-| **Online learning** | Update model incrementally | Always current | Complex, risk of instability |
+| **Programada** | Reentrenar cada N días/semanas | Simple, predecible | Puede ser muy lenta para deriva súbita |
+| **Disparada por rendimiento** | Reentrenar cuando cae la precisión | Reacciona a degradación real | Requiere datos reales |
+| **Disparada por deriva** | Reentrenar cuando se detecta deriva | Proactivo | No garantiza mejora en rendimiento |
+| **Aprendizaje online** | Actualizar el modelo incrementalmente | Siempre actualizado | Complejo, riesgo de inestabilidad |
 
-In practice, most teams use a combination: scheduled retraining as a baseline with drift-triggered retraining for rapid response. Track retraining runs with [[Experiment Tracking]] to compare performance across versions.
+En la práctica, la mayoría de los equipos usan una combinación: reentrenamiento programado como base con reentrenamiento disparado por deriva para respuesta rápida. Registra las ejecuciones de reentrenamiento con [[Experiment Tracking]] para comparar rendimiento entre versiones.
 
 ---
 
 ## 6. Common Mistakes
 
-1. **Confusing data drift with concept drift**: they require different responses. Data drift → retrain on new data. Concept drift → may need a fundamentally different model.
+1. **Confundir deriva de datos con deriva de concepto**: requieren respuestas diferentes. Deriva de datos → reentrenar con nuevos datos. Deriva de concepto → puede necesitar un modelo fundamentalmente diferente.
 
-2. **Setting thresholds too tight**: every minor fluctuation triggers alerts. Set thresholds based on business impact, not statistical significance.
+2. **Establecer umbrales demasiado ajustados**: cada fluctuación menor dispara alertas. Establece umbrales basados en impacto al negocio, no en significancia estadística.
 
-3. **Ignoring label delay**: if ground truth takes 30 days to arrive, accuracy-based drift detection is always 30 days behind. Use proxy metrics (prediction distribution) for early warning.
+3. **Ignorar el retraso de etiquetas**: si los datos reales tardan 30 días en llegar, la detección de deriva basada en precisión siempre está 30 días atrasada. Usa métricas proxy (distribución de predicciones) para alerta temprana.
 
-4. **Not monitoring local drift**: global metrics can look fine while a critical segment degrades. Segment your monitoring.
+4. **No monitorear deriva local**: las métricas globales pueden verse bien mientras un segmento crítico se degrada. Segmenta tu monitoreo.
 
-5. **Retraining without validation**: automatically retraining on drifted data can amplify the drift if the most recent data is noisy. Always validate on a clean holdout set.
+5. **Reentrenar sin validación**: reentrenar automáticamente con datos con deriva puede amplificar la deriva si los datos más recientes son ruidosos. Siempre valida en un conjunto de validación limpio.
 
 ---
 
 ## 7. Check Your Understanding
 
-1. A model trained on summer data predicts ice cream sales in winter. What kind of drift is this? (Data drift — the input features (temperature, daylight hours) are different.)
+1. Un modelo entrenado con datos de verano predice ventas de helados en invierno. ¿Qué tipo de deriva es? (Deriva de datos — las características de entrada (temperatura, horas de luz) son diferentes.)
 
-2. A spam filter trained in 2023 misses 2024 spam because spammers changed tactics. What kind of drift? (Concept drift — the relationship between email features and spam changed.)
+2. Un filtro de spam entrenado en 2023 no detecta spam de 2024 porque los spammers cambiaron sus tácticas. ¿Qué tipo de deriva? (Deriva de concepto — la relación entre las características del correo y el spam cambió.)
 
-3. Your model's accuracy dropped by 10% but prediction distribution is unchanged. What happened? (Concept drift — input patterns are the same but the label relationship changed.)
+3. La precisión de tu modelo cayó un 10% pero la distribución de predicciones no cambió. ¿Qué sucedió? (Deriva de concepto — los patrones de entrada son los mismos pero la relación con la etiqueta cambió.)
 
-4. You monitor PSI daily and get alerts every Monday because weekend patterns differ from weekdays. What do you do? (Account for seasonality — compare Monday to previous Mondays, not to weekday average.)
+4. Monitoreas PSI diariamente y recibes alertas cada lunes porque los patrones de fin de semana difieren de los días laborables. ¿Qué haces? (Considerar la estacionalidad — comparar lunes con lunes anteriores, no con el promedio de días laborables.)
 
-5. Ground truth labels take 30 days to arrive. How do you detect drift in the meantime? (Monitor prediction distribution, feature distributions, and model confidence as proxy metrics.)
+5. Las etiquetas reales tardan 30 días en llegar. ¿Cómo detectas deriva mientras tanto? (Monitorear distribución de predicciones, distribuciones de características y confianza del modelo como métricas proxy.)
 
 ---
 
-When concept drift is suspected, [[Hyperparameter Tuning]] or a full model architecture change may be needed — not just retraining on fresh data.
+Cuando se sospecha deriva de concepto, puede ser necesario [[Hyperparameter Tuning]] o un cambio completo en la arquitectura del modelo — no solo reentrenar con datos frescos.
 
 ## 8. Summary
 
@@ -146,6 +148,6 @@ Drift is inevitable. Data drift (input distribution changes) is easier to detect
 
 ## 9. Where to Go Next
 
-- [[Model Monitoring]] — Operational drift monitoring
-- [[ML Pipelines]] — Building pipelines that handle retraining
-- [[Observability]] — Infrastructure for drift detection
+- [[Model Monitoring]] — Monitoreo operacional de deriva
+- [[ML Pipelines]] — Construyendo pipelines que manejen reentrenamiento
+- [[Observability]] — Infraestructura para detección de deriva

@@ -4,32 +4,32 @@ status: growing
 created: 2026-06-27
 ---
 
-# Object-Oriented Programming
+# Programación Orientada a Objetos
 
-## 1. Why This Matters
+## 1. Escenario de aprendizaje
 
-Object-oriented programming (OOP) is the dominant paradigm in software engineering, and for good reason: it models the world as **objects that contain both data and behavior**. In data science, you use OOP every time you interact with a model, a DataFrame, or a pipeline — they are all objects.
+Tu equipo de ciencia de datos mantiene una docena de pipelines de ML diferentes, cada uno con preprocesamiento, entrenamiento y evaluación. Cada pipeline es similar pero con pequeños cambios. Sin una estructura común, el código se duplica y cada nuevos proyecto requiere empezar desde cero. La programación orientada a objetos (OOP) resuelve esto: defines una clase `Pipeline` base con métodos `fit()` y `predict()`, y cada caso concreto simplemente hereda y personaliza lo necesario. De repente, un nuevo proyecto es solo 20 líneas en lugar de 200.
 
-Understanding OOP lets you:
-- Build reusable ML pipelines and custom models
-- Write code that is organized, testable, and maintainable — see [[Code Quality]] for clean code patterns
-- Understand how libraries like scikit-learn and PyTorch are designed — [[Python for Data Science]] explores their OOP design
-- Choose when OOP is the right tool (and when it is not)
+En ciencia de datos, usas OOP cada vez que interactúas con un modelo, un DataFrame o un pipeline — todos son objetos. Entender OOP te permite:
+- Construir pipelines de ML reutilizables y modelos personalizados
+- Escribir código organizado, testeable y mantenible — consulta [[Code Quality]] para patrones de código limpio
+- Entender cómo están diseñadas bibliotecas como scikit-learn y PyTorch — [[Python for Data Science]] explora su diseño OOP
+- Elegir cuándo OOP es la herramienta correcta (y cuándo no)
 
 ---
 
-## 2. The Four Pillars of OOP
+## 2. Los cuatro pilares de OOP
 
-### 2.1 Encapsulation
+### 2.1 Encapsulación
 
-**Data and methods that operate on that data are bundled together** in a class. Internal details are hidden from the outside.
+**Los datos y los métodos que operan sobre esos datos se agrupan juntos** en una clase. Los detalles internos están ocultos del exterior.
 
 ```python
 class DataPipeline:
     def __init__(self, source: str):
         self.source = source
-        self._data = None        # "protected" by convention
-        self.__status = "init"   # "private" (name-mangled)
+        self._data = None        # "protegido" por convención
+        self.__status = "init"   # "privado" (name-mangled)
 
     def load(self) -> pd.DataFrame:
         """Public interface — hides how loading works."""
@@ -38,16 +38,16 @@ class DataPipeline:
         return self._data
 ```
 
-**Python's access control** (by convention):
-- `attr`: public (use freely)
-- `_attr`: protected (internal use, but accessible)
-- `__attr`: private (name-mangled to `_ClassName__attr`, harder to access)
+**Control de acceso en Python** (por convención):
+- `attr`: público (úsalo libremente)
+- `_attr`: protegido (uso interno, pero accesible)
+- `__attr`: privado (name-mangled a `_ClassName__attr`, más difícil de acceder)
 
-Unlike Java or C++, Python does not enforce access control — it trusts developers to respect the conventions.
+A diferencia de Java o C++, Python no impone el control de acceso — confía en que los desarrolladores respeten las convenciones.
 
-### 2.2 Inheritance
+### 2.2 Herencia
 
-**A class can inherit attributes and methods from another class**, creating an "is-a" relationship.
+**Una clase puede heredar atributos y métodos de otra clase**, creando una relación "es-un".
 
 ```python
 class BaseModel:
@@ -55,13 +55,13 @@ class BaseModel:
         self.params = params
 
     def train(self, X, y):
-        raise NotImplementedError  # subclasses must implement
+        raise NotImplementedError  # las subclases deben implementar
 
     def predict(self, X):
         raise NotImplementedError
 
-class RandomForestModel(BaseModel):    # RandomForestModel IS-A BaseModel
-    def train(self, X, y):             # override
+class RandomForestModel(BaseModel):    # RandomForestModel ES-UN BaseModel
+    def train(self, X, y):             # sobreescribe
         self.model = RandomForestClassifier(**self.params)
         self.model.fit(X, y)
 
@@ -69,24 +69,24 @@ class RandomForestModel(BaseModel):    # RandomForestModel IS-A BaseModel
         return self.model.predict(X)
 ```
 
-**When to use**: when you have a clear hierarchy with shared behavior and specialized subclasses. The base class defines the interface; subclasses implement the details.
+**Cuándo usarla**: cuando tienes una jerarquía clara con comportamiento compartido y subclases especializadas. La clase base define la interfaz; las subclases implementan los detalles.
 
-### 2.3 Polymorphism
+### 2.3 Polimorfismo
 
-**The same interface can work with different types.** The caller does not need to know the specific type.
+**La misma interfaz puede funcionar con diferentes tipos.** El que llama no necesita conocer el tipo específico.
 
 ```python
 models = [RandomForestModel({}), XGBoostModel({"n_estimators": 100})]
 for model in models:
-    model.train(X, y)       # each model.train() does different things
-    predictions = model.predict(X_test)  # but the interface is the same
+    model.train(X, y)       # cada model.train() hace cosas diferentes
+    predictions = model.predict(X_test)  # pero la interfaz es la misma
 ```
 
-**Duck typing**: "If it walks like a duck and quacks like a duck, it is a duck." Python does not require formal interface inheritance — any object with a `.train()` method can be used where a "trainable" is expected.
+**Duck typing**: "Si camina como pato y suena como pato, es un pato." Python no requiere herencia de interfaz formal — cualquier objeto con un método `.train()` puede usarse donde se espera algo "entrenable".
 
-### 2.4 Abstraction
+### 2.4 Abstracción
 
-**Complexity is hidden behind a simple interface.** The user of a class does not need to know how it works internally.
+**La complejidad se oculta detrás de una interfaz simple.** El usuario de una clase no necesita saber cómo funciona internamente.
 
 ```python
 pipeline = Pipeline([
@@ -94,16 +94,16 @@ pipeline = Pipeline([
     ("pca", PCA(n_components=10)),
     ("classifier", RandomForestClassifier()),
 ])
-pipeline.fit(X_train, y_train)  # I do not need to know how each step works
+pipeline.fit(X_train, y_train)  # No necesito saber cómo funciona cada paso
 ```
 
 ---
 
-## 3. Python OOP in Depth
+## 3. OOP en Python en profundidad
 
-### 3.1 Magic Methods
+### 3.1 Métodos mágicos
 
-Magic methods (dunder methods) define how objects behave with Python syntax.
+Los métodos mágicos (métodos dunder) definen cómo se comportan los objetos con la sintaxis de Python.
 
 ```python
 class Dataset:
@@ -126,9 +126,9 @@ class Dataset:
         return Dataset(pd.concat([self.data, other.data]))  # dataset1 + dataset2
 ```
 
-### 3.2 Properties
+### 3.2 Propiedades
 
-Properties allow controlled access to attributes with getter/setter logic:
+Las propiedades permiten acceso controlado a atributos con lógica getter/setter:
 
 ```python
 class ModelWrapper:
@@ -153,52 +153,52 @@ class ModelWrapper:
         self._is_trained = value
 
 model = ModelWrapper(rf)
-print(model.is_trained)   # reads like an attribute, but uses the getter
+print(model.is_trained)   # se lee como un atributo, pero usa el getter
 ```
 
-### 3.3 Class Methods and Static Methods
+### 3.3 Métodos de clase y métodos estáticos
 
 ```python
 class DataLoader:
-    format = "csv"               # class attribute — shared by all instances
+    format = "csv"               # atributo de clase — compartido por todas las instancias
 
     @classmethod
-    def from_csv(cls, path):     # factory — returns an instance
+    def from_csv(cls, path):     # factory — retorna una instancia
         instance = cls()
         instance.data = pd.read_csv(path)
         return instance
 
     @classmethod
-    def from_parquet(cls, path): # another factory
+    def from_parquet(cls, path): # otro factory
         instance = cls()
         instance.data = pd.read_parquet(path)
         return instance
 
     @staticmethod
-    def validate(df: pd.DataFrame) -> bool:  # utility — no self, no cls
+    def validate(df: pd.DataFrame) -> bool:  # utilidad — no self, no cls
         return not df.empty and df.columns.duplicated().sum() == 0
 
 loader = DataLoader.from_csv("data.csv")
 ```
 
-- **@classmethod**: receives the class (not the instance). Used for factory methods.
-- **@staticmethod**: receives nothing special. Used for utility functions related to the class.
+- **@classmethod**: recibe la clase (no la instancia). Se usa para métodos factory.
+- **@staticmethod**: no recibe nada especial. Se usa para funciones de utilidad relacionadas con la clase.
 
-### 3.4 Composition Over Inheritance
+### 3.4 Composición sobre herencia
 
-**Favor "has-a" over "is-a".** Instead of inheriting, build objects that contain other objects.
+**Prefiere "tiene-un" sobre "es-un".** En lugar de heredar, construye objetos que contienen otros objetos.
 
 ```python
-# Inheritance approach (less flexible)
+# Enfoque de herencia (menos flexible)
 class PreprocessingPipeline(Pipeline):
     pass
 
-# Composition approach (more flexible)
+# Enfoque de composición (más flexible)
 class PreprocessingPipeline:
     def __init__(self):
-        self.scaler = StandardScaler()      # has-a scaler
-        self.encoder = OneHotEncoder()      # has-an encoder
-        self.selector = SelectKBest()       # has-a selector
+        self.scaler = StandardScaler()      # tiene-un scaler
+        self.encoder = OneHotEncoder()      # tiene-un encoder
+        self.selector = SelectKBest()       # tiene-un selector
 
     def fit_transform(self, X, y=None):
         X = self.scaler.fit_transform(X)
@@ -207,17 +207,17 @@ class PreprocessingPipeline:
         return X
 ```
 
-Composition is more flexible: you can swap components, add steps, and test each piece independently. This principle is widely applied in [[Data Structures & Algorithms]], where complex structures are built from simpler ones.
+La composición es más flexible: puedes intercambiar componentes, agregar pasos y probar cada pieza de forma independiente. Este principio se aplica ampliamente en [[Data Structures & Algorithms]], donde las estructuras complejas se construyen a partir de otras más simples.
 
 ---
 
-## 4. OOP vs Functional Programming — When to Use Which
+## 4. OOP vs Programación Funcional — Cuándo usar cada una
 
-This is one of the most important distinctions to understand as a data scientist. Both paradigms are tools; choosing the right one depends on what you are building.
+Esta es una de las distinciones más importantes que debe entender un científico de datos. Ambos paradigmas son herramientas; elegir el correcto depende de lo que estés construyendo.
 
-### 4.1 Use OOP When...
+### 4.1 Usa OOP cuando...
 
-**1. You have state that changes over time**
+**1. Tienes estado que cambia con el tiempo**
 
 ```python
 class ExperimentTracker:
@@ -240,23 +240,23 @@ class ExperimentTracker:
         }
 ```
 
-The tracker has **state** (metrics list, start time) that accumulates across method calls. This is natural in OOP, awkward in FP.
+El tracker tiene **estado** (lista de métricas, tiempo de inicio) que se acumula a través de las llamadas a métodos. Esto es natural en OOP, incómodo en FP.
 
-**2. You have multiple objects that share behavior but differ in specifics**
+**2. Tienes múltiples objetos que comparten comportamiento pero difieren en detalles**
 
-Inheritance and polymorphism shine here. A `RandomForestModel` and `XGBoostModel` both train and predict, but do so differently. The calling code does not care.
+La herencia y el polimorfismo brillan aquí. Un `RandomForestModel` y un `XGBoostModel` ambos entrenan y predicen, pero lo hacen de manera diferente. El código que los llama no se preocupa por eso.
 
-**3. You want to model real-world entities**
+**3. Quieres modelar entidades del mundo real**
 
-User, Dataset, Model, Experiment, Pipeline — these map naturally to objects with data and behavior.
+Usuario, Dataset, Modelo, Experimento, Pipeline — estos se mapean naturalmente a objetos con datos y comportamiento.
 
-**4. You need to enforce an interface**
+**4. Necesitas imponer una interfaz**
 
-Base classes with abstract methods ensure all subclasses implement the required methods. This prevents runtime surprises.
+Las clases base con métodos abstractos aseguran que todas las subclases implementen los métodos requeridos. Esto evita sorpresas en tiempo de ejecución.
 
-### 4.2 Use Functional Programming When...
+### 4.2 Usa Programación Funcional cuando...
 
-**1. You are transforming data through a pipeline**
+**1. Estás transformando datos a través de un pipeline**
 
 ```python
 def clean(df): return df.dropna()
@@ -267,9 +267,9 @@ pipeline = compose(encode, normalize, clean)  # clean → normalize → encode
 result = pipeline(raw_data)
 ```
 
-Each function takes data, returns transformed data, and has **no side effects**. This is the natural paradigm for data preprocessing.
+Cada función toma datos, retorna datos transformados y **no tiene efectos secundarios**. Este es el paradigma natural para el preprocesamiento de datos.
 
-**2. Operations are stateless and independent**
+**2. Las operaciones no tienen estado y son independientes**
 
 ```python
 def compute_accuracy(y_true, y_pred):
@@ -281,49 +281,49 @@ def compute_precision(y_true, y_pred):
     return tp / (tp + fp) if (tp + fp) > 0 else 0.0
 ```
 
-These functions depend only on their inputs. They are easy to test (no setup needed), easy to parallelize (no shared state), and easy to reason about.
+Estas funciones dependen solo de sus entradas. Son fáciles de probar (sin configuración previa), fáciles de paralelizar (sin estado compartido) y fáciles de razonar.
 
-**3. You want to parallelize or distribute computation**
+**3. Quieres paralelizar o distribuir el cómputo**
 
-Stateless functions can be safely mapped across partitions, clusters, or GPUs. Spark, Dask, and Ray all leverage functional patterns.
+Las funciones sin estado se pueden mapear de forma segura entre particiones, clusters o GPUs. Spark, Dask y Ray aprovechan patrones funcionales.
 
 ```python
 results = parallel_map(compute_metric, [(y1, p1), (y2, p2), ...])
 ```
 
-**4. You are composing small, reusable operations**
+**4. Estás componiendo operaciones pequeñas y reutilizables**
 
-Small functions like `scale`, `clip`, `log_transform` can be composed in any order. This is more natural with FP than OOP.
+Funciones pequeñas como `scale`, `clip`, `log_transform` se pueden componer en cualquier orden. Esto es más natural con FP que con OOP.
 
-### 4.3 Mixing Both — The Data Science Sweet Spot
+### 4.3 Combinando ambos — El punto óptimo en ciencia de datos
 
-In practice, the best data science code uses **both**:
+En la práctica, el mejor código de ciencia de datos usa **ambos**:
 
 ```python
-class ModelPipeline:                          # OOP — manages state
+class ModelPipeline:                          # OOP — gestiona estado
     def __init__(self, preprocessors: list, model):
-        self.transformers = preprocessors     # FP — stateless functions
+        self.transformers = preprocessors     # FP — funciones sin estado
         self.model = model
 
-    def _apply_transformers(self, X):         # FP-style function composition
+    def _apply_transformers(self, X):         # Composición estilo FP
         for fn in self.transformers:
-            X = fn(X)                         # each fn is pure
+            X = fn(X)                         # cada fn es pura
         return X
 
     def fit(self, X, y):
-        X = self._apply_transformers(X)       # FP: data flows through
-        self.model.fit(X, y)                  # OOP: model has state
+        X = self._apply_transformers(X)       # FP: los datos fluyen
+        self.model.fit(X, y)                  # OOP: el modelo tiene estado
 
     def predict(self, X):
         X = self._apply_transformers(X)
         return self.model.predict(X)
 ```
 
-**Rule of thumb**:
-- **OOP for the skeleton**: classes that hold state, manage resources, provide interfaces
-- **FP for the internals**: stateless transformations, metric computations, data processing
+**Regla general**:
+- **OOP para el esqueleto**: clases que mantienen estado, gestionan recursos, proveen interfaces
+- **FP para el interior**: transformaciones sin estado, cálculos de métricas, procesamiento de datos
 
-scikit-learn itself follows this: `fit()` / `predict()` methods (OOP interface) with `transform()` methods that are often stateless (FP).
+scikit-learn mismo sigue esto: métodos `fit()` / `predict()` (interfaz OOP) con métodos `transform()` que a menudo no tienen estado (FP).
 
 ---
 

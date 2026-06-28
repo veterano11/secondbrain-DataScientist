@@ -6,28 +6,26 @@ created: 2026-06-27
 
 # Code Quality
 
-## 1. Why This Matters
+## 1. Escenario de aprendizaje
 
-Data science code has a reputation for being messy. Jupyter notebooks with out-of-order cells. Scripts with no type hints. Functions named `process_data()` that do 15 different things. Undocumented configuration values.
+Tu equipo heredó un código de ciencia de datos con funciones como `procesar()` que hace 15 cosas distintas, sin type hints, y con variables llamadas `tmp` y `datos2`. Un bug en el preprocesamiento pasó desapercibido por semanas y generó predicciones incorrectas en producción. El responsable sonríe y dice "funciona en mi máquina".
 
-This reputation exists because it is often true. But as ML systems move to production, code quality becomes critical. A bug in a model's feature engineering code produces wrong predictions silently. A typo in a config file wastes a week of training. See [[Python for Data Science]] for language-level conventions.
-
-Code quality tools catch these problems automatically — before they cause damage.
+Las herramientas de calidad de código detectan estos problemas automáticamente —antes de que causen daño. Un linter encuentra variables sin usar, errores de tipo y malas prácticas al instante.
 
 ---
 
 ## 2. Linting
 
-Linters analyze code for potential errors, style violations, and anti-patterns without running it.
+Los linters analizan el código en busca de errores potenciales, violaciones de estilo y antipatrones sin ejecutarlo.
 
 ### 2.1 Ruff
 
-Ruff is the modern Python linter (replaces flake8, isort, pyupgrade, and others in one tool).
+Ruff es el linter moderno de Python (reemplaza a flake8, isort, pyupgrade y otros en una sola herramienta).
 
 ```bash
-ruff check .                    # Check all files
-ruff check --fix .             # Auto-fix issues
-ruff format .                  # Format code
+ruff check .                    # Revisar todos los archivos
+ruff check --fix .             # Corregir problemas automáticamente
+ruff format .                  # Formatear código
 ```
 
 ```toml
@@ -40,20 +38,20 @@ target-version = "py311"
 select = ["E", "F", "I", "N", "W", "UP", "B", "SIM"]
 
 [tool.ruff.lint.per-file-ignores]
-"__init__.py" = ["F401"]  # unused imports allowed in init
+"__init__.py" = ["F401"]  # imports sin uso permitidos en init
 ```
 
-**What it catches**:
-- **E**: pycodestyle (PEP 8 violations)
-- **F**: pyflakes (undefined variables, unused imports)
-- **I**: isort (import ordering)
-- **N**: naming conventions
-- **UP**: pyupgrade (modern Python syntax)
-- **B**: flake8-bugbear (common bugs)
+**Qué detecta**:
+- **E**: pycodestyle (violaciones de PEP 8)
+- **F**: pyflakes (variables no definidas, imports sin usar)
+- **I**: isort (orden de imports)
+- **N**: convenciones de nombres
+- **UP**: pyupgrade (sintaxis moderna de Python)
+- **B**: flake8-bugbear (errores comunes)
 
 ### 2.2 Pre-commit Hooks
 
-Run quality checks automatically before every commit:
+Ejecuta controles de calidad automáticamente antes de cada commit:
 
 ```yaml
 # .pre-commit-config.yaml
@@ -78,17 +76,17 @@ repos:
 ```
 
 ```bash
-pre-commit install              # Install hooks
-pre-commit run --all-files      # Run on all files
+pre-commit install              # Instalar hooks
+pre-commit run --all-files      # Ejecutar en todos los archivos
 ```
 
-If a hook fails, the commit is blocked until the issue is fixed.
+Si un hook falla, el commit se bloquea hasta que el problema se solucione.
 
 ---
 
 ## 3. Type Hints
 
-Type hints document what types a function expects and returns. They do not affect runtime behavior but enable static analysis.
+Los type hints documentan qué tipos espera y devuelve una función. No afectan el comportamiento en tiempo de ejecución, pero permiten análisis estático.
 
 ```python
 from typing import Optional, List, Tuple, Dict
@@ -99,7 +97,7 @@ def preprocess(
     drop_na: bool = True,
     fill_value: Optional[float] = None,
 ) -> pd.DataFrame:
-    """Preprocess a DataFrame."""
+    """Preprocesa un DataFrame."""
     if drop_na:
         df = df.dropna()
     if fill_value is not None:
@@ -107,28 +105,28 @@ def preprocess(
     return df
 ```
 
-**Benefits**:
-- **Documentation**: clear interface without reading the implementation
-- **Catch errors**: mypy catches mismatched argument types
-- **IDE support**: autocomplete and inline documentation
-- **Refactoring**: changing a type reveals all callers
+**Beneficios**:
+- **Documentación**: interfaz clara sin leer la implementación
+- **Detección de errores**: mypy detecta tipos de argumentos incorrectos
+- **Soporte del IDE**: autocompletado y documentación en línea
+- **Refactorización**: cambiar un tipo revela todos los puntos de uso
 
 ### myPy
 
 ```bash
-mypy src/  # checks all files in src/
+mypy src/  # revisa todos los archivos en src/
 ```
 
-Example catch:
+Ejemplo de detección:
 ```python
 def get_age(person: dict) -> int:
     return person["age"]
 
 # mypy: error: Returning Any from function declared to return "int"
-# (because person is not typed)
+# (porque person no está tipado)
 ```
 
-**Fix**:
+**Solución**:
 ```python
 from typing import TypedDict
 
@@ -137,31 +135,31 @@ class Person(TypedDict):
     age: int
 
 def get_age(person: Person) -> int:
-    return person["age"]  # mypy knows this is int
+    return person["age"]  # mypy sabe que es int
 ```
 
 ---
 
-## 4. Formatting
+## 4. Formateo
 
-Formatters automatically fix code style (indentation, quotes, line length, spacing).
+Los formateadores corrigen el estilo del código automáticamente (indentación, comillas, longitud de línea, espaciado).
 
-| Tool | Style | Opinionated? |
+| Herramienta | Estilo | ¿Opinado? |
 |---|---|---|
-| **Black** | PEP 8 with modifications | Very (few options) |
-| **Ruff format** | Compatible with Black | Same as Black |
-| **Autopep8** | Pure PEP 8 | Less opinionated |
+| **Black** | PEP 8 con modificaciones | Muy (pocas opciones) |
+| **Ruff format** | Compatible con Black | Igual que Black |
+| **Autopep8** | PEP 8 puro | Menos opinado |
 
-**Why use a formatter?** It eliminates all style debates. The team agrees: the formatter decides.
+**¿Por qué usar un formateador?** Elimina todos los debates de estilo. El equipo acuerda: el formateador decide.
 
 ```bash
-black src/          # Format all files
-ruff format src/    # Same as Black, but faster
+black src/          # Formatear todos los archivos
+ruff format src/    # Igual que Black, pero más rápido
 ```
 
 ---
 
-## 5. Documentation
+## 5. Documentación
 
 ### 5.1 Docstrings
 
@@ -171,41 +169,41 @@ def train_model(
     y: np.ndarray,
     params: Optional[dict] = None,
 ) -> RandomForestClassifier:
-    """Train a Random Forest classifier.
+    """Entrena un clasificador Random Forest.
 
     Args:
-        X: Training features. Shape (n_samples, n_features).
-        y: Training labels. Shape (n_samples,).
-        params: Optional hyperparameters. Defaults to
+        X: Características de entrenamiento. Forma (n_muestras, n_características).
+        y: Etiquetas de entrenamiento. Forma (n_muestras,).
+        params: Hiperparámetros opcionales. Por defecto
             {'n_estimators': 100, 'max_depth': 5}.
 
     Returns:
-        Trained RandomForestClassifier.
+        RandomForestClassifier entrenado.
 
     Raises:
-        ValueError: If X and y have mismatched lengths.
+        ValueError: Si X y y tienen longitudes distintas.
     """
 ```
 
 ### 5.2 README
 
-Every project should have a README that answers:
-- What does this project do?
-- How do I set it up? (see [[Virtual Environments]])
-- How do I run it?
+Todo proyecto debería tener un README que responda:
+- ¿Qué hace este proyecto?
+- ¿Cómo se configura? (consulta [[Virtual Environments]])
+- ¿Cómo se ejecuta?
 
 ---
 
-## 6. Code Review Checklist
+## 6. Lista de Verificación para Code Review
 
-- [ ] Does the code do what it says?
-- [ ] Are there edge cases not handled?
-- [ ] Are there tests for new functions?
-- [ ] Are type hints correct and complete?
-- [ ] Are variable/function names descriptive?
-- [ ] Are there no hardcoded values (use constants)?
-- [ ] Are experiment parameters tracked via [[Experiment Tracking]]?
-- [ ] Is the logic easy to follow?
+- [ ] ¿El código hace lo que dice?
+- [ ] ¿Hay casos borde no manejados?
+- [ ] ¿Hay tests para las funciones nuevas?
+- [ ] ¿Los type hints son correctos y completos?
+- [ ] ¿Los nombres de variables y funciones son descriptivos?
+- [ ] ¿No hay valores hardcodeados (usar constantes)?
+- [ ] ¿Los parámetros de experimentos se registran mediante [[Experiment Tracking]]?
+- [ ] ¿La lógica es fácil de seguir?
 
 ---
 

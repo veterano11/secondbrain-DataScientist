@@ -4,189 +4,191 @@ status: growing
 created: 2026-06-27
 ---
 
-# LLM Evaluation
+# Evaluación de LLMs
 
-## 1. Why This Matters
+## 1. Escenario de aprendizaje
 
-"How good is this LLM?" is not a simple question. A model that excels at math may fail at creative writing. One that follows instructions perfectly may hallucinate freely. LLM evaluation is the practice of measuring specific capabilities to understand what a model can and cannot do.
+Tu equipo ha fine-tuneado un modelo para atención al cliente y necesitas decidir si reemplaza al modelo actual. La precisión mejoró 2% en tus pruebas, pero ¿eso significa que será mejor con usuarios reales? ¿Y si el nuevo modelo es menos seguro? ¿O si alucina más cuando no sabe la respuesta? Evaluar un LLM no es mirar una sola métrica — es entender sus fortalezas y debilidades en múltiples dimensiones antes de arriesgar la experiencia de tus usuarios.
 
-Without evaluation — the foundation of [[Model Evaluation]] — you cannot:
-- Choose between models for your application
-- Know if fine-tuning improved the model
-- Detect regressions after model updates
-- Understand where your application will fail
+"¿Qué tan bueno es este LLM?" no es una pregunta simple. Un modelo que sobresale en matemáticas puede fallar en escritura creativa. Uno que sigue instrucciones perfectamente puede alucinar libremente. La evaluación de LLMs es la práctica de medir capacidades específicas para entender lo que un modelo puede y no puede hacer.
+
+Sin evaluación — la base de [[Model Evaluation]] — no puedes:
+- Elegir entre modelos para tu aplicación
+- Saber si el fine-tuning mejoró el modelo
+- Detectar regresiones después de actualizaciones del modelo
+- Entender dónde fallará tu aplicación
 
 ---
 
-## 2. Standard Benchmarks
+## 2. Benchmarks Estándar
 
-### 2.1 Knowledge and Reasoning
+### 2.1 Conocimiento y Razonamiento
 
-| Benchmark | What It Tests | Format |
+| Benchmark | Qué Prueba | Formato |
 |---|---|---|
-| **MMLU** | 57 subjects (STEM, humanities, social sciences) | 4-choice QA |
-| **MMLU-Pro** | Harder MMLU (more choices, harder questions) | 10-choice QA |
-| **GPQA** | Graduate-level science | Expert-written QA |
-| **ARC** | Grade-school science | Multiple choice |
-| **HellaSwag** | Commonsense reasoning | Sentence completion |
+| **MMLU** | 57 materias (STEM, humanidades, ciencias sociales) | Preguntas de 4 opciones |
+| **MMLU-Pro** | MMLU más difícil (más opciones, preguntas más complejas) | Preguntas de 10 opciones |
+| **GPQA** | Ciencia a nivel de posgrado | Preguntas escritas por expertos |
+| **ARC** | Ciencia escolar | Opción múltiple |
+| **HellaSwag** | Razonamiento de sentido común | Completar oraciones |
 
-### 2.2 Math and Coding
+### 2.2 Matemáticas y Codificación
 
-| Benchmark | What It Tests | Format |
+| Benchmark | Qué Prueba | Formato |
 |---|---|---|
-| **GSM8K** | Grade-school math word problems | Free-form answer |
-| **MATH** | Competition-level math (AMC, AIME) | Free-form answer |
-| **HumanEval** | Python function completion | Pass@k (functional correctness) |
-| **MBPP** | Basic Python programming | Pass@k |
-| **SWE-bench** | Real-world software engineering (GitHub issues) | Patch correctness |
+| **GSM8K** | Problemas matemáticos escolares | Respuesta libre |
+| **MATH** | Matemáticas de competencia (AMC, AIME) | Respuesta libre |
+| **HumanEval** | Completar funciones en Python | Pass@k (corrección funcional) |
+| **MBPP** | Programación básica en Python | Pass@k |
+| **SWE-bench** | Ingeniería de software real (issues de GitHub) | Corrección de parches |
 
-### 2.3 Language and Dialogue
+### 2.3 Lenguaje y Diálogo
 
-| Benchmark | What It Tests |
+| Benchmark | Qué Prueba |
 |---|---|
-| **MT-Bench** | Multi-turn conversational ability (rated by LLM-as-judge) |
-| **Chatbot Arena** | Human preference rankings (ELO system, 1M+ human votes) |
-| **TruthfulQA** | Truthfulness (adversarial questions that trigger false beliefs) |
-| **AlpacaEval** | Instruction following (compared to reference model) |
+| **MT-Bench** | Capacidad conversacional multi-turno (evaluado por LLM-as-judge) |
+| **Chatbot Arena** | Rankings de preferencia humana (sistema ELO, 1M+ votos humanos) |
+| **TruthfulQA** | Veracidad (preguntas adversariales que provocan creencias falsas) |
+| **AlpacaEval** | Seguimiento de instrucciones (comparado con modelo de referencia) |
 
 ---
 
-## 3. Automated Evaluation
+## 3. Evaluación Automatizada
 
 ### 3.1 LLM-as-Judge
 
-Use one LLM to evaluate another LLM's outputs:
+Usar un LLM para evaluar las salidas de otro LLM:
 
 ```python
 prompt = f"""
-You are evaluating an AI assistant's response.
+Estás evaluando la respuesta de un asistente de IA.
 
-[Question]
-{question}
+[Pregunta]
+{pregunta}
 
-[Assistant Response]
-{response}
+[Respuesta del Asistente]
+{respuesta}
 
-Evaluate on a scale of 1-5 for:
-1. Helpfulness: Does it address the user's question?
-2. Accuracy: Is the information correct?
-3. Harmlessness: Does it avoid harmful content?
+Evalúa en una escala del 1-5 para:
+1. Utilidad: ¿Aborda la pregunta del usuario?
+2. Precisión: ¿La información es correcta?
+3. Inocuidad: ¿Evita contenido dañino?
 
-Output JSON: {{"helpfulness": int, "accuracy": int, "harmlessness": int}}
+Salida JSON: {{"utilidad": int, "precision": int, "inocuidad": int}}
 """
 ```
 
-**Challenges**:
-- Judges have biases (prefer longer answers, agree with themselves)
-- Position bias (prefer first or last response in a comparison)
-- Self-enhancement bias (prefer models similar to themselves)
+**Desafíos**:
+- Los jueces tienen sesgos (prefieren respuestas más largas, están de acuerdo consigo mismos)
+- Sesgo de posición (prefieren la primera o última respuesta en una comparación)
+- Sesgo de automejora (prefieren modelos similares a sí mismos)
 
-**Mitigations**:
-- Use a different, trusted model as judge (e.g., GPT-4 evaluates Llama)
-- Randomize answer order in comparisons
-- Use multi-dimensional scoring (separate scores for different aspects)
-- Calibrate judges against human evaluations
+**Mitigaciones**:
+- Usar un modelo diferente y confiable como juez (ej., GPT-4 evalúa a Llama)
+- Aleatorizar el orden de las respuestas en comparaciones
+- Usar puntuación multidimensional (puntuaciones separadas para diferentes aspectos)
+- Calibrar jueces contra evaluaciones humanas
 
-### 3.2 Metrics
+### 3.2 Métricas
 
-| Metric | What It Measures | Limitations |
+| Métrica | Qué Mide | Limitaciones |
 |---|---|---|
-| **Perplexity** | How well the model predicts the next token | Not correlated with output quality for chat models |
-| **ROUGE** | N-gram overlap with reference | Superficial — misses semantic quality |
-| **BLEU** | Precision of n-grams (translation) | Poor for creative/abstractive tasks |
-| **BERTScore** | Embedding similarity with reference | Better than ROUGE/BLEU, still reference-dependent |
-| **Perplexity of outputs** | How natural generations are | Measures fluency, not correctness |
+| **Perplejidad** | Qué tan bien predice el modelo el siguiente token | No correlacionada con calidad de salida para modelos de chat |
+| **ROUGE** | Solapamiento de n-gramas con referencia | Superficial — ignora calidad semántica |
+| **BLEU** | Precisión de n-gramas (traducción) | Pobre para tareas creativas/abstractivas |
+| **BERTScore** | Similitud de embeddings con referencia | Mejor que ROUGE/BLEU, aún depende de referencia |
+| **Perplejidad de salidas** | Qué tan naturales son las generaciones | Mide fluidez, no corrección |
 
 ---
 
-## 4. Hallucination Detection
+## 4. Detección de Alucinaciones
 
-### 4.1 Types of Hallucination
+### 4.1 Tipos de Alucinación
 
-| Type | Description | Example |
+| Tipo | Descripción | Ejemplo |
 |---|---|---|
-| **Factual** | False statement of fact | "Einstein invented the internet" |
-| **Intrinsic** | Contradicts provided context | RAG model ignoring retrieved docs |
-| **Extrinsic** | Adds information not in context | "The report states X" — report says nothing |
-| **Logical** | Internally inconsistent | "I was born in 1990 and I'm 40" (should be 34) |
+| **Factual** | Afirmación falsa de un hecho | "Einstein inventó internet" |
+| **Intrínseca** | Contradice el contexto proporcionado | Modelo RAG ignorando documentos recuperados |
+| **Extrínseca** | Añade información no presente en el contexto | "El informe dice X" — el informe no dice nada |
+| **Lógica** | Internamente inconsistente | "Nací en 1990 y tengo 40" (debería ser 34) |
 
-### 4.2 Detection Methods
+### 4.2 Métodos de Detección
 
-- **SelfCheckGPT**: generate multiple responses, check consistency
-- **NLI-based**: use an NLI model to verify if each claim is entailed by the context
-- **Confidence estimation**: the model's own token probabilities (lower → more likely hallucination)
-- **Citation validation**: for RAG, verify each citation points to a chunk that supports the claim
+- **SelfCheckGPT**: generar múltiples respuestas, verificar consistencia
+- **Basado en NLI**: usar un modelo NLI para verificar si cada afirmación está implicada por el contexto
+- **Estimación de confianza**: las probabilidades de token del propio modelo (más bajas → más probable alucinación)
+- **Validación de citas**: para RAG, verificar que cada cita apunte a un fragmento que respalde la afirmación
 
 ---
 
-## 5. Human Evaluation
+## 5. Evaluación Humana
 
-### 5.1 When to Use Human Evaulation
+### 5.1 Cuándo Usar Evaluación Humana
 
-- Final assessment before deployment
-- When automated metrics are unreliable (creative tasks)
-- Calibrating automated judges
-- Detecting subtle biases or safety issues
+- Evaluación final antes del despliegue
+- Cuando las métricas automatizadas no son fiables (tareas creativas)
+- Calibración de jueces automatizados
+- Detección de sesgos sutiles o problemas de seguridad
 
-### 5.2 Common Protocols
+### 5.2 Protocolos Comunes
 
-| Protocol | Cost | Reliability |
+| Protocolo | Costo | Fiabilidad |
 |---|---|---|
-| **Side-by-side (A/B)** | Low | Good — comparing two outputs |
-| **Likert scale** | Medium | Moderate — subjective scale |
-| **Pairwise ranking (Elo)** | High | Excellent — removes bias |
-| **Chatbot Arena** | Very high | Excellent — 1M+ human judgments |
+| **Cara a cara (A/B)** | Bajo | Buena — comparando dos salidas |
+| **Escala Likert** | Medio | Moderada — escala subjetiva |
+| **Ranking por pares (Elo)** | Alto | Excelente — elimina sesgos |
+| **Chatbot Arena** | Muy alto | Excelente — 1M+ juicios humanos |
 
 ---
 
-## 6. Evaluating Fine-Tuning
+## 6. Evaluación del Fine-Tuning
 
-Always compare BEFORE and AFTER using [[Experiment Tracking]] to systematically log results:
+Siempre compara ANTES y DESPUÉS usando [[Experiment Tracking]] para registrar resultados sistemáticamente:
 
 ```python
-# Before
-base_score = evaluate(base_model, test_set)
+# Antes
+puntuacion_base = evaluar(modelo_base, conjunto_prueba)
 
-# After
-ft_score = evaluate(fine_tuned_model, test_set)
+# Después
+puntuacion_ft = evaluar(modelo_ajustado, conjunto_prueba)
 
-# Did it improve?
-print(f"Δ = {ft_score - base_score:+.3f}")
+# ¿Mejoró?
+print(f"Δ = {puntuacion_ft - puntuacion_base:+.3f}")
 ```
 
-**Key metrics for fine-tuning evaluation**:
-- Task accuracy (the metric you optimized for)
-- General capability retention (MMLU, HellaSwag — did fine-tuning degrade general abilities?)
-- Output format compliance (% of outputs in the correct format)
-- Worst-case performance (are there inputs where the model regressed?)
+**Métricas clave para evaluar fine-tuning**:
+- Precisión en la tarea (la métrica para la que optimizaste)
+- Retención de capacidades generales (MMLU, HellaSwag — ¿el fine-tuning degradó habilidades generales?)
+- Cumplimiento del formato de salida (% de salidas en el formato correcto)
+- Rendimiento en el peor caso (¿hay entradas donde el modelo retrocedió?)
 
 ---
 
 ## 7. Common Mistakes
 
-1. **Evaluating only one dimension**: accuracy without fluency, or fluency without truthfulness. Coverage of multiple capabilities is essential.
+1. **Evaluar solo una dimensión**: precisión sin fluidez, o fluidez sin veracidad. La cobertura de múltiples capacidades es esencial.
 
-2. **Using the same test data for development**: if you tune hyperparameters based on MMLU, MMLU is no longer an unbiased evaluation. Use a separate held-out set, a standard practice in [[Supervised Learning]].
+2. **Usar los mismos datos de prueba para desarrollo**: si ajustas hiperparámetros basándote en MMLU, MMLU ya no es una evaluación imparcial. Usa un conjunto separado reservado, una práctica estándar en [[Supervised Learning]].
 
-3. **Ignoring variance**: a 0.5% MMLU improvement may not be statistically significant. Report confidence intervals (a [[Statistics]] best practice) or run multiple trials.
+3. **Ignorar la varianza**: una mejora del 0.5% en MMLU puede no ser estadísticamente significativa. Reporta intervalos de confianza (una mejor práctica de [[Statistics]]) o ejecuta múltiples pruebas.
 
-4. **Evaluating only aggregate metrics**: a model may score well overall but fail catastrophically on specific categories (e.g., safety, math, non-English).
+4. **Evaluar solo métricas agregadas**: un modelo puede puntuar bien en general pero fallar catastróficamente en categorías específicas (ej., seguridad, matemáticas, no inglés).
 
-5. **Over-trusting LLM-as-Judge**: automated judges are useful but biased. Cross-validate with human evaluation for critical decisions.
+5. **Confiar demasiado en LLM-as-Judge**: los jueces automatizados son útiles pero sesgados. Valida con evaluación humana para decisiones críticas.
 
 ---
 
 ## 8. Check Your Understanding
 
-1. A model scores 90% on MMLU but 30% on TruthfulQA. What does this tell you? (High knowledge but low truthfulness — factually unreliable.)
+1. Un modelo obtiene 90% en MMLU pero 30% en TruthfulQA. ¿Qué te dice esto? (Alto conocimiento pero baja veracidad — no fiable factualmente.)
 
-2. Why does perplexity not correlate well with chat quality? (Perplexity measures next-token prediction, not output quality. A very conservative model that says "I don't know" can have low perplexity but be useless.)
+2. ¿Por qué la perplejidad no se correlaciona bien con la calidad de chat? (La perplejidad mide predicción del siguiente token, no calidad de salida. Un modelo muy conservador que dice "No lo sé" puede tener baja perplejidad pero ser inútil.)
 
-3. Your fine-tuned model scores better on your task but worse on MMLU. Should you deploy it? (It depends — if task performance outweighs general degradation, yes. Monitor for edge cases.)
+3. Tu modelo fine-tuneado puntúa mejor en tu tarea pero peor en MMLU. ¿Deberías desplegarlo? (Depende — si el rendimiento en la tarea supera la degradación general, sí. Monitorea casos extremos.)
 
-4. Two annotators give different scores to the same output. What do you do? (Calculate inter-annotator agreement. Disagreements may indicate unclear rubrics.)
+4. Dos anotadores dan puntuaciones diferentes a la misma salida. ¿Qué haces? (Calcular el acuerdo entre anotadores. Los desacuerdos pueden indicar rúbricas poco claras.)
 
-5. An LLM-as-Judge consistently prefers longer answers. How do you mitigate this? (Control for length by comparing answers of similar length or using length-calibrated scoring.)
+5. Un LLM-as-Judge prefiere consistentemente respuestas más largas. ¿Cómo mitigas esto? (Controlar por longitud comparando respuestas de longitud similar o usando puntuación calibrada por longitud.)
 
 ---
 
@@ -198,6 +200,6 @@ LLM evaluation is multi-dimensional: knowledge, reasoning, coding, truthfulness,
 
 ## 10. Where to Go Next
 
-- [[Prompt Engineering]] — The quality of prompts affects evaluation
-- [[Fine-tuning]] — Evaluating before and after fine-tuning
-- [[RAG]] — Evaluating retrieval and generation separately
+- [[Prompt Engineering]] — La calidad de los prompts afecta la evaluación
+- [[Fine-tuning]] — Evaluando antes y después del fine-tuning
+- [[RAG]] — Evaluando recuperación y generación por separado

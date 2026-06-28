@@ -4,189 +4,189 @@ status: growing
 created: 2026-06-27
 ---
 
-# Model Monitoring
+# Monitoreo de Modelos
 
-## 1. Why This Matters
+## 1. Escenario de aprendizaje
 
-A model that works perfectly on day 1 can fail on day 30. Data distributions shift. User behavior changes. External events (holidays, economic changes, competitor actions) make training data obsolete.
+Desplegaste un modelo de detección de transacciones fraudulentas y funcionó perfectamente el primer mes. Pero una mañana de lunes descubres que el fin de semana no detectó una nueva modalidad de fraude. Las distribuciones de datos cambiaron — los montos de transacción subieron, los patrones de compra son diferentes — y tu modelo no se enteró. El monitoreo de modelos te avisa de estos cambios en tiempo real, no cuando ya es tarde.
 
-Model monitoring detects these changes before they cause business impact. It is the difference between finding out on Monday morning that your fraud detection model has been missing attacks all weekend, and catching it in real-time.
+Un modelo que funciona perfectamente el día 1 puede fallar el día 30. Las distribuciones de datos cambian. El comportamiento del usuario evoluciona. Eventos externos (festivos, cambios económicos, acciones de competidores) vuelven obsoletos los datos de entrenamiento.
 
----
-
-## 2. The Three Pillars of ML Monitoring
-
-### 2.1 Data Drift
-
-Input distribution $P(X)$ changes → the model sees unfamiliar patterns.
-
-**Example**: a model trained on pre-pandemic shopping behavior sees entirely different purchase patterns during a lockdown.
-
-See [[Data & Concept Drift]] for full details.
-
-### 2.2 Concept Drift
-
-The relationship $P(y|X)$ changes → the model's mapping is stale.
-
-**Example**: a spam filter trained in 2023 may not recognize 2024's sophisticated phishing emails — the features that once indicated spam no longer do.
-
-### 2.3 System Degradation
-
-Operational problems: latency spikes, memory leaks, service outages.
-
-**Example**: a feature extraction service slows down, increasing prediction latency from 50ms to 5 seconds. Users time out.
+El monitoreo de modelos detecta estos cambios antes de que causen impacto en el negocio. Es la diferencia entre enterarte el lunes por la mañana que tu modelo de detección de fraudes ha estado fallando todo el fin de semana, y detectarlo en tiempo real.
 
 ---
 
-## 3. What to Monitor
+## 2. Los Tres Pilares del Monitoreo de ML
 
-### 3.1 Prediction Quality
+### 2.1 Deriva de Datos
 
-Requires ground truth (may be delayed):
+La distribución de entrada $P(X)$ cambia → el modelo ve patrones desconocidos.
 
-| Metric | How to Measure |
-|---|---|
-| **Accuracy / RMSE** | Compare predictions against actual outcomes |
-| **Residual analysis** | Plot prediction errors over time |
-| **Calibration** | For probabilistic models: do 90% confidence predictions match reality? |
-| **Model confidence** | Are predictions becoming less certain? |
+**Ejemplo**: un modelo entrenado con comportamiento de compras prepandemia ve patrones de compra completamente diferentes durante un confinamiento.
 
-For deeper evaluation techniques, see [[Model Evaluation]].
+Ver [[Data & Concept Drift]] para detalles completos.
 
-### 3.2 Data Quality
+### 2.2 Deriva de Concepto
 
-| Check | Method |
-|---|---|
-| **Missing rate** | % of nulls per feature over time |
-| **Range violations** | Values outside expected bounds |
-| **Type violations** | Unexpected data types |
-| **Cardinality changes** | New categories in categorical features |
+La relación $P(y|X)$ cambia → el mapeo del modelo está desactualizado.
 
-### 3.3 Prediction Distribution
+**Ejemplo**: un filtro de spam entrenado en 2023 puede no reconocer los sofisticados correos de phishing de 2024 — las características que antes indicaban spam ya no lo hacen.
 
-| Check | What It Detects |
-|---|---|
-| **Mean prediction** | Shift in overall model output |
-| **Class proportions** | For classification: are predictions balanced? |
-| **Score distribution** | Are probabilities concentrated or spread out? |
-| **Prediction velocity** | Rate of change of predictions over time |
+### 2.3 Degradación del Sistema
 
-These checks ensure [[Feature Engineering]] produces consistent inputs for the model.
+Problemas operacionales: picos de latencia, fugas de memoria, cortes de servicio.
 
-### 3.4 System Health
-
-| Metric | Alert When |
-|---|---|
-| **p50/p95/p99 latency** | P99 exceeds threshold |
-| **Error rate** | >X% of predictions return errors |
-| **Throughput** | Drops below expected volume |
-| **Memory/CPU** | Approaches resource limits |
-| **Data freshness** | Last successful pipeline run |
-
-
+**Ejemplo**: un servicio de extracción de características se ralentiza, aumentando la latencia de predicción de 50ms a 5 segundos. Los usuarios agotan el tiempo de espera.
 
 ---
 
-## 4. Detection Methods
+## 3. Qué Monitorear
 
-### 4.1 Statistical Tests
+### 3.1 Calidad de Predicción
 
-| Test | What It Compares | Good For |
+Requiere datos reales (pueden estar retrasados):
+
+| Métrica | Cómo Medir |
+|---|---|
+| **Precisión / RMSE** | Comparar predicciones contra resultados reales |
+| **Análisis de residuos** | Graficar errores de predicción a lo largo del tiempo |
+| **Calibración** | Para modelos probabilísticos: ¿las predicciones con 90% de confianza coinciden con la realidad? |
+| **Confianza del modelo** | ¿Las predicciones se están volviendo menos seguras? |
+
+Para técnicas de evaluación más profundas, ver [[Model Evaluation]].
+
+### 3.2 Calidad de Datos
+
+| Verificación | Método |
+|---|---|
+| **Tasa de valores faltantes** | % de nulos por característica a lo largo del tiempo |
+| **Violaciones de rango** | Valores fuera de los límites esperados |
+| **Violaciones de tipo** | Tipos de datos inesperados |
+| **Cambios de cardinalidad** | Nuevas categorías en características categóricas |
+
+### 3.3 Distribución de Predicciones
+
+| Verificación | Qué Detecta |
+|---|---|
+| **Predicción media** | Cambio en la salida general del modelo |
+| **Proporciones de clase** | Para clasificación: ¿las predicciones están balanceadas? |
+| **Distribución de puntuaciones** | ¿Las probabilidades están concentradas o dispersas? |
+| **Velocidad de predicción** | Tasa de cambio de predicciones a lo largo del tiempo |
+
+Estas verificaciones aseguran que [[Feature Engineering]] produce entradas consistentes para el modelo.
+
+### 3.4 Salud del Sistema
+
+| Métrica | Alertar Cuando |
+|---|---|
+| **Latencia p50/p95/p99** | P99 excede el umbral |
+| **Tasa de error** | >X% de predicciones devuelven errores |
+| **Rendimiento** | Cae por debajo del volumen esperado |
+| **Memoria/CPU** | Se acerca a los límites de recursos |
+| **Frescura de datos** | Última ejecución exitosa del pipeline |
+
+---
+
+## 4. Métodos de Detección
+
+### 4.1 Pruebas Estadísticas
+
+| Prueba | Qué Compara | Buena Para |
 |---|---|---|
-| **PSI** | Distribution of binned reference vs production | General drift detection |
-| **KS test** | Distribution of two continuous samples | Continuous features |
-| **Jensen-Shannon** | Symmetric KL divergence | Comparing two distributions |
-| **Z-score** | Current metric vs historical mean | Simple threshold-based |
+| **PSI** | Distribución de referencia agrupada vs producción | Detección general de deriva |
+| **KS test** | Distribución de dos muestras continuas | Características continuas |
+| **Jensen-Shannon** | Divergencia KL simétrica | Comparar dos distribuciones |
+| **Z-score** | Métrica actual vs media histórica | Simple, basada en umbrales |
 
-### 4.2 Window-Based Monitoring
+### 4.2 Monitoreo Basado en Ventanas
 
-Compare a **reference window** (e.g., training data or last 30 days) with a **current window** (e.g., last hour or last day):
+Comparar una **ventana de referencia** (ej., datos de entrenamiento o últimos 30 días) con una **ventana actual** (ej., última hora o último día):
 
 ```python
-def detect_drift(reference: np.array, current: np.array, threshold: float = 0.1):
-    psi = compute_psi(reference, current)
-    return psi > threshold  # True if drift detected
+def detectar_deriva(referencia: np.array, actual: np.array, umbral: float = 0.1):
+    psi = computar_psi(referencia, actual)
+    return psi > umbral  # True si se detecta deriva
 ```
 
-**Window sizes**:
-- Small window (1 hour): sensitive to recent changes, noisy
-- Large window (7 days): smoother, slower to react
-- Multi-window: compare against multiple windows (1h, 24h, 7d) for robust detection
+**Tamaños de ventana**:
+- Ventana pequeña (1 hora): sensible a cambios recientes, ruidosa
+- Ventana grande (7 días): más suave, más lenta en reaccionar
+- Multi-ventana: comparar contra múltiples ventanas (1h, 24h, 7d) para detección robusta
 
-### 4.3 Adaptive Thresholds
+### 4.3 Umbrales Adaptativos
 
-Static thresholds become stale as data evolves. Adaptive methods:
+Los umbrales estáticos se vuelven obsoletos a medida que los datos evolucionan. Métodos adaptativos:
 
-- **Rolling statistics**: mean ± 3σ over a sliding window
-- **EWMA**: exponentially weighted moving average (reacts faster to recent changes)
-- **Seasonal decomposition**: account for weekly/daily patterns before detecting drift
+- **Estadísticas móviles**: media ± 3σ sobre una ventana deslizante
+- **EWMA**: media móvil con ponderación exponencial (reacciona más rápido a cambios recientes)
+- **Descomposición estacional**: tener en cuenta patrones semanales/diarios antes de detectar deriva
 
 ---
 
-## 5. Alerting and Response
+## 5. Alertas y Respuesta
 
-### 5.1 Severity Levels
+### 5.1 Niveles de Severidad
 
-| Level | Response | Example |
+| Nivel | Respuesta | Ejemplo |
 |---|---|---|
-| **P0 (Critical)** | Immediate (within 5 min) | Model returning errors, data pipeline down |
-| **P1 (High)** | Within 30 min | Prediction latency > 5s, accuracy drop > 5% |
-| **P2 (Medium)** | Within 4 hours | Gradual drift detected, data freshness delay |
-| **P3 (Low)** | Next business day | Minor distribution shift, single metric fluctuation |
+| **P0 (Crítico)** | Inmediata (5 min) | Modelo devolviendo errores, pipeline de datos caído |
+| **P1 (Alto)** | Dentro de 30 min | Latencia de predicción > 5s, caída de precisión > 5% |
+| **P2 (Medio)** | Dentro de 4 horas | Deriva gradual detectada, retraso en frescura de datos |
+| **P3 (Bajo)** | Siguiente día hábil | Cambio menor en distribución, fluctuación de una métrica |
 
 ### 5.2 Runbooks
 
-Every alert should have a documented response:
+Toda alerta debe tener una respuesta documentada:
 
 ```
-Alert: Model accuracy dropped by 10%
-1. Check if ground truth data is complete (maybe labels are delayed?)
-2. Compare current predictions vs last week's distribution
-3. Check recent pipeline runs for errors
-4. If drift confirmed: trigger retraining pipeline
-5. If retraining takes > 4 hours: roll back to previous model version
-6. Validate the fix with [[A-B Testing]] before re-promoting
+Alerta: La precisión del modelo cayó un 10%
+1. Verificar si los datos reales están completos (¿quizás las etiquetas están retrasadas?)
+2. Comparar predicciones actuales vs distribución de la semana pasada
+3. Verificar ejecuciones recientes del pipeline por errores
+4. Si se confirma deriva: disparar pipeline de reentrenamiento
+5. Si el reentrenamiento tarda > 4 horas: revertir a versión anterior del modelo
+6. Validar la corrección con [[A-B Testing]] antes de re-promover
 ```
 
 ---
 
-## 6. Tools
+## 6. Herramientas
 
-| Tool | Focus |
+| Herramienta | Enfoque |
 |---|---|
-| **WhyLabs / Whylogs** | Data and ML monitoring |
-| **Evidently** | Drift detection and model evaluation |
-| **Arize AI** | Production monitoring and observability |
-| **Grafana + Prometheus** | System metrics and alerting |
-| **MLflow** | [[Experiment Tracking]] + model registry |
+| **WhyLabs / Whylogs** | Monitoreo de datos y ML |
+| **Evidently** | Detección de deriva y evaluación de modelos |
+| **Arize AI** | Monitoreo y observabilidad en producción |
+| **Grafana + Prometheus** | Métricas del sistema y alertas |
+| **MLflow** | [[Experiment Tracking]] + registro de modelos |
 
 ---
 
 ## 7. Common Mistakes
 
-1. **Monitoring accuracy without latency**: a model that takes 10 seconds is useless regardless of accuracy. Monitor both.
+1. **Monitorear precisión sin latencia**: un modelo que tarda 10 segundos es inútil independientemente de la precisión. Monitorea ambos.
 
-2. **Alerts without runbooks**: "Model accuracy dropped" with no documented response leads to panic. Write runbooks in advance.
+2. **Alertas sin runbooks**: "La precisión del modelo cayó" sin una respuesta documentada lleva al pánico. Escribe runbooks por adelantado.
 
-3. **Not accounting for delays in ground truth**: accuracy monitoring is only as timely as the label feedback loop. For delayed labels, use proxy metrics (prediction distribution, confidence).
+3. **No considerar retrasos en los datos reales**: el monitoreo de precisión solo es tan oportuno como el bucle de retroalimentación de etiquetas. Para etiquetas retrasadas, usa métricas proxy (distribución de predicciones, confianza).
 
-4. **Threshold fishing**: adjusting thresholds reactively to reduce alerts creates fragile monitoring. Set thresholds based on historical analysis.
+4. **Ajuste reactivo de umbrales**: ajustar umbrales reactivamente para reducir alertas crea un monitoreo frágil. Establece umbrales basados en análisis histórico.
 
-5. **Not monitoring data quality**: "garbage in, garbage out" — if input data quality degrades, the model will too. Monitor data quality at the pipeline stage, not just model output.
+5. **No monitorear la calidad de los datos**: "basura entra, basura sale" — si la calidad de los datos de entrada se degrada, el modelo también lo hará. Monitorea la calidad de los datos en la etapa del pipeline, no solo la salida del modelo.
 
 ---
 
 ## 8. Check Your Understanding
 
-1. Your model's accuracy dropped from 92% to 85% overnight. What do you check first? (Ground truth data completeness, data drift, pipeline health.)
+1. La precisión de tu modelo cayó de 92% a 85% de la noche a la mañana. ¿Qué verificas primero? (Integridad de los datos reales, deriva de datos, salud del pipeline.)
 
-2. Why monitor prediction distribution even before ground truth is available? (Distribution changes are an early warning signal before labels arrive.)
+2. ¿Por qué monitorear la distribución de predicciones incluso antes de tener los datos reales? (Los cambios en la distribución son una señal de alerta temprana antes de que lleguen las etiquetas.)
 
-3. A P1 alert fires at 3 AM. The on-call engineer has 30 minutes to respond. What should be in the runbook? (Step-by-step diagnosis instructions.)
+3. Una alerta P1 se dispara a las 3 AM. El ingeniero de guardia tiene 30 minutos para responder. ¿Qué debería estar en el runbook? (Instrucciones de diagnóstico paso a paso.)
 
-4. Your KS test detects drift on a feature that was not important to the model. Should you alert? (Probably not — focus drift detection on important features.)
+4. Tu prueba KS detecta deriva en una característica que no era importante para el modelo. ¿Deberías alertar? (Probablemente no — enfoca la detección de deriva en características importantes.)
 
-5. What is the difference between PSI and KS test? (PSI discretizes data into bins first, KS test works on continuous CDFs. Both measure distribution shift.)
+5. ¿Cuál es la diferencia entre PSI y KS test? (PSI discretiza los datos en intervalos primero, KS test trabaja con CDFs continuas. Ambos miden cambio en la distribución.)
 
 ---
 
@@ -198,6 +198,6 @@ Model monitoring detects when production models degrade. The three pillars are d
 
 ## 10. Where to Go Next
 
-- [[Data & Concept Drift]] — Detailed drift detection methods
-- [[ML Pipelines]] — Building pipelines that support monitoring
-- [[Observability]] — Logging, metrics, and tracing for ML
+- [[Data & Concept Drift]] — Métodos detallados de detección de deriva
+- [[ML Pipelines]] — Construyendo pipelines que soporten monitoreo
+- [[Observability]] — Registro, métricas y trazado para ML

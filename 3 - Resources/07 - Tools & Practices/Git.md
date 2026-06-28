@@ -6,145 +6,140 @@ created: 2026-06-27
 
 # Git
 
-## 1. Why This Matters
+## 1. Escenario de aprendizaje
 
-Git is the standard for version control in software engineering and data science. It tracks changes to code (and with DVC, data), enables collaboration, and provides a safety net for experimentation.
+Imagina que trabajas con tu equipo en un análisis de datos colaborativo. Sin control de versiones, compartir el progreso es un caos: aparecen archivos como "datos_limpios_final_v3_ok.ipynb", no puedes revertir cambios cuando algo se rompe y colaborar sin sobrescribir el trabajo de otros es casi imposible.
 
-Without Git, you have:
-- "model_final_v3_final_actually_final.ipynb"
-- No way to revert when you break something
-- No way to collaborate without overwriting each other's work
-
-With Git, every change is tracked, every experiment is linked to a specific code state, and collaboration scales.
+Con Git, cada cambio queda registrado, cada experimento queda vinculado a un estado específico del código y la colaboración a escala se vuelve posible.
 
 ---
 
-## 2. Core Concepts
+## 2. Conceptos Fundamentales
 
-### 2.1 Repository
+### 2.1 Repositorio
 
-A `.git` folder in your project that tracks all changes.
+Una carpeta `.git` en tu proyecto que registra todos los cambios.
 
 ```bash
-git init      # create a new repo
-git clone     # copy an existing repo
+git init      # crear un nuevo repo
+git clone     # copiar un repo existente
 ```
 
 ### 2.2 Commit
 
-A snapshot of all tracked files at a point in time.
+Una foto de todos los archivos rastreados en un momento dado.
 
 ```bash
-git add file.py        # stage changes for commit
-git commit -m "add preprocessing pipeline"
+git add file.py        # preparar cambios para el commit
+git commit -m "agregar pipeline de preprocesamiento"
 ```
 
-Each commit has:
-- A **hash** (unique identifier: `abc123def456...`)
-- An **author**, **date**, and **message**
-- A **parent** commit (previous state)
+Cada commit tiene:
+- Un **hash** (identificador único: `abc123def456...`)
+- Un **autor**, una **fecha** y un **mensaje**
+- Un commit **padre** (estado anterior)
 
-### 2.3 Branch
+### 2.3 Rama (Branch)
 
-A parallel line of development.
+Una línea de desarrollo paralela.
 
 ```bash
-git branch feature-xyz    # create a branch
-git checkout feature-xyz  # switch to it
-git checkout -b new-branch  # create and switch
+git branch feature-xyz    # crear una rama
+git checkout feature-xyz  # cambiarse a ella
+git checkout -b nueva-rama  # crear y cambiarse
 ```
 
-**Main branch**: typically `main` or `master` — the stable, deployable version.
+**Rama principal**: normalmente `main` o `master` — la versión estable y publicable.
 
-### 2.4 Remote
+### 2.4 Remoto
 
-A hosted copy of the repo (GitHub, GitLab, Bitbucket).
+Una copia del repositorio alojada en un servidor (GitHub, GitLab, Bitbucket).
 
 ```bash
-git push origin main    # upload local commits
-git pull origin main    # download remote changes
-git fetch origin        # download without merging
+git push origin main    # subir commits locales
+git pull origin main    # descargar cambios remotos
+git fetch origin        # descargar sin fusionar
 ```
 
 ---
 
-## 3. Basic Workflow
+## 3. Flujo de Trabajo Básico
 
-### 3.1 Individual Workflow
+### 3.1 Flujo Individual
 
-Combine Git with [[CLI & Productivity]] tools for efficient version control.
+Combínalo con herramientas de [[CLI & Productivity]] para un control de versiones eficiente.
 
 ```bash
-# Start work
-git checkout -b feature/new-pipeline
+# Iniciar trabajo
+git checkout -b feature/nuevo-pipeline
 
-# Work, commit as you go
+# Trabajar y hacer commits sobre la marcha
 git add src/pipeline.py
-git commit -m "add data validation step"
+git commit -m "agregar paso de validación de datos"
 git add src/pipeline.py
-git commit -m "add feature engineering step"
+git commit -m "agregar paso de ingeniería de características"
 
-# Merge to main when done
+# Fusionar a main al terminar
 git checkout main
-git merge feature/new-pipeline
+git merge feature/nuevo-pipeline
 ```
 
-### 3.2 Collaborative Workflow
+### 3.2 Flujo Colaborativo
 
 ```bash
-# Get latest
+# Obtener lo último
 git checkout main
 git pull origin main
 
-# Create feature branch
-git checkout -b feature/add-xgboost
+# Crear rama de funcionalidad
+git checkout -b feature/agregar-xgboost
 
-# Work, commit, push
-git add . && git commit -m "add XGBoost model"
-git push origin feature/add-xgboost
+# Trabajar, commitear, subir
+git add . && git commit -m "agregar modelo XGBoost"
+git push origin feature/agregar-xgboost
 
-# Create Pull Request on GitHub
-# Teammate reviews, approves, merges
+# Crear Pull Request en GitHub
+# Un compañero revisa, aprueba y fusiona
 ```
 
 ---
 
-## 4. Data Science Specifics
+## 4. Aspectos Específicos para Ciencia de Datos
 
-### 4.1 What NOT to Commit
+### 4.1 Qué NO Subir al Repositorio
 
-- Large datasets (CSV, Parquet files)
-- Model checkpoints (`.pt`, `.h5`, `.pkl`)
-- Jupyter notebook outputs (`.ipynb` with outputs)
-- Virtual environments (`.venv/`, `env/`)
-- Compiled files (`__pycache__/`, `.pyc`)
-- API keys, passwords, secrets
+- Datos grandes (archivos CSV, Parquet)
+- Checkpoints de modelos (`.pt`, `.h5`, `.pkl`)
+- Salidas de Jupyter notebooks (`.ipynb` con resultados)
+- Entornos virtuales (`.venv/`, `env/`)
+- Archivos compilados (`__pycache__/`, `.pyc`)
+- Claves de API, contraseñas, secretos
 
-Use **`.gitignore`** to exclude these automatically.
+Usa **`.gitignore`** para excluir estos archivos automáticamente.
 
 ### 4.2 DVC (Data Version Control)
 
-DVC extends Git to track data and models:
+DVC extiende Git para rastrear datos y modelos:
 
 ```bash
-dvc init                     # initialize DVC
-dvc add data/train.csv       # track a data file
-git add data/train.csv.dvc   # commit the pointer file (not the actual data)
-git commit -m "add training data"
-dvc push                     # upload actual data to remote storage
+dvc init                     # inicializar DVC
+dvc add data/train.csv       # rastrear un archivo de datos
+git add data/train.csv.dvc   # commitear el archivo puntero (no los datos reales)
+git commit -m "agregar datos de entrenamiento"
+dvc push                     # subir los datos reales al almacenamiento remoto
 ```
 
-DVC stores a small pointer file in Git (tracking the data version) and the actual data in a remote store (S3, GCS, local drive). Version data pipelines alongside code with [[ML Pipelines]].
+DVC guarda un pequeño archivo puntero en Git (que registra la versión de los datos) y los datos reales en un almacén remoto (S3, GCS, disco local). Versiona pipelines de datos junto con el código usando [[ML Pipelines]].
 
-### 4.3 Notebook-Friendly Git
+### 4.3 Git Amigable con Notebooks
 
-Jupyter notebooks are JSON files — diffing them is painful (output cells change every time).
+Los notebooks de Jupyter son archivos JSON — hacer diff de ellos es tedioso (las celdas de salida cambian en cada ejecución).
 
-**Solutions**:
-- **nbstripout**: strips notebook outputs before committing
-- **Jupytext**: pairs `.ipynb` with `.py` files for clean diffs
-- Review notebooks in nbconvert HTML, not in raw JSON
-- Use [[Python for Data Science]] conventions for notebook-friendly workflows
+**Soluciones**:
+- **nbstripout**: elimina las salidas de los notebooks antes de commitear
+- **Jupytext**: empareja `.ipynb` con archivos `.py` para diffs limpios
+- Revisa notebooks en HTML con nbconvert, no en JSON crudo
+- Usa las convenciones de [[Python for Data Science]] para flujos de trabajo compatibles con notebooks
 
 ---
 

@@ -4,98 +4,100 @@ status: growing
 created: 2026-06-27
 ---
 
-# Python for Data Science
+# Python para Ciencia de Datos
 
-## 1. Why This Matters
+## 1. Escenario de aprendizaje
 
-Python fundamentals are necessary but not sufficient. The data science ecosystem — NumPy, pandas, scikit-learn, PyTorch — is what makes Python the dominant language for ML. Understanding these libraries deeply (not just how to use them, but **how they work**) lets you write faster, more correct, and more maintainable data code.
+Te entregan un conjunto de datos de 50 GB en formato CSV. Necesitas cargarlo, limpiarlo, transformarlo y entrenar un modelo de clasificación. Si usas Python puro con bucles, el script tardará horas — o se quedará sin memoria. Necesitas NumPy para operaciones vectorizadas rápidas, pandas para manipulación eficiente de datos y scikit-learn para el pipeline de ML. Entender estas bibliotecas en profundidad (no solo cómo usarlas, sino **cómo funcionan internamente**) te permite escribir código de datos más rápido, correcto y mantenible.
+
+Los fundamentos de Python son necesarios pero no suficientes. El ecosistema de ciencia de datos — NumPy, pandas, scikit-learn, PyTorch — es lo que hace de Python el lenguaje dominante para ML.
 
 ---
 
-## 2. NumPy — The Foundation
+## 2. NumPy — La base
 
-NumPy provides the **ndarray** (n-dimensional array), which is faster and more memory-efficient than Python lists for numerical data.
+NumPy proporciona el **ndarray** (array n-dimensional), que es más rápido y eficiente en memoria que las listas de Python para datos numéricos.
 
-### 2.1 Why NumPy is Fast
+### 2.1 Por qué NumPy es rápido
 
-Python lists contain pointers to objects — each element is a Python object. NumPy arrays store **raw C values** in contiguous memory.
+Las listas de Python contienen punteros a objetos — cada elemento es un objeto Python. Los arrays de NumPy almacenan **valores C puros** en memoria contigua.
 
 ```python
-# Python list: each element is a PyObject pointer
-py_list = [1, 2, 3]          # ~72 bytes per element
+# Lista de Python: cada elemento es un puntero PyObject
+py_list = [1, 2, 3]          # ~72 bytes por elemento
 
-# NumPy array: raw int64 values in a contiguous block
-np_array = np.array([1, 2, 3])  # 8 bytes per element + overhead
+# Array de NumPy: valores int64 puros en un bloque contiguo
+np_array = np.array([1, 2, 3])  # 8 bytes por elemento + overhead
 ```
 
-This means:
-- **Less memory**: 8 bytes per int vs ~72 bytes
-- **CPU cache friendly**: sequential memory access is faster
-- **Vectorized operations**: operations run in C, not Python loops
+Esto significa:
+- **Menos memoria**: 8 bytes por int vs ~72 bytes
+- **Amigable con la caché de CPU**: el acceso secuencial a memoria es más rápido
+- **Operaciones vectorizadas**: las operaciones se ejecutan en C, no en bucles de Python
 
-### 2.2 Creating Arrays
+### 2.2 Creación de arrays
 
 ```python
 import numpy as np
 
 arr = np.array([1, 2, 3])
-zeros = np.zeros((3, 4))           # 3 rows, 4 cols
+zeros = np.zeros((3, 4))           # 3 filas, 4 columnas
 ones = np.ones((2, 3))
-eye = np.eye(3)                    # identity matrix (3×3)
+eye = np.eye(3)                    # matriz identidad (3×3)
 linspace = np.linspace(0, 1, 5)    # [0, 0.25, 0.5, 0.75, 1.0]
-random = np.random.randn(1000)     # 1000 samples from N(0, 1)
+random = np.random.randn(1000)     # 1000 muestras de N(0, 1)
 ```
 
-### 2.3 Vectorization — The Key Concept
+### 2.3 Vectorización — El concepto clave
 
-**Without vectorization** (slow):
+**Sin vectorización** (lento):
 ```python
 result = np.zeros(1000)
 for i in range(1000):
-    result[i] = a[i] * b[i] + c[i]  # Python loop — interpreted, slow
+    result[i] = a[i] * b[i] + c[i]  # Bucle de Python — interpretado, lento
 ```
 
-**With vectorization** (fast):
+**Con vectorización** (rápido):
 ```python
-result = a * b + c                   # No Python loop — runs in C
+result = a * b + c                   # Sin bucle de Python — se ejecuta en C
 ```
 
-**Rule**: never loop over NumPy arrays in Python. Use vectorized operations. [[Data Structures & Algorithms]] explains the Big O concepts behind this performance advantage.
+**Regla**: nunca iteres sobre arrays de NumPy en Python. Usa operaciones vectorizadas. [[Data Structures & Algorithms]] explica los conceptos de Big O detrás de esta ventaja de rendimiento.
 
 ### 2.4 Broadcasting
 
-Operations between arrays of different shapes are automatically aligned:
+Las operaciones entre arrays de diferentes formas se alinean automáticamente:
 
 ```python
 matrix = np.ones((3, 4))      # 3×4
-row_mean = matrix.mean(axis=1)  # shape (3,) — mean of each row
-centered = matrix - row_mean[:, np.newaxis]  # broadcasts across columns
+row_mean = matrix.mean(axis=1)  # forma (3,) — media de cada fila
+centered = matrix - row_mean[:, np.newaxis]  # broadcasting a través de columnas
 
-# Broadcasting rules:
-# (3, 4) and (3,) → insert dimension → (3, 4) and (3, 1) → (3, 4)
+# Reglas de broadcasting:
+# (3, 4) and (3,) → insertar dimensión → (3, 4) and (3, 1) → (3, 4)
 ```
 
-### 2.5 Linear Algebra
+### 2.5 Álgebra Lineal
 
 ```python
-# Matrix multiplication
-C = A @ B                      # same as np.matmul(A, B)
-v = W @ x + b                  # neural network layer
+# Multiplicación de matrices
+C = A @ B                      # igual que np.matmul(A, B)
+v = W @ x + b                  # capa de red neuronal
 
-# Decompositions
+# Descomposiciones
 eigvals, eigvecs = np.linalg.eig(cov_matrix)
 U, S, Vt = np.linalg.svd(matrix)
 ```
 
 ---
 
-## 3. pandas — Data Manipulation
+## 3. pandas — Manipulación de datos
 
-pandas is built on top of NumPy and adds labeled rows and columns.
+pandas está construido sobre NumPy y añade filas y columnas etiquetadas.
 
-### 3.1 The DataFrame
+### 3.1 El DataFrame
 
-A DataFrame is conceptually a **dictionary of Series** (columns). Each column has a single type.
+Un DataFrame es conceptualmente un **diccionario de Series** (columnas). Cada columna tiene un solo tipo.
 
 ```python
 import pandas as pd
@@ -104,43 +106,43 @@ df = pd.read_csv("data.csv")
 df = pd.read_parquet("data.parquet")
 df = pd.read_json("data.json")
 
-# Basic inspection
-df.info()          # columns, types, non-null counts
-df.describe()      # summary statistics
-df.head()          # first 5 rows
-df.shape           # (rows, columns)
+# Inspección básica
+df.info()          # columnas, tipos, conteos no nulos
+df.describe()      # estadísticas resumidas
+df.head()          # primeras 5 filas
+df.shape           # (filas, columnas)
 ```
 
-### 3.2 Selection — .loc vs .iloc
+### 3.2 Selección — .loc vs .iloc
 
-This is the most common source of confusion.
+Esta es la fuente más común de confusión.
 
 ```python
-# .loc: label-based (column names, index labels)
+# .loc: basado en etiquetas (nombres de columna, índices)
 df.loc[rows, columns]
-df.loc[df["age"] > 30, ["name", "income"]]  # boolean row mask
+df.loc[df["age"] > 30, ["name", "income"]]  # máscara booleana de filas
 
-# .iloc: integer position-based
+# .iloc: basado en posición entera
 df.iloc[row_indices, column_indices]
-df.iloc[10:20, [0, 3, 5]]  # rows 10-19, columns 0, 3, 5
+df.iloc[10:20, [0, 3, 5]]  # filas 10-19, columnas 0, 3, 5
 ```
 
-**When to use each**: `.loc` when you know column names (most of the time), `.iloc` when you are iterating programmatically.
+**Cuándo usar cada uno**: `.loc` cuando conoces los nombres de las columnas (la mayoría del tiempo), `.iloc` cuando iterás programáticamente.
 
-### 3.3 The Split-Apply-Combine Pattern
+### 3.3 El patrón Split-Apply-Combine
 
-This is the most important data pattern in pandas — it mirrors the [[Functional Programming]] map-filter-reduce paradigm:
+Este es el patrón de datos más importante en pandas — refleja el paradigma map-filter-reduce de [[Functional Programming]]:
 
 ```python
-# Group by category → apply function → combine results
+# Agrupar por categoría → aplicar función → combinar resultados
 df.groupby("department")["salary"].agg(["mean", "std", "count"])
 
-# Step by step:
-# 1. Split: partition data by department
-# 2. Apply: compute mean, std, count for each
-# 3. Combine: merge results into a new DataFrame
+# Paso a paso:
+# 1. Split: dividir los datos por departamento
+# 2. Apply: calcular media, std, conteo para cada uno
+# 3. Combine: fusionar los resultados en un nuevo DataFrame
 
-# More complex
+# Más complejo
 result = (df
     .groupby(["department", "year"])
     .agg(
@@ -151,34 +153,34 @@ result = (df
     .reset_index())
 ```
 
-### 3.4 Merging and Joining
+### 3.4 Fusiones y Joins
 
 ```python
-# SQL-style joins
+# Joins estilo SQL
 pd.merge(orders, customers, on="customer_id", how="inner")
 pd.merge(orders, customers, on="customer_id", how="left")
 
-# Concatenation
-pd.concat([df1, df2], axis=0)  # stack rows (len grows)
-pd.concat([df1, df2], axis=1)  # side by side (columns grow)
+# Concatenación
+pd.concat([df1, df2], axis=0)  # apilar filas (crece el largo)
+pd.concat([df1, df2], axis=1)  # lado a lado (crecen las columnas)
 ```
 
-### 3.5 Performance Tips
+### 3.5 Consejos de rendimiento
 
-- **Avoid `apply` with Python functions** for large datasets (it loops in Python). Use vectorized operations instead.
-- **Use categorical dtype** for low-cardinality string columns (saves memory, faster groupbys).
-- **Use inplace=False** (the default) — it is safer and often equally fast.
-- ** `query()` is more readable** for complex filters: `df.query("age > 30 and income > 50000")`
+- **Evita `apply` con funciones de Python** para conjuntos de datos grandes (itera en Python). Usa operaciones vectorizadas en su lugar.
+- **Usa el tipo categorical** para columnas de texto con baja cardinalidad (ahorra memoria, groupbys más rápidos).
+- **Usa inplace=False** (el valor por defecto) — es más seguro y a menudo igual de rápido.
+- **`query()` es más legible** para filtros complejos: `df.query("age > 30 and income > 50000")`
 
 ---
 
-## 4. scikit-learn — The ML Interface
+## 4. scikit-learn — La interfaz de ML
 
-scikit-learn established the consistent `fit` / `predict` / `transform` API that became standard across ML in Python.
+scikit-learn estableció la API consistente `fit` / `predict` / `transform` que se convirtió en estándar en ML en Python.
 
-### 4.1 The API Pattern
+### 4.1 El patrón de la API
 
-Every model and transformer follows the same pattern, a classic application of [[Object-Oriented Programming]] polymorphism:
+Cada modelo y transformador sigue el mismo patrón, una aplicación clásica del polimorfismo de [[Object-Oriented Programming]]:
 
 ```python
 from sklearn.ensemble import RandomForestClassifier
@@ -190,18 +192,18 @@ pipeline = Pipeline([
     ("model", RandomForestClassifier(n_estimators=100)),
 ])
 
-pipeline.fit(X_train, y_train)        # learn parameters
-predictions = pipeline.predict(X_test)  # apply learned model
+pipeline.fit(X_train, y_train)        # aprender parámetros
+predictions = pipeline.predict(X_test)  # aplicar el modelo aprendido
 ```
 
-### 4.2 Why the Uniform API Matters
+### 4.2 Por qué importa la API uniforme
 
-- **Interchangeable components**: swap `RandomForestClassifier` for `XGBClassifier` without changing anything else
-- **Grid search**: `GridSearchCV` works on any model with the same API
-- **Pipelines**: compose preprocessing + modeling into one object
-- **Production**: exporters and serving frameworks expect the API
+- **Componentes intercambiables**: cambia `RandomForestClassifier` por `XGBClassifier` sin cambiar nada más
+- **Búsqueda de hiperparámetros**: `GridSearchCV` funciona en cualquier modelo con la misma API
+- **Pipelines**: compone preprocesamiento + modelado en un solo objeto
+- **Producción**: los exportadores y frameworks de servicio esperan esta API
 
-### 4.3 Essential Tools
+### 4.3 Herramientas esenciales
 
 ```python
 from sklearn.model_selection import (train_test_split, cross_val_score,
@@ -216,11 +218,11 @@ from sklearn.compose import ColumnTransformer
 
 ---
 
-## 5. PyTorch vs TensorFlow — A Quick Orientation
+## 5. PyTorch vs TensorFlow — Una orientación rápida
 
-Both are deep learning frameworks. PyTorch has become the dominant choice for research and increasingly for production.
+Ambos son frameworks de deep learning. PyTorch se ha convertido en la opción dominante para investigación y cada vez más para producción.
 
-**PyTorch key philosophy**: define-by-run (dynamic computation graphs).
+**Filosofía clave de PyTorch**: define-by-run (grafos de cómputo dinámicos).
 
 ```python
 import torch.nn as nn
