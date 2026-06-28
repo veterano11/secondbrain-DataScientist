@@ -1,9 +1,12 @@
 {
-  "mcpServers": {
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
     "second-brain": {
+      "type": "local",
       "command": "/Users/matiassf/Desktop/Brain/mcp_server/.venv/bin/python",
       "args": ["-m", "brain_mcp"],
-      "cwd": "/Users/matiassf/Desktop/Brain/mcp_server"
+      "cwd": "/Users/matiassf/Desktop/Brain/mcp_server",
+      "enabled": true
     }
   }
 }
