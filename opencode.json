@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "second-brain": {
+      "command": "/Users/matiassf/Desktop/Brain/mcp_server/.venv/bin/python",
+      "args": ["-m", "brain_mcp"],
+      "cwd": "/Users/matiassf/Desktop/Brain/mcp_server"
+    }
+  }
+}

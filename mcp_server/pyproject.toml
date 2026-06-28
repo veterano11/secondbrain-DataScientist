@@ -1,0 +1,11 @@
+[project]
+name = "brain-mcp"
+version = "0.1.0"
+description = "MCP server for Obsidian Second Brain vault"
+requires-python = ">=3.9"
+dependencies = [
+    "mcp>=1.0.0",
+]
+
+[project.scripts]
+brain-mcp = "brain_mcp.__main__:main"
