@@ -299,7 +299,7 @@ model.fit(X_train, y_train)  # fit_transform on train, transform on test
 
 ---
 
-## 11. Summary
+## 11. Resumen
 
 Feature engineering is where domain knowledge meets data science. Good features make simple models perform well. The process involves handling missing data, encoding categories, scaling numerics, creating interaction features, and selecting the most informative subset. Always wrap feature engineering in a pipeline to prevent data leakage. The golden rule: compute statistics on training data only, then transform test data using those statistics.
 

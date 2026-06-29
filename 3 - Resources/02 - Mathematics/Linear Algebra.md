@@ -236,7 +236,7 @@ Para matrices simétricas definidas positivas (como la covarianza).
 
 ---
 
-## 7. Summary
+## 7. Resumen
 
 Linear algebra is the language of machine learning. Your data is a collection of vectors. Transformations (matrices) are your models. Decompositions (SVD, eigenvalues) are the tools that let you see what is really happening. When you see a transformer, remember: $QK^T$ is a matrix of dot products measuring token similarity. When you run PCA, remember: you are finding the eigenvectors of the covariance. Everything is linear algebra.
 

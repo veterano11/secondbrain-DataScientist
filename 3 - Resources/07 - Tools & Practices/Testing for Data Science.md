@@ -222,7 +222,7 @@ jobs:
 
 ---
 
-## 8. Summary
+## 8. Resumen
 
 Testing in data science covers four areas: unit tests (code correctness), data tests (data quality), model tests (behavioral properties), and integration tests (pipeline correctness). Use pytest for unit tests, Great Expectations for data validation, and CI/CD to automate everything. Test properties, not exact values. The goal is catching problems before they reach production.
 

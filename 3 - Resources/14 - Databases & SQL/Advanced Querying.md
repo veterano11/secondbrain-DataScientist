@@ -101,7 +101,7 @@ WHERE NOT EXISTS (
 );
 ```
 
-> 💡 `EXISTS` corta en cuanto encuentra la primera coincidencia. `IN` materializa toda la subquery primero — diferencia importante en [[Query Optimization & Indexing|rendimiento]].
+> Nota: `EXISTS` corta en cuanto encuentra la primera coincidencia. `IN` materializa toda la subquery primero — diferencia importante en [[Query Optimization & Indexing|rendimiento]].
 
 ---
 

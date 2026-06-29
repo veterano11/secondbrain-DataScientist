@@ -243,7 +243,7 @@ bordes = canny(img_suave, sigma=0.5)
 3. La ecualización de histograma mejora el contraste. ¿Hay casos donde empeore la imagen? ¿Cuáles?
 4. Si la transformada de Fourier de una imagen tiene toda su energía en el centro, ¿qué me decís de la imagen?
 
-## 10. Summary
+## 10. Resumen
 
 Las imágenes son matrices de números. Procesarlas es aplicar operaciones matemáticas sobre esas matrices: filtros de convolución para suavizar o detectar bordes, transformaciones de histograma para corregir iluminación, y umbralizado para segmentar. El pipeline clásico (suavizar → bordes → segmentar) es la base sobre la que se construyen sistemas modernos de visión. Dominarlo te permite debuguear pipelines de deep learning y resolver problemas sin GPU.
 

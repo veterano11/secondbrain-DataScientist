@@ -212,7 +212,7 @@ For reliable evaluation:
 
 ---
 
-## 10. Summary
+## 10. Resumen
 
 Supervised learning learns a mapping from inputs to outputs using labeled data. Linear models offer simplicity and interpretability (regression, logistic). Tree-based models handle non-linearity and interactions naturally (Random Forest, XGBoost). The key challenge is generalization — the model must perform well on data it has never seen. Proper evaluation (train/test split, cross-validation) and awareness of bias-variance tradeoffs separate effective practitioners from those who overfit to noise.
 

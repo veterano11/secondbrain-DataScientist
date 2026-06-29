@@ -185,7 +185,7 @@ La intuición clave: una integral es el **área bajo una curva**. Si la curva es
 
 ---
 
-## 8. Summary
+## 8. Resumen
 
 Derivatives tell you how to change your model to improve it. Gradient descent is the algorithm that takes those derivatives and turns them into better weights. Backpropagation computes derivatives efficiently for millions of parameters. Every optimizer (SGD, Adam, etc.) is a refinement of the same core idea: follow the negative gradient.
 

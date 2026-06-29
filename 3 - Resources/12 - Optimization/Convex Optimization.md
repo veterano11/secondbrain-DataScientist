@@ -133,7 +133,7 @@ Si tu problema no es convexo, el buen punto de partida es encontrar una **relaja
 2. Si es convexo, podés usar solvers especializados que garantizan el óptimo global rápidamente. Si no, necesitás métodos heurísticos (SGD, annealing).
 3. Que SGD va a converger al clasificador de máximo margen, sin importar la inicialización.
 
-## 9. Summary
+## 9. Resumen
 
 La convexidad garantiza que el mínimo local es global y que podemos encontrarlo eficientemente. Muchos problemas clásicos de ML son convexos (regresión, SVM, logistic regression). Para problemas no convexos (deep learning), debemos aceptar soluciones aproximadas. La dualidad y las condiciones KKT son las herramientas para analizar y resolver problemas convexos.
 

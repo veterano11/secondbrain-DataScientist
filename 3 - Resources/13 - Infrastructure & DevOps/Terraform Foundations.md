@@ -371,13 +371,20 @@ Estos comandos forman el núcleo de tu [[CLI & Productivity]] con Terraform. Cad
 - **State file en local**: si pierdes el archivo, Terraform no sabe qué creó. Un backup remoto es [[Code Quality|obligatorio]] para cualquier proyecto real.
 - **Tocar resources fuera de Terraform**: modificas el bucket desde la consola AWS → el próximo `apply` lo revierte al estado declarado.
 
-## Check Your Understanding
+## 15. Resumen
+
+1. Terraform usa HCL para declarar recursos de infraestructura de forma legible y versionable.
+2. `terraform init` descarga providers; `terraform plan` muestra cambios; `terraform apply` los ejecuta.
+3. Los recursos tienen dependencias implícitas (referencias entre atributos) y explícitas (`depends_on`).
+4. Siempre revisar `terraform plan` antes de `apply` para evitar destrucciones accidentales.
+
+## 16. Check Your Understanding
 
 1. Escribiste `terraform plan` y ves `-` (destroy) al lado de un resource que no tocaste. ¿Qué puede estar pasando?
 2. Si quieres desplegar el mismo código en dev, staging y prod cambiando solo el nombre del bucket y el instance_type, ¿cómo lo harías?
 3. `terraform init` falla con "Could not retrieve provider hashicorp/aws". ¿Qué verificas primero?
 
-## Where to Go Next
+## 17. Where to Go Next
 
 - [[Terraform State & Backends]] — cómo hacer que el state sea compartible y seguro
 - [[Terraform Modules & Project Structure]] — organizar proyectos que crecen

@@ -190,7 +190,7 @@ This is not just theory — it determines whether adding more features will help
 
 ---
 
-## 8. Summary
+## 8. Resumen
 
 Proper evaluation is what separates real ML results from accidental overfitting. The train/val/test framework prevents data leakage. Metrics must match the problem (accuracy for balanced, F1/PR-AUC for imbalanced). Learning curves diagnose bias vs variance. Cross-validation gives reliable estimates. The golden rule: the test set is sacred — touch it only once, at the very end.
 

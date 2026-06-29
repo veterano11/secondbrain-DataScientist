@@ -131,7 +131,7 @@ $$a^* = \arg\min_a \int L(\theta, a) P(\theta | D) d\theta$$
 2. Es equivalente a Uniform(0,1) — todas las tasas igualmente probables.
 3. Cuando tenés datos de un estudio previo confiable (ej: misma campaña, año anterior).
 
-## 9. Summary
+## 9. Resumen
 
 Bayesian Inference actualiza creencias (prior → posterior) usando el teorema de Bayes. Los priors conjugados (Beta-Binomial, Normal-Normal) permiten actualización cerrada. La posterior da una distribución completa de probabilidad del parámetro, no solo un punto. Los intervalos de credibilidad son intuitivos ("95% de probabilidad"). La regla principal: siempre probar sensibilidad al prior.
 

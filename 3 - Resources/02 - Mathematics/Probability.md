@@ -242,7 +242,7 @@ Una forma de calcular $P(A)$ considerando todos los escenarios posibles $B_i$.
 
 ---
 
-## 9. Summary
+## 9. Resumen
 
 Probability is the mathematics of uncertainty. Bayes theorem tells us how to update beliefs with evidence. Distributions (especially the normal) describe how random variables behave. Every ML model is implicitly doing probabilistic inference — understanding probability lets you understand what your model is really saying.
 

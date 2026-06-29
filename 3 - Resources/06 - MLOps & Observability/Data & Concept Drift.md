@@ -140,7 +140,7 @@ En la práctica, la mayoría de los equipos usan una combinación: reentrenamien
 
 Cuando se sospecha deriva de concepto, puede ser necesario [[Hyperparameter Tuning]] o un cambio completo en la arquitectura del modelo — no solo reentrenar con datos frescos.
 
-## 8. Summary
+## 8. Resumen
 
 Drift is inevitable. Data drift (input distribution changes) is easier to detect with PSI/KS tests. Concept drift (label relationship changes) is harder — it requires ground truth or proxy metrics. Monitor both globally and by segment. Choose a retraining strategy based on your drift speed and label availability. The key is detecting drift before business impact, not after.
 

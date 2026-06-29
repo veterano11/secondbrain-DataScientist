@@ -280,13 +280,21 @@ resource "aws_s3_bucket" "logs" {
 
 Seguir estas buenas prácticas de [[Code Quality]] previene la mayoría de los desastres con state.
 
-## Check Your Understanding
+## 8. Resumen
+
+1. El state file es el activo más valioso de Terraform: mapea recursos declarados a recursos reales.
+2. El backend local es funcional para experimentar pero peligroso para equipos.
+3. S3 + DynamoDB es el backend remoto estándar: almacenamiento compartido + locking.
+4. `terraform init -migrate-state` mueve el state de local a remoto sin perder recursos.
+5. Workspaces permiten múltiples entornos con un solo backend, pero keys separadas son más explícitas.
+
+## 9. Check Your Understanding
 
 1. Dos developers ejecutan `terraform apply` al mismo tiempo. Uno tiene DynamoDB locking configurado, el otro no. ¿Qué diferencia hay en el comportamiento?
 2. Perdiste el state local pero los recursos en AWS existen. ¿Cómo recuperas el control sin destruir nada?
 3. ¿En qué caso preferirías workspaces sobre keys de backend separados para entornos?
 
-## Where to Go Next
+## 10. Where to Go Next
 
 - [[Terraform Modules & Project Structure]] — organizar el código limpio para varios entornos
 - [[AWS CodeBuild with Terraform]] — CI/CD con state remoto

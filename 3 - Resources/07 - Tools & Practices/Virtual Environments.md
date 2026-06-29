@@ -204,7 +204,7 @@ env/
 
 ---
 
-## 8. Summary
+## 8. Resumen
 
 Virtual environments isolate Python dependencies per project. venv is built-in and sufficient for most cases. Conda handles non-Python dependencies. Poetry and uv provide deterministic builds. Always use an environment, commit the dependency file, and add `.venv/` to `.gitignore`. The rule: if you are not using a virtual environment, you are doing it wrong.
 

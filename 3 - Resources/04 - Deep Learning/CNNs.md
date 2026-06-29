@@ -162,7 +162,7 @@ For detection and segmentation architectures built on CNNs, see [[Object Detecti
 
 ---
 
-## 9. Summary
+## 9. Resumen
 
 CNNs use convolutions to efficiently learn spatial patterns. The convolution operation detects local features, pooling downsamples, and the composition of many layers builds hierarchical representations (edges → textures → parts → objects). Key innovations — residual connections, depthwise convolutions, and compound scaling — have pushed accuracy while reducing parameters.
 

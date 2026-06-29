@@ -424,14 +424,22 @@ Posibles fallos y cómo debuguearlos:
 - **Buildspec en la raíz**: puedes poner `buildspec.yml` en la raíz del repo. Pero es mejor usar subdirectorios para plan/apply separados.
 - **Terraform versión incompatible**: CodeBuild usa Amazon Linux. Asegúrate de que la versión de Terraform que descargas sea compatible con linux_amd64.
 
-## Check Your Understanding
+## 12. Resumen
+
+1. CodeBuild ejecuta Terraform en contenedores efímeros, por lo que el state remoto (S3 + DynamoDB) es obligatorio.
+2. El pipeline típico tiene dos fases: plan (PR) y apply (merge a main).
+3. El rol de IAM de CodeBuild necesita permisos para leer/escribir state y crear/destruir recursos.
+4. Bloquear versiones (`.tfversion`, `required_version`) evita roturas por cambios en Terraform.
+5. Usar cola de builds (un build a la vez) previene conflictos de locking.
+
+## 13. Check Your Understanding
 
 1. ¿Por qué no puedes usar backend local cuando ejecutas Terraform desde CodeBuild?
 2. En el buildspec de plan.yml, ¿por qué usamos `-no-color` y `tee`?
 3. Si quieres que apply no sea automático sino que requiera aprobación, ¿qué cambios harías al pipeline?
 4. Un build de plan falla con "Error acquiring state lock: ConditionalCheckFailedException". ¿Qué está pasando y qué haces?
 
-## Where to Go Next
+## 14. Where to Go Next
 
 - [[Terraform State & Backends]] — la base para que CodeBuild funcione
 - [[Terraform Modules & Project Structure]] — organiza el repo para múltiples entornos

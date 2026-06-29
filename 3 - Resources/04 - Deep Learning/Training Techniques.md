@@ -189,7 +189,7 @@ FSDP is the most common for training LLMs (splits parameters, gradients, and opt
 
 ---
 
-## 10. Summary
+## 10. Resumen
 
 Training a neural network effectively requires choosing the right optimizer, learning rate schedule, normalization, and regularization. Adam is the default optimizer. Cosine decay with linear warmup is the default schedule. LayerNorm/RMSNorm are standard for transformers. Gradient clipping prevents explosion. Transfer learning saves data and compute. Pick the right combination and monitor both loss and gradient norms throughout training.
 

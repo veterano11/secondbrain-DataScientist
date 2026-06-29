@@ -169,7 +169,7 @@ $$\mathcal{L} = \underbrace{-\mathbb{E}_{z \sim q_\phi}[\log p_\theta(x|z)]}_{\t
 3. ¿Por qué NeRF necesita positional encoding de alta frecuencia? (Las redes profundas tienden a aprender frecuencias bajas; el encoding fuerza a la red a aprender detalles finos)
 4. ¿En qué caso usarías un VAE en vez de diffusion? (Cuando necesitás un espacio latente estructurado para interpolación o exploración controlada)
 
-## 9. Summary
+## 9. Resumen
 
 Tres familias de modelos generativos compiten hoy. GANs (dos redes compitiendo) fueron el estándar 2018-2022 pero sufren mode collapse. Diffusion models (agregar y remover ruido gradualmente) son el estado del arte para generación de imágenes. VAEs ofrecen un espacio latente estructurado pero imágenes borrosas. NeRF extiende la generación a 3D. Stable Diffusion combina VAE + Diffusion para generar imágenes de alta calidad en segundos.
 

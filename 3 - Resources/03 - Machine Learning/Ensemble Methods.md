@@ -196,7 +196,7 @@ LightGBM - Accuracy: 0.9480
 AUC-ROC: 0.9851
 ```
 
-⚠️ **Advertencia**: `num_leaves` es el análogo de `max_depth`. Con `num_leaves=31` y profundidad ~5, LightGBM tiende a crecer árboles más complejos que XGBoost. Reduce `num_leaves` o incrementa `min_child_samples` si ves overfitting.
+**Advertencia**: `num_leaves` es el análogo de `max_depth`. Con `num_leaves=31` y profundidad ~5, LightGBM tiende a crecer árboles más complejos que XGBoost. Reduce `num_leaves` o incrementa `min_child_samples` si ves overfitting.
 
 ## 7. CatBoost
 

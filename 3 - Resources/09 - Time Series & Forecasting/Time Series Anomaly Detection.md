@@ -154,7 +154,7 @@ top_anomalias = np.argsort(anomaly_score)[-5:]
 2. ¿Cuándo preferirías un autoencoder a STL+residual? (Cuando la serie es multivariada o tiene relaciones complejas entre features)
 3. Threshold basado en percentil vs basado en desvío estándar: ¿cuál es más robusto a outliers?
 
-## 10. Summary
+## 10. Resumen
 
 La detección de anomalías en series temporales va de métodos simples (z-score) a complejos (autoencoders). El pipeline: descomponer (STL), analizar residuo, threshold adaptativo. Para series estables, z-score o EWMA alcanzan. Para series con estacionalidad fuerte, STL + residual. Para alta dimensionalidad, autoencoder. El threshold debe adaptarse a cambios en la varianza.
 

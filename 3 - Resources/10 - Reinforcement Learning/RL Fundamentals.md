@@ -170,7 +170,7 @@ def entrenar_agente(env, Q, episodios=1000, alpha=0.1, gamma=0.9, epsilon=0.1):
 3. Off-policy: aprende sobre $\pi^*$ mientras ejecuta $\pi_{behavior}$. SARSA es on-policy: aprende sobre la política que está ejecutando.
 4. Es infinita — UCB garantiza que cada acción se pruebe al menos una vez.
 
-## 9. Summary
+## 9. Resumen
 
 RL formaliza el aprendizaje por prueba y error como un MDP: estados, acciones, transiciones, recompensas. El agente busca maximizar el retorno descontado aprendiendo una política. El dilema exploración-explotación se resuelve con ε-greedy, UCB, o Thompson sampling. Value-based methods aprenden $Q(s,a)$, policy-based aprenden $\pi(a|s)$ directamente. Todo RL se reduce a este framework.
 

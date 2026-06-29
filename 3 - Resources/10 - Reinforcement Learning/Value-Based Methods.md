@@ -182,7 +182,7 @@ q_target = target_net(next_states).gather(1, accion_elegida.unsqueeze(1)).squeez
 3. En un entorno donde los rewards son muy escasos (solo al final del episodio), ¿qué mejora de DQN ayuda más?
 4. Duelling DQN separa $V$ y $A$. ¿Qué ventaja tiene?
 
-## 8. Summary
+## 8. Resumen
 
 Value-based methods aprenden $Q(s,a)$ y eligen la mejor acción. Tabular Q-Learning funciona para espacios discretos chicos. DQN extiende Q-learning a espacios grandes con redes neuronales, experience replay, y target networks. La familia DQN (Double, Dueling, PER) resolvió Atari games desde píxeles. La limitación principal: espacios de acción discretos y pequeños. Para acciones continuas o muchas acciones, necesitás policy-based methods.
 

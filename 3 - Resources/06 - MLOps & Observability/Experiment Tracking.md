@@ -189,7 +189,7 @@ mlflow.models.transition_model_version_stage(
 
 ---
 
-## 9. Summary
+## 9. Resumen
 
 Experiment tracking ensures reproducibility. Log everything: code version, data version, hyperparameters, metrics, and artifacts. Use MLflow (self-hosted, open source) or W&B (cloud, richer UI). Maintain a model registry with stage transitions. The rule: if it is not logged, it did not happen.
 

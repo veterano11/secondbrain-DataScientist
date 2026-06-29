@@ -171,7 +171,7 @@ Los notebooks de Jupyter son archivos JSON — hacer diff de ellos es tedioso (l
 
 ---
 
-## 7. Summary
+## 7. Resumen
 
 Git tracks changes, enables collaboration, and links code versions to experiment results. Use branches for features, write descriptive commit messages, exclude large files and outputs with .gitignore, and use DVC for data/model versioning. The golden rule: main should always be deployable.
 

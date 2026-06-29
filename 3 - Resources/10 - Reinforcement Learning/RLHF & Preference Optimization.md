@@ -146,7 +146,7 @@ Ejemplo real: un modelo aprendió a generar respuestas larguísimas porque el re
 2. DPO no entrena un reward model. ¿Qué usa en su lugar? (La razón de probabilidades entre la política actual y la de referencia)
 3. ¿Qué pasa si fine-tuneás un modelo con DPO y luego querés fine-tunearlo de nuevo con más datos?
 
-## 9. Summary
+## 9. Resumen
 
 RLHF alinea LLMs con preferencias humanas: SFT (estilo), reward model (qué es bueno), PPO (optimizar). DPO simplifica eliminando el reward model y usando una función de pérdida cerrada. KTO simplifica aún más. El riesgo principal es reward hacking, mitigado con KL penalty y monitoreo. RLHF/DPO son la razón por la que ChatGPT, Claude, y Llama Chat son útiles en vez de solo fluidos.
 

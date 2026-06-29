@@ -236,7 +236,7 @@ Cada 100 steps:
 3. Compara la performance parcial del trial contra la mediana de trials previos al mismo paso.
 4. Se pierde diversidad — pero la mutación de HPs reintroduce variedad.
 
-## 11. Summary
+## 11. Resumen
 
 El tuning de hiperparámetros separa modelos promedio de modelos competitivos. Combinado con buenas [[Training Techniques]], es la diferencia entre un proyecto de investigación y uno productivo. Grid Search no escala, Random Search es mejor, Bayesian Optimization es mejor aún (construye un modelo sustituto para elegir la próxima configuración). Optuna es el estándar moderno con pruning. Siempre fijar semilla, elegir rangos en escala correcta, y no tocar el test set durante el tuning.
 

@@ -196,7 +196,7 @@ Respuesta:
 
 ---
 
-## 10. Summary
+## 10. Resumen
 
 RAG grounds LLM outputs in external knowledge by retrieving relevant chunks and feeding them as context. Good RAG requires: well-chunked documents, good embeddings, effective retrieval (hybrid is best), and careful prompt design that prioritizes context over the model's parametric knowledge. RAG enables up-to-date, verifiable, domain-specific AI applications without fine-tuning.
 

@@ -315,7 +315,7 @@ for item in list[:]:    # iterate over a slice copy
 
 ---
 
-## 10. Summary
+## 10. Resumen
 
 Python's design philosophy — readability, explicitness, and simplicity — makes it the ideal language for data science. Its built-in types (list, dict, set) cover most needs, comprehensions make code concise, generators handle large data, and context managers ensure clean resource management. Master these fundamentals before moving to the specialized libraries.
 

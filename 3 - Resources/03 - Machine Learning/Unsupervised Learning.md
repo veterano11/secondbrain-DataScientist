@@ -172,7 +172,7 @@ Faster than t-SNE, better at preserving global structure, and scalable to larger
 
 ---
 
-## 7. Summary
+## 7. Resumen
 
 Unsupervised learning finds hidden structure in unlabeled data. Clustering groups similar points (K-Means for spherical clusters, DBSCAN for arbitrary shapes). Dimensionality reduction compresses data while preserving information (PCA for linear structure, t-SNE/UMAP for visualization). These methods are essential for understanding data before applying supervised learning, and for feature engineering in high-dimensional problems.
 

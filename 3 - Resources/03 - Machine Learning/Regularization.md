@@ -230,7 +230,7 @@ $$\hat{x} = \frac{x - \mu_B}{\sqrt{\sigma_B^2 + \epsilon}}, \quad y = \gamma \ha
 
 ---
 
-## 11. Summary
+## 11. Resumen
 
 Regularization prevents overfitting by constraining the model. L1 (Lasso) drives weights to zero (feature selection). L2 (Ridge) shrinks weights uniformly (stability). Elastic Net combines both. Dropout and early stopping are specialized for neural networks. Data augmentation and batch normalization also provide regularization effects. The key insight: **a simpler model generalizes better**. Regularization is how you enforce simplicity.
 

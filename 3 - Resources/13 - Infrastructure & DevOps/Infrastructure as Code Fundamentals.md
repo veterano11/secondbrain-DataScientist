@@ -143,13 +143,21 @@ Ventajas:
 - **Mezclar declarativo e imperativo**: tener algunos recursos en Terraform y otros creados a mano. No sabes qué existe ni por qué. Todo debe estar en código.
 - **No probar en un [[Virtual Environments|entorno aislado]]**: hacer terraform apply directo a producción sin pasar por dev/staging. Así es como se borran bases de datos.
 
-## Check Your Understanding
+## 9. Resumen
+
+1. Infrastructure as Code es gestionar infraestructura mediante archivos de configuración declarativos, no comandos manuales.
+2. Terraform es declarativo: describes el estado deseado y el calcula el plan para alcanzarlo.
+3. La idempotencia asegura que aplicar el mismo código múltiples veces produce el mismo resultado.
+4. El state file mapea recursos declarados a recursos reales en el proveedor.
+5. GitOps usa el repositorio como fuente de verdad única para la infraestructura.
+
+## 10. Check Your Understanding
 
 1. Un colega modificó el security group desde la consola AWS. Luego tú ejecutas `terraform apply`. ¿Qué esperas que pase?
 2. ¿Por qué un script de bash con `aws ec2 run-instances` **no** es IaC, aunque automatice la creación?
 3. Si tu state file se corrompe y no tienes backup, ¿qué opciones tienes para recuperar el control de la infraestructura?
 
-## Where to Go Next
+## 11. Where to Go Next
 
 - [[Terraform Foundations]] — escribir tu primer main.tf desde cero
 - [[Terraform State & Backends]] — cómo proteger y compartir el state

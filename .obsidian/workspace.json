@@ -11,10 +11,14 @@
             "id": "2b1caa71c1211978",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Vista gráfica"
+              "type": "markdown",
+              "state": {
+                "file": "Meta/_index.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "_index"
             }
           }
         ]
@@ -179,6 +183,7 @@
   },
   "active": "2b1caa71c1211978",
   "lastOpenFiles": [
+    "README.md",
     "3 - Resources/23 - Information Theory & Advanced Math/Graph Neural Networks.md",
     "3 - Resources/18 - Advanced Statistics/Causal ML.md",
     "3 - Resources/03 - Machine Learning/Advanced Feature Engineering.md",
@@ -204,7 +209,6 @@
     "3 - Resources/25 - ML in Production/Model Compression.md",
     "3 - Resources/24 - Recommender Systems/Content-Based Filtering.md",
     "3 - Resources/24 - Recommender Systems/Collaborative Filtering.md",
-    "3 - Resources/25 - ML in Production/Deploy Strategies for ML.md",
     "3 - Resources/26 - Data Security & Compliance",
     "3 - Resources/25 - ML in Production",
     "3 - Resources/24 - Recommender Systems",

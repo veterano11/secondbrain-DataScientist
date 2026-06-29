@@ -254,7 +254,7 @@ def fib_memo(n):
 
 ---
 
-## 7. Summary
+## 7. Resumen
 
 Data structures are about tradeoffs: arrays give fast access but slow insertion; hash tables give fast lookup but use more memory; trees give ordered access but have overhead. Big O notation quantifies these tradeoffs. The most practical takeaway: use `dict`/`set` for fast lookups, `list` for ordered sequences, `deque` for queues, and `heapq` for priority. Understanding these choices separates efficient data code from slow code.
 

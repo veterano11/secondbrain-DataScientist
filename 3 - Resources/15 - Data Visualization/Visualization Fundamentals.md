@@ -189,7 +189,7 @@ plt.tight_layout()
 
 Edward Tufte acuñó el **data-ink ratio**: proporción de tinta que representa datos vs tinta total del gráfico. Maximizarlo significa eliminar decoración innecesaria.
 
-| ❌ Chart junk | ✅ Minimalismo |
+| Mal: Chart junk | Bien: Minimalismo |
 |---|---|
 | Fondo con textura | Fondo blanco o gris claro |
 | 3D innecesario | 2D plano |

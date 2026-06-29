@@ -156,7 +156,7 @@ Instead of updating all parameters, insert small trainable modules:
 
 ---
 
-## 8. Summary
+## 8. Resumen
 
 Transfer learning is the standard practice in deep learning. Start from a pre-trained model, adapt it to your task with a small amount of data and a low learning rate. Choose the strategy (feature extraction, fine-tuning, or PEFT) based on your dataset size and domain similarity. The key is not to destroy the pre-trained features with aggressive updates.
 

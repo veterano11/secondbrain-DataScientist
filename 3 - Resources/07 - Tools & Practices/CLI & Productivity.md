@@ -213,7 +213,7 @@ clean:
 
 ---
 
-## 9. Summary
+## 9. Resumen
 
 The CLI is the most powerful tool in a data scientist's arsenal. Learn `find`, `grep`/`rg`, `jq`, and `awk` for data processing. Use `htop`/`du` for monitoring. Build CLI tools with Click or Typer. Automate with Make and cron. The GUI is for exploration; the CLI is for automation.
 

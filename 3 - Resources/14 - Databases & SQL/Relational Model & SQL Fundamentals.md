@@ -37,7 +37,7 @@ El [[Relational Model & SQL Fundamentals|modelo relacional]] organiza datos en *
  clientes                          pedidos
 ┌──────────────┐                 ┌──────────────────┐
 │ id  (PK)     │──┐             │ id  (PK)         │
-│ nombre       │  └──FK────────▶│ cliente_id (FK)  │
+│ nombre       │  └──FK────────>│ cliente_id (FK)  │
 │ email        │                 │ producto_id (FK) │
 └──────────────┘                 │ cantidad         │
                                  │ fecha            │
@@ -196,7 +196,7 @@ FROM pedidos pe
 RIGHT JOIN clientes c ON pe.cliente_id = c.id;
 ```
 
-> 💡 En SQLite no hay `RIGHT JOIN` ni `FULL JOIN`. Usa `LEFT JOIN` con las tablas intercambiadas.
+> Nota: En SQLite no hay `RIGHT JOIN` ni `FULL JOIN`. Usa `LEFT JOIN` con las tablas intercambiadas.
 
 ---
 

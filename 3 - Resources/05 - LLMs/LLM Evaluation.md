@@ -192,7 +192,7 @@ print(f"Δ = {puntuacion_ft - puntuacion_base:+.3f}")
 
 ---
 
-## 9. Summary
+## 9. Resumen
 
 LLM evaluation is multi-dimensional: knowledge, reasoning, coding, truthfulness, safety, and instruction following. Use a mix of standard benchmarks (MMLU, HumanEval, MT-Bench) for general capability, automated judges for task-specific evaluation, and human evaluation for final assessment. Always compare against a baseline, measure multiple dimensions, and be aware of measurement biases (judge preferences, position bias, variance).
 

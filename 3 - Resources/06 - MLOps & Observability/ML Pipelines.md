@@ -42,10 +42,10 @@ Obtener datos desde los sistemas fuente hasta el pipeline.
 Verificar la calidad de los datos antes de que entren al pipeline.
 
 ```
-✓ El esquema coincide con columnas y tipos esperados
-✓ Los rangos de valores están dentro de los límites esperados
-✓ La tasa de valores faltantes está por debajo del umbral
-✓ No hay claves primarias duplicadas
+El esquema coincide con columnas y tipos esperados
+Los rangos de valores están dentro de los límites esperados
+La tasa de valores faltantes está por debajo del umbral
+No hay claves primarias duplicadas
 ```
 
 **Herramientas**: Great Expectations, Pandera, TensorFlow Data Validation. Monitorear [[Data & Concept Drift]] después del despliegue.
@@ -165,7 +165,7 @@ Todas modelan los pipelines como **DAGs** (grafos acíclicos dirigidos) — paso
 
 ---
 
-## 7. Summary
+## 7. Resumen
 
 ML pipelines automate the end-to-end ML workflow: ingest → validate → transform → train → evaluate → deploy. The key principles are: share feature code between training and serving, version everything (data, code, model), automate all deployment steps, and monitor for failures. A well-built pipeline makes model updates safe, fast, and auditable.
 

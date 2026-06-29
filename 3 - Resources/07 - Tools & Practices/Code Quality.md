@@ -236,7 +236,7 @@ Todo proyecto debería tener un README que responda:
 
 ---
 
-## 9. Summary
+## 9. Resumen
 
 Code quality tools catch bugs before they reach production. Ruff lints and formats. myPy enforces type hints. Pre-commit runs checks automatically before every commit. Good documentation (docstrings, README) makes code maintainable. The investment in code quality pays for itself in fewer bugs, faster development, and happier teammates.
 

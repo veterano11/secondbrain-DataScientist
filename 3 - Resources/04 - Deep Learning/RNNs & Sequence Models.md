@@ -165,7 +165,7 @@ For most sequence tasks today, Transformers are the default. RNNs are still used
 
 ---
 
-## 10. Summary
+## 10. Resumen
 
 RNNs process sequences by maintaining a hidden state that acts as memory. LSTMs and GRUs solve the vanishing gradient problem with gating mechanisms, enabling long-range dependencies. Bidirectional RNNs incorporate future context. Attention allows models to look back at the entire input, solving the information bottleneck. While Transformers have largely replaced RNNs for NLP, RNNs remain relevant for streaming, real-time, and extremely long sequence applications.
 

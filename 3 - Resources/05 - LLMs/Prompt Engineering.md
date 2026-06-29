@@ -229,7 +229,7 @@ Paso 3: "Dados los resultados de la prueba a continuación, ¿qué hipótesis ti
 
 ---
 
-## 8. Summary
+## 8. Resumen
 
 Prompt engineering is the skill of communicating intent to LLMs. A good prompt specifies role, tone, format, and constraints. Advanced techniques like Chain-of-Thought and ReAct improve reasoning and tool use. Structured output (JSON) enables downstream processing. The key is systematic testing — vary prompts, measure results, iterate.
 

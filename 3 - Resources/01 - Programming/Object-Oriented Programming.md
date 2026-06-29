@@ -358,7 +358,7 @@ a.shared.append(1)       # also affects b.shared!
 
 ---
 
-## 7. Summary
+## 7. Resumen
 
 OOP organizes code around objects with data and behavior. Its four pillars — encapsulation, inheritance, polymorphism, abstraction — make it ideal for complex, stateful systems. In data science, use OOP for models, pipelines, experiments, and anything that manages state. Use FP for transformations, metrics, and pure computations. The best code uses both, choosing the right tool for each job.
 

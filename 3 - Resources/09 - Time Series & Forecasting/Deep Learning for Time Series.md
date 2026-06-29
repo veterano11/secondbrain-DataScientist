@@ -142,7 +142,7 @@ $\hat{y}_t \sim \mathcal{N}(\mu_t, \sigma_t)$
 2. ¿Por qué LSTM no es paralelizable y TCN sí? (LSTM procesa un paso a la vez; TCN usa convoluciones que se computan en paralelo)
 3. ¿Cuándo usarías N-BEATS en vez de TFT? (Cuando querés interpretabilidad y no necesitas features exógenas)
 
-## 10. Summary
+## 10. Resumen
 
 Deep learning para time series transforma forecasting secuencial en supervisado con ventanas. LSTM fue el primer éxito pero es secuencial y caro. TCN ofrece paralelismo y receptive field grande. N-BEATS es interpretable (solo MLPs). TFT es el estado del arte para forecasting complejo con múltiples series y features. La regla de oro: para pronósticos simples (<100 puntos), usá clásicos. Para patrones complejos y muchas series, usá DL.
 

@@ -26,7 +26,7 @@ Usaremos el mismo esquema de [[Relational Model & SQL Fundamentals|SQL Fundament
 Cuando mandas una query, el motor pasa por tres etapas:
 
 ```
-SQL ──▶ Parser ──▶ Optimizer ──▶ Executor ──▶ Resultado
+SQL ──> Parser ──> Optimizer ──> Executor ──> Resultado
 ```
 
 1. **Parser**: verifica sintaxis y convierte el texto en un árbol interno.

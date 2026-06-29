@@ -149,22 +149,30 @@ def simulated_annealing(dist, temp_start=100, temp_end=0.1, cooling=0.995):
 | Clustering (k-medoids) | MIP | Asignar puntos a exactamente $k$ clusters |
 | Redes neuronales en grafos | Con restricciones | Predicción de propiedades moleculares con restricciones de valencia |
 
-## 3. Common Pitfalls
+## 3. Errores Comunes
 
-- **ILP vs LP**: solving an LP and rounding doesn't guarantee optimal or even feasible integer solutions. Use proper MIP solvers
-- **NP-hardness in practice**: an NP-hard problem with $n=50$ can be trivial with good MIP solvers; $n=1000$ can be impossible. Always test
-- **Branch-and-bound patience**: the solver can "hang" for hours. Set a time limit
-- **Memory blowup**: DP for large capacity values (e.g., $C = 10^9$) is impossible. Use meet-in-the-middle or MIP
+- **ILP vs LP**: resolver un LP y redondear no garantiza soluciones enteras óptimas ni factibles. Usa solvers MIP adecuados.
+- **NP-hardness en la práctica**: un problema NP-hard con $n=50$ puede ser trivial con buenos solvers MIP; con $n=1000$ puede ser imposible. Siempre prueba.
+- **Paciencia con branch-and-bound**: el solver puede "colgarse" por horas. Establece un límite de tiempo.
+- **Explosión de memoria**: PD para valores de capacidad grandes (ej. $C = 10^9$) es imposible. Usa meet-in-the-middle o MIP.
 
-## 4. Check Your Understanding
+## 4. Resumen
 
-1. How does branch-and-bound prove optimality without enumerating all $2^n$ solutions?
-2. Why is the knapsack problem NP-hard even though its DP is $O(nC)$?
-3. If your optimization has 80% continuous variables and 20% binary variables, which solver approach would you try?
+1. La optimización discreta modela problemas con decisiones binarias o enteras (abrir/cerrar, seleccionar, asignar).
+2. LP se resuelve eficientemente; ILP/MIP son NP-difíciles pero manejables con branch-and-bound y solvers modernos.
+3. La programación dinámica resuelve problemas con subestructura óptima en tiempo pseudo-polinomial.
+4. Los algoritmos voraces y de aproximación ofrecen soluciones rápidas con garantías de calidad.
+5. Las metaheurísticas (genéticos, recocido simulado) son útiles cuando los métodos exactos son muy lentos.
 
-## 5. Where to Go Next
+## 5. Check Your Understanding
 
-- [[Convex Optimization]] — theory for continuous relaxations
-- [[Hyperparameter Tuning]] — discrete HPs (batch size, number of layers)
-- [[Gradient-Based Optimization]] — continuous vs discrete landscapes
-- [[RL Fundamentals]] — dynamic programming for MDPs
+1. ¿Cómo prueba branch-and-bound la optimalidad sin enumerar las $2^n$ soluciones?
+2. ¿Por qué el problema de la mochila es NP-hard si su PD es $O(nC)$?
+3. Si tu optimización tiene 80% variables continuas y 20% binarias, ¿qué enfoque de solver probarías?
+
+## 6. Where to Go Next
+
+- [[Convex Optimization]] — teoría para relajaciones continuas
+- [[Hyperparameter Tuning]] — HPs discretos (batch size, número de capas)
+- [[Gradient-Based Optimization]] — paisajes continuos vs discretos
+- [[RL Fundamentals]] — programación dinámica para MDPs

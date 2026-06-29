@@ -158,7 +158,7 @@ with model:
 2. 500. Necesitás más iteraciones para reducir la autocorrelación.
 3. La cadena está atascada en un modo y saltó a otro. Posible multimodalidad. Usá SMC o más chains.
 
-## 11. Summary
+## 11. Resumen
 
 MCMC genera muestras de la posterior cuando no hay solución analítica. Metropolis-Hastings es simple pero no escala. HMC usa gradientes para alta dimensionalidad. NUTS automatiza HMC y es el estándar. Gibbs samplea condicionales cuando están disponibles. Los diagnósticos (R-hat < 1.01, ESS alto) son obligatorios para confiar en los resultados.
 

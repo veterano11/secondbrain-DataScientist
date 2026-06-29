@@ -175,7 +175,7 @@ $$J(\pi) = \sum_t \mathbb{E}[r(s_t, a_t) + \alpha \mathcal{H}(\pi(\cdot|s_t))]$$
 3. ¿Cuándo preferirías SAC a PPO? (Acciones continuas, especialmente control robótico)
 4. ¿Qué rol juega el critic en Actor-Critic? (Provee el baseline V(s) para reducir varianza del gradiente)
 
-## 9. Summary
+## 9. Resumen
 
 Policy-based methods aprenden la política directamente. REINFORCE es simple pero ruidoso. Actor-Critic reduce varianza restando una línea de base. PPO agrega clipping para estabilidad y es el estándar industrial. SAC maximiza entropía para exploración robusta en control continuo. Para acciones continuas y problemas complejos, policy-based superan a value-based.
 

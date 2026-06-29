@@ -154,7 +154,7 @@ az.plot_posterior(data, var_names=["beta"], hdi_prob=0.94)
 2. ¿Qué ventaja tiene usar PyMC sobre escribir tu propio Metropolis-Hastings? (NUTS automático, diagnóstico integrado, GPU)
 3. ¿Cuándo usarías NumPyro en vez de PyMC? (Cuando necesitás GPU o modelos muy grandes)
 
-## 11. Summary
+## 11. Resumen
 
 [[Statistics|Probabilistic Programming]] permite especificar modelos bayesianos complejos sin derivar matemáticas. PyMC es el estándar Python: defines priors + likelihood, sampleas con NUTS, diagnosticas con ArviZ. Los modelos jerárquicos son el caso de uso estrella (partial pooling). Siempre verificar convergencia (R-hat, ESS) y hacer posterior predictive checks.
 

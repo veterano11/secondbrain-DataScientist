@@ -1,10 +1,10 @@
-# 🧠 Second Brain — Data Science & Machine Learning
+# Second Brain — Data Science & Machine Learning
 
 Un vault de **Obsidian** con **180+ notas educativas** que cubren el stack completo de Data Science: desde fundamentos de programación y matemáticas hasta producción de modelos, MLOps, infraestructura y gobernanza. Cada nota es **autocontenida, tutorial-style** (Gen 3): escenario concreto, código con outputs esperados, errores comunes, ejercicios de verificación y enlaces a notas relacionadas.
 
 ---
 
-## 📚 Contenido (26 secciones, ~35,000 líneas)
+## Contenido (26 secciones, ~35,000 líneas)
 
 ### Nivel 1: Fundamentos
 | Sección | Notas | Cubre |
@@ -54,7 +54,7 @@ Un vault de **Obsidian** con **180+ notas educativas** que cubren el stack compl
 
 ---
 
-## 🏗️ Estructura del vault
+## Estructura del vault
 
 ```
 Brain/
@@ -70,7 +70,7 @@ Brain/
 
 ---
 
-## 🎯 Características
+## Características
 
 - **Todas en español** — monolingüe, consistente
 - **Formato tutorial Gen 3**: cada nota tiene escenario de aprendizaje, código con outputs esperados, errores comunes, check-your-understanding, y enlaces a notas relacionadas
@@ -81,7 +81,7 @@ Brain/
 
 ---
 
-## 🚀 Cómo usar
+## Cómo usar
 
 1. Clona el repo: `git clone https://github.com/veterano11/secondbrain-DataScientist.git`
 2. Abrí la carpeta como vault en Obsidian (File → Open vault → Open folder as vault)
@@ -90,7 +90,7 @@ Brain/
 
 ---
 
-## 🔗 Stack tecnológico cubierto
+## Stack tecnológico cubierto
 
 | Categoría | Herramientas |
 |-----------|-------------|
@@ -105,7 +105,7 @@ Brain/
 
 ---
 
-## 📈 Estadísticas
+## Estadísticas
 
 - **180 notas totales**
 - **26 secciones** de conocimiento

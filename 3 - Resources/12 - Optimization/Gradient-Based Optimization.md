@@ -148,7 +148,7 @@ optimizer = torch.optim.AdamW(model.parameters(), lr=3e-4, weight_decay=0.01)
 2. ¿Cuándo usarías gradient clipping? (RNNs, Transformers, problemas donde los gradientes explotan)
 3. ¿Qué hace cosine annealing? (Decae el LR siguiendo una función coseno, dando múltiples "reinicios" suaves)
 
-## 11. Summary
+## 11. Resumen
 
 Gradient-based optimization mueve parámetros en la dirección opuesta al gradiente. SGD con momentum es el clásico que mejor generaliza. Adam es el default rápido y robusto. Los LR schedules (step, cosine, warmup) son esenciales para buen rendimiento. Gradient clipping evita la divergencia. AdamW es la versión moderna de Adam con weight decay correcto. La técnica más importante: encontrar el LR correcto con LR range test.
 

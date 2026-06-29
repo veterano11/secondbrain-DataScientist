@@ -264,7 +264,7 @@ class SimpleNet(nn.Module):
 
 ---
 
-## 8. Summary
+## 8. Resumen
 
 NumPy provides fast numerical arrays with vectorized operations. pandas adds labeled data on top. scikit-learn provides a consistent ML API. The key insight: **avoid Python loops**, use vectorized operations, and follow the uniform `fit`/`predict` API. These three libraries and their patterns form the backbone of data science in Python.
 

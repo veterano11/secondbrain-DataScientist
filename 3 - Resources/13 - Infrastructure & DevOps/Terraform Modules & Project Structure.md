@@ -280,13 +280,21 @@ Estos criterios son principios de [[Code Quality]] aplicados a infraestructura.
 - **Versionar módulos locales**: si todos apuntan a `./modules/ec2`, un cambio en el módulo afecta a todos los entornos a la vez. Los entornos deberían apuntar a tags o commits específicos.
 - **No bloquear versiones de módulos del Registry**: `source = "terraform-aws-modules/vpc/aws"` sin `version` → en el próximo init obtienes la versión más reciente, que podría romper tu código. Siempre fija la versión.
 
-## Check Your Understanding
+## 9. Resumen
+
+1. Los módulos encapsulan recursos reutilizables con variables de entrada y outputs.
+2. El Registry público ofrece módulos listos para usar con versionado semántico.
+3. Una estructura de proyecto con directorios separados por entorno (dev, staging, prod) es más explícita que workspaces.
+4. Los módulos locales permiten iterar rápido; los módulos del Registry son para componentes estables y compartidos.
+5. Siempre fijar versiones de módulos externos para evitar roturas por cambios no controlados.
+
+## 10. Check Your Understanding
 
 1. Si dos entornos (dev, prod) apuntan al mismo módulo local, y modificas el módulo, ¿qué entorno se actualiza primero?
 2. ¿Por qué los módulos del Registry especifican `source` con un namespace (`terraform-aws-modules/vpc/aws`) en vez de una URL de git?
 3. En la estructura de proyecto recomendada, ¿por qué cada entorno tiene su propio directorio en vez de usar workspaces?
 
-## Where to Go Next
+## 11. Where to Go Next
 
 - [[AWS CodeBuild with Terraform]] — pipeline CI/CD que usa esta estructura de proyecto
 - [[Terraform State & Backends]] — cada entorno necesita su propio backend

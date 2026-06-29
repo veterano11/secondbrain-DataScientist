@@ -190,7 +190,7 @@ Alerta: La precisión del modelo cayó un 10%
 
 ---
 
-## 9. Summary
+## 9. Resumen
 
 Model monitoring detects when production models degrade. The three pillars are data drift, concept drift, and system health. Monitor prediction quality (requires ground truth), prediction distribution (early warning), data quality (prevent garbage-in), and system health (latency, errors). Use statistical tests with adaptive thresholds. Alert with severity levels and documented runbooks.
 

@@ -206,7 +206,7 @@ DPO es la alternativa más popular: optimiza directamente la política en pares 
 
 ---
 
-## 9. Summary
+## 9. Resumen
 
 Fine-tuning adapts LLMs to specific tasks. Full fine-tuning is powerful but expensive. PEFT methods (LoRA, QLoRA) achieve similar results with 100× less memory. Instruction fine-tuning teaches task following. RLHF and DPO align models with human preferences. Data quality matters more than quantity. Start with 100-1000 high-quality examples, use LoRA, and evaluate rigorously.
 

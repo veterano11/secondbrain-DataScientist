@@ -170,7 +170,7 @@ Configura alertas para experimentos de [[A-B Testing]] para detectar regresiones
 
 ---
 
-## 8. Summary
+## 8. Resumen
 
 Observability makes production ML systems understandable. Logging records events, metrics measure trends, and traces follow requests. ML-specific observability adds prediction and data quality monitoring. Alerts should be actionable, timely, and specific. The three pillars together let you detect, diagnose, and fix problems quickly.
 

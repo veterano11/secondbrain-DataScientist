@@ -155,7 +155,7 @@ res = gp_minimize(func, dimensions, n_calls=30, acq_func='EI')
 2. La función es muy irregular (varía rápido). El modelo necesita muchos datos para ser preciso.
 3. La verosimilitud marginal penaliza automáticamente la complejidad (regularización), CV no es necesario.
 
-## 11. Summary
+## 11. Resumen
 
 Gaussian Processes son distribuciones sobre funciones definidas por un kernel. Hacen regresión no paramétrica con incertidumbre calibrada. El kernel codifica suposiciones (RBF: suavidad, Periodic: ciclos). Los hiperparámetros se aprenden por máxima verosimilitud marginal. La limitación principal es $\mathcal{O}(n^3)$. Se usan en Bayesian Optimization, modelado de funciones, y active learning.
 

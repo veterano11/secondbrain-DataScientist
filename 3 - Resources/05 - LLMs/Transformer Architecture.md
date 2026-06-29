@@ -212,7 +212,7 @@ Para Llama 3 70B con contexto de 8K: ~16GB para la caché KV por secuencia.
 
 ---
 
-## 9. Summary
+## 9. Resumen
 
 Modern LLMs are decoder-only Transformers with key optimizations: RoPE for position, GQA for efficient inference, SwiGLU for expressiveness, and RMSNorm for stability. Tokenization converts text to tokens (subwords). Scaling laws guide how much data to train on. Inference uses autoregressive generation with a KV cache for efficiency. Understanding these components is essential for working with, fine-tuning, or deploying LLMs.
 

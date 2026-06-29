@@ -260,7 +260,7 @@ Límite de sesión alcanzado: denegar más llamadas a herramientas, preguntar al
 
 ---
 
-## 11. Summary
+## 11. Resumen
 
 Agentic systems extend LLMs from text generators to autonomous actors. The core loop is Observe → Think → Act → Repeat. Tools enable actions beyond text generation. Reasoning patterns like ReAct and Plan-and-Execute structure multi-step tasks. Multiple agents specialize and collaborate. Safety guardrails (human-in-the-loop, rate limits, sandboxing) prevent harmful actions. The key challenges are cost, error propagation, and maintaining context over long trajectories.
 

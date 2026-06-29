@@ -163,7 +163,7 @@ Esto da jerarquía espacial 4× → 8× → 16× → 32×, como una CNN. Swin es
 3. Hungarian matching: asigna cada predicción al ground truth más cercano, optimizando la asignación global.
 4. (448/16)² = 784 tokens. Atención O(n²): (784/197)² ≈ 16× más caro que 224².
 
-## 9. Summary
+## 9. Resumen
 
 Vision Transformer adapta el Transformer de NLP a imágenes dividiéndolas en parches y tratándolos como tokens de secuencia. Es más flexible que las CNNs (no tiene sesgos de localidad prefijados), pero necesita 10-100× más datos para alcanzar su potencial. Arquitecturas como Swin y DeiT resuelven limitaciones específicas (jerarquía y datos insuficientes). La elección entre ViT y CNN depende del tamaño del dataset y los recursos de cómputo.
 

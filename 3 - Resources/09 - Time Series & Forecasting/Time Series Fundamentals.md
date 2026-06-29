@@ -226,7 +226,7 @@ def preparar_serie(ventas, periodo=7):
 3. Periodo = 365 (anual). Se ve en ACF con pico en lag 365.
 4. Introduce autocorrelación negativa artificial → empeora el modelo.
 
-## 10. Summary
+## 10. Resumen
 
 Las series temporales tienen estructura temporal que los modelos estándar ignoran. Las tres componentes (tendencia, estacionalidad, residuo) se separan con descomposición. La estacionariedad es un requisito para la mayoría de los modelos de forecasting — se logra con diferenciación. La ACF y PACF guían la selección del modelo. El pipeline correcto: graficar → descomponer → testear estacionariedad → diferenciar si es necesario → modelar.
 

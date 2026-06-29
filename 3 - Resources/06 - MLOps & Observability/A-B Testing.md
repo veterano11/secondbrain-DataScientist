@@ -163,7 +163,7 @@ Minimiza el costo de oportunidad durante las pruebas. Más complejo de analizar.
 
 ---
 
-## 9. Summary
+## 9. Resumen
 
 A/B testing is how you reliably compare models in production. Design the test before running it: define the metric, calculate sample size, set duration. Use guardrail metrics to catch regressions. Avoid peeking (checking results early). For ranking tasks, consider interleaving. For minimizing opportunity cost, use multi-armed bandits. The key principle: pre-register the analysis plan and do not deviate.
 

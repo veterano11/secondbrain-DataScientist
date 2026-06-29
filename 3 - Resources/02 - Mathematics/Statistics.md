@@ -99,9 +99,9 @@ Esto NO significa "hay un 95% de probabilidad de que el valor verdadero esté en
 **Qué significa p < 0.05**: "Si verdaderamente no hubiera efecto, veríamos datos tan extremos como estos menos del 5% de las veces."
 
 **Interpretaciones erróneas comunes**:
-- ❌ "Hay un 95% de probabilidad de que el efecto sea real"
-- ❌ "Los valores p te dicen el tamaño del efecto"
-- ✅ "Los valores p te dicen qué tan sorprendentes serían tus datos bajo $H_0$"
+- Incorrecto: "Hay un 95% de probabilidad de que el efecto sea real"
+- Incorrecto: "Los valores p te dicen el tamaño del efecto"
+- Correcto: "Los valores p te dicen qué tan sorprendentes serían tus datos bajo $H_0$"
 
 ### 3.4 Errores Tipo I y Tipo II
 
@@ -228,7 +228,7 @@ Una tendencia que aparece en varios grupos pero desaparece o se invierte cuando 
 
 ---
 
-## 9. Summary
+## 9. Resumen
 
 Statistics is the bridge between data and decisions. Descriptive statistics summarizes what you see. Inferential statistics tells you what you can conclude beyond your data. Hypothesis testing helps you separate signal from noise. The bias-variance tradeoff is the unifying concept that connects statistics to ML — it explains overfitting, underfitting, and why model complexity must be carefully controlled.
 

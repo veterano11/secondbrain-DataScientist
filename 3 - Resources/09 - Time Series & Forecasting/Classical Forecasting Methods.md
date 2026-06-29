@@ -184,7 +184,7 @@ print(f"MAE={mae:.0f}, RMSE={rmse:.0f}, MAPE={mape:.1f}%")
 3. MASE=0.7. ¿Qué significa?
 4. Ajustás un ARIMA(1,1,1) y los residuos NO son ruido blanco. ¿Qué hacés?
 
-## 9. Summary
+## 9. Resumen
 
 Los modelos clásicos de forecasting son interpretables, rápidos, y requieren pocos datos. Holt-Winters captura tendencia y estacionalidad simple. ARIMA/SARIMA es el estándar para series estacionarias. Prophet maneja estacionalidades múltiples y changepoints. El flujo: baseline (naive) → modelo clásico → diagnosticar residuos → refinar. La validación temporal es obligatoria.
 

@@ -154,7 +154,7 @@ Multiple query heads share fewer key/value heads. Used in Llama 2/3. Reduces KV 
 
 ---
 
-## 9. Summary
+## 9. Resumen
 
 Transformers replaced RNNs by replacing sequential processing with parallel self-attention. Self-attention lets every token directly attend to every other token, solving the long-range dependency problem. Multiple heads learn different relationship types. Positional encoding adds order information. The decoder-only variant (causal attention) enables autoregressive generation and powers modern LLMs.
 

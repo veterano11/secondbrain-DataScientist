@@ -140,22 +140,30 @@ Dreamer logra un rendimiento comparable a los métodos sin modelo con 5–50 vec
 | Planificación a largo plazo necesaria | Cuando los errores del modelo se acumulan catastróficamente |
 | Acciones discretas con reglas claras | Espacios de acción continuos de alta dimensión |
 
-## 3. Common Pitfalls
+## 3. Errores Comunes
 
-- **Model exploitation**: the policy exploits errors in the model (does things that the model thinks work but don't in reality). [[Training Techniques|Ensemble models]] help
-- **Compounding error**: one-step prediction is fine, but multi-step rollouts diverge exponentially. Use $\lambda$ returns or short horizons
-- **Computational cost**: planning during inference (MCTS) adds latency; distill the planner into a policy network after training
-- **Reward model bias**: if the learned reward model is wrong, the policy optimizes the wrong thing
+- **Explotación del modelo**: la política explota errores en el modelo (hace cosas que el modelo cree que funcionan pero en realidad no). [[Training Techniques|Modelos ensemble]] ayudan a mitigarlo.
+- **Error acumulativo**: la predicción de un paso es buena, pero los rollouts multi-paso divergen exponencialmente. Usa retornos $\lambda$ u horizontes cortos.
+- **Costo computacional**: planificar durante inferencia (MCTS) añade latencia; destila el planificador en una red de política después del entrenamiento.
+- **Sesgo del modelo de recompensa**: si el modelo de recompensa aprendido es incorrecto, la política optimiza lo equivocado.
 
-## 4. Check Your Understanding
+## 4. Resumen
 
-1. How does Dyna-Q differ from MuZero's approach to model learning?
-2. Why does MCTS with UCB balance exploration and exploitation during planning?
-3. When would you choose Dreamer over a model-free method like PPO?
+1. El RL basado en modelos aprende una representación del entorno y la usa para planificar, reduciendo drásticamente las interacciones necesarias.
+2. Dyna-Q integra aprendizaje y planificación usando experiencia real y simulada.
+3. MCTS construye un árbol de búsqueda incremental con selección UCB, expansión, rollout y retropropagación.
+4. MuZero aprende representación, dinámica y predicción sin conocer las reglas del entorno.
+5. Dreamer entrena un actor-critic enteramente sobre imaginación en espacio latente.
 
-## 5. Where to Go Next
+## 5. Check Your Understanding
 
-- [[Value-Based Methods]] — Dyna is built on Q-learning
-- [[Policy-Based Methods]] — Dreamer uses actor-critic in imagination
-- [[RL Fundamentals]] — the MDP theory that models approximate
-- [[Transfer Learning]] — model-based methods transfer between similar environments
+1. ¿En qué se diferencia Dyna-Q del enfoque de MuZero para aprender el modelo?
+2. ¿Por qué MCTS con UCB balancea exploración y explotación durante la planificación?
+3. ¿Cuándo elegirías Dreamer sobre un método sin modelo como PPO?
+
+## 6. Where to Go Next
+
+- [[Value-Based Methods]] — Dyna está construido sobre Q-learning
+- [[Policy-Based Methods]] — Dreamer usa actor-critic en imaginación
+- [[RL Fundamentals]] — la teoría MDP que los modelos aproximan
+- [[Transfer Learning]] — los métodos basados en modelos transfieren entre entornos similares

@@ -173,7 +173,7 @@ traffic light: 0.76, bbox=(600,100,620,150)
 3. ¿Cuándo usarías SAM en vez de entrenar tu propio segmentador? (Cuando no tenés datos etiquetados y necesitas segmentación general)
 4. ¿Qué problema resuelve FPN? (Objetos pequeños se detectan mal sin multi-scale features)
 
-## 8. Summary
+## 8. Resumen
 
 Detection localiza objetos con bounding boxes (YOLO para velocidad, Faster R-CNN para precisión, DETR para simplicidad). Segmentation etiqueta píxeles (semántica: U-Net, DeepLab; instancias: Mask R-CNN, SAM). La evaluación usa mAP con IoU. Las herramientas modernas (YOLOv8, SAM) hacen que detection y segmentation sean accesibles desde pocas líneas de código.
 

@@ -311,7 +311,7 @@ process_data = partial(map, transform_row)        # reutilizable, componible
 
 ---
 
-## 9. Summary
+## 9. Resumen
 
 Functional programming is about **data transformations without side effects**. Pure functions, immutability, and higher-order functions (map, filter, reduce) make your code testable, parallelizable, and composable. In data science, use FP for transformations, metrics, and pipelines. Combine it with OOP (which handles state and interfaces) for the best of both paradigms.
 

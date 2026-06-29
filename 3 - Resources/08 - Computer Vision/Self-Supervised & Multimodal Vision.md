@@ -168,7 +168,7 @@ loss = MSE(decoded[mascara], parches[mascara])  # solo en píxeles enmascarados
 2. ¿Por qué DINO no necesita pares negativos? (La combinación de centering + sharpening previene el colapso)
 3. ¿Cuándo usarías MAE en vez de SimCLR? (Cuando tenés imágenes de alta resolución y querés reconstruir detalles finos)
 
-## 11. Summary
+## 11. Resumen
 
 Self-supervised learning aprende representaciones sin etiquetas. Contrastive learning (SimCLR, MoCo) maximiza similitud entre vistas de la misma imagen. DINO usa self-distillation y produce atención segmentada. CLIP aprende un espacio imagen-texto conjunto para zero-shot classification. MAE reconstruye parches enmascarados. SSL es la técnica estándar para pre-entrenar modelos visuales cuando las etiquetas son escasas.
 

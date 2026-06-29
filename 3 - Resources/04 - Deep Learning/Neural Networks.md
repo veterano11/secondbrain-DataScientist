@@ -205,7 +205,7 @@ In modern frameworks, default initializations are usually good enough — but if
 
 ---
 
-## 11. Summary
+## 11. Resumen
 
 Neural networks are compositions of differentiable functions. Each layer transforms its input linearly, then applies a non-linear activation. Training uses backpropagation (chain rule applied efficiently) to compute gradients, then gradient descent to update weights. The key challenges are vanishing/exploding gradients, choosing the right architecture, and preventing overfitting with regularization.
 
