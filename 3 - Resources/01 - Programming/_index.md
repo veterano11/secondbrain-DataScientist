@@ -15,6 +15,7 @@ Fundamentos de programación para data science.
 - [[Object-Oriented Programming]] — Clases, herencia, polimorfismo
 - [[Functional Programming]] — Map, filter, reduce, lambdas, inmutabilidad
 - [[Python for Data Science]] — NumPy, pandas, manejo de datos
+- [[Polars for Data Science]] — DataFrames rápidos, lazy evaluation, streaming
 
 ## Progression
 
@@ -23,4 +24,5 @@ Foundational → Python Fundamentals
              → Data Structures & Algorithms
 Core         → OOP, FP
 Applied      → Python for Data Science
+             → Polars for Data Science
 ```

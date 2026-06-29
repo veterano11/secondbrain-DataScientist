@@ -11,10 +11,14 @@
             "id": "2b1caa71c1211978",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Vista gráfica"
+              "type": "markdown",
+              "state": {
+                "file": "Meta/_index.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "_index"
             }
           }
         ]
@@ -90,6 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "Meta/_index.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -99,7 +104,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Enlaces entrantes"
+              "title": "Enlaces entrantes de _index"
             }
           },
           {
@@ -176,15 +181,22 @@
       "bases:Crear nueva base": false
     }
   },
-  "active": "b5ed7e9b7153a63c",
+  "active": "2b1caa71c1211978",
   "lastOpenFiles": [
+    "3 - Resources/01 - Programming/Polars for Data Science.md",
+    "3 - Resources/22 - Data Product & Analytics/_index.md",
+    "Meta/_index.md",
+    "3 - Resources/01 - Programming/_index.md",
+    "3 - Resources/25 - ML in Production/Continuous Training.md",
+    "3 - Resources/01 - Programming/Data Structures & Algorithms.md",
+    "3 - Resources/07 - Tools & Practices/CLI & Productivity.md",
+    "3 - Resources/03 - Machine Learning/Model Evaluation.md",
     "3 - Resources/26 - Data Security & Compliance/Secure ML & Incident Response.md",
     "3 - Resources/26 - Data Security & Compliance/Privacy Regulations.md",
     "3 - Resources/26 - Data Security & Compliance/Encryption & Access Control.md",
     "3 - Resources/26 - Data Security & Compliance/Data Classification & Governance.md",
     "3 - Resources/_index.md",
     "3 - Resources/21 - Software Engineering & Architecture/API Design for ML.md",
-    "3 - Resources/25 - ML in Production/Continuous Training.md",
     "3 - Resources/24 - Recommender Systems/Production Recommenders.md",
     "3 - Resources/24 - Recommender Systems/Hybrid & Session-Based.md",
     "3 - Resources/25 - ML in Production/Model Compression.md",
@@ -197,13 +209,6 @@
     "3 - Resources/04 - Deep Learning/Training Techniques.md",
     "3 - Resources/22 - Data Product & Analytics/Stakeholder Communication.md",
     "3 - Resources/22 - Data Product & Analytics/Experimentation & Growth.md",
-    "3 - Resources/22 - Data Product & Analytics/Funnel & Cohort Analysis.md",
-    "3 - Resources/22 - Data Product & Analytics/Data Product Thinking.md",
-    "3 - Resources/23 - Information Theory & Advanced Math/Optimization Theory.md",
-    "3 - Resources/23 - Information Theory & Advanced Math/Advanced Linear Algebra.md",
-    "3 - Resources/23 - Information Theory & Advanced Math/Numerical Methods.md",
-    "3 - Resources/23 - Information Theory & Advanced Math/Graph Theory & Network Analysis.md",
-    "3 - Resources/23 - Information Theory & Advanced Math/Information Theory for ML.md",
     "3 - Resources/26 - Data Security & Compliance",
     "3 - Resources/25 - ML in Production",
     "3 - Resources/24 - Recommender Systems",
