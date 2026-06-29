@@ -17,6 +17,7 @@ Métodos estadísticos más allá de los fundamentos: diseño experimental, infe
 | 3 | [[Resampling & Bootstrap]] | `seedling` |
 | 4 | [[Bayesian Statistics]] | `seedling` |
 | 5 | [[Non-parametric Methods]] | `seedling` |
+| 6 | [[Causal ML]] | `seedling` |
 
 ## Conexiones
 

@@ -17,6 +17,7 @@ Fundamentos matemáticos profundos: entropía, teoría de grafos, métodos numé
 | 3 | [[Numerical Methods]] | `seedling` |
 | 4 | [[Advanced Linear Algebra]] | `seedling` |
 | 5 | [[Optimization Theory]] | `seedling` |
+| 6 | [[Graph Neural Networks]] | `seedling` |
 
 ## Conexiones
 

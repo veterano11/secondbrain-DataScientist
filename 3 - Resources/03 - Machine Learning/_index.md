@@ -15,11 +15,17 @@ Modelos clásicos de ML, evaluación y feature engineering.
 - [[Model Evaluation]] — Métricas, validación cruzada, bias-variance
 - [[Feature Engineering]] — Encoding, scaling, selección de features
 - [[Regularization]] — L1, L2, Elastic Net, dropout
+- [[Ensemble Methods]] — Bagging, XGBoost, LightGBM, CatBoost, Stacking
+- [[Anomaly Detection]] — Isolation Forest, LOF, HBOS, autoencoders
+- [[Dimensionality Reduction]] — PCA, t-SNE, UMAP, LDA
+- [[Advanced Feature Engineering]] — Target encoding, cyclical, featuretools, selection
 
 ## Progression
 
 ```
 Foundational → Supervised Learning (básico)
-Core         → Evaluación, Regularization, Unsupervised
-Advanced     → Ensemble avanzado, XGBoost, optimal hyperparams
+             → Unsupervised Learning
+Core         → Model Evaluation, Regularization, Feature Engineering
+Advanced     → Ensemble Methods, Dimensionality Reduction, Anomaly Detection
+Expert       → Advanced Feature Engineering, XGBoost tuning, Stacking
 ```
