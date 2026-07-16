@@ -14,155 +14,155 @@ La idea central: **self-attention** permite que cada token atienda directamente 
 
 ---
 
-## 2. The Core Innovation: Self-Attention
+## 2. La Innovación Central: Self-Attention
 
-### 2.1 The Problem with RNNs
+### 2.1 El Problema con las RNNs
 
-In RNNs, information flows sequentially: token 1 → token 2 → token 3 → ... Token 100 must be processed through 99 steps before it can influence the output. This is slow (not parallelizable) and loses information over long distances.
+En las RNNs, la información fluye secuencialmente: token 1 → token 2 → token 3 → ... El token 100 debe ser procesado a través de 99 pasos antes de poder influir en la salida. Esto es lento (no paralelizable) y pierde información a largas distancias.
 
 ### 2.2 Self-Attention
 
-Self-attention computes **direct relationships between every pair of positions** in a single operation (see [[Linear Algebra]] for the underlying matrix operations):
+El self-attention calcula **relaciones directas entre cada par de posiciones** en una sola operación (ver [[Linear Algebra]] para las operaciones matriciales subyacentes):
 
-$$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$
+$$\text{Atención}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$
 
-**Step by step**:
-1. Each token is projected into three vectors: **Query** (Q), **Key** (K), **Value** (V)
-2. $QK^T$: compute dot products between every query and every key → "relevance scores"
-3. Scale by $\sqrt{d_k}$: prevent softmax saturation for large dimensions
-4. Softmax: convert scores into a [[Probability]] distribution (weights sum to 1 per token)
-5. Multiply by $V$: take weighted sum of values
+**Paso a paso**:
+1. Cada token se proyecta en tres vectores: **Query** (Q), **Key** (K), **Value** (V)
+2. $QK^T$: calcular productos punto entre cada query y cada key → "puntuaciones de relevancia"
+3. Escalar por $\sqrt{d_k}$: prevenir saturación del softmax para dimensiones grandes
+4. Softmax: convertir puntuaciones en una distribución de [[Probability]] (los pesos suman 1 por token)
+5. Multiplicar por $V$: tomar la suma ponderada de valores
 
-**Analogy**: think of a library. Q is your search query. K is the book's title/subject. V is the book's content. The dot product finds relevant books. Softmax decides how much to read each one. The weighted sum is the knowledge you take away.
+**Analogía**: piensa en una biblioteca. Q es tu consulta de búsqueda. K es el título/tema del libro. V es el contenido del libro. El producto punto encuentra libros relevantes. Softmax decide cuánto leer de cada uno. La suma ponderada es el conocimiento que te llevas.
 
-### 2.3 Why Self-Attention Works
+### 2.3 Por Qué Funciona el Self-Attention
 
-- **All-pair interactions**: each token can directly "see" every other token in one step
-- **Parallelizable**: all dot products can be computed simultaneously (matrix multiplication)
-- **No sequential bottleneck**: the path length between any two tokens is always 1
+- **Interacciones de todos los pares**: cada token puede "ver" directamente a cada otro token en un paso
+- **Paralelizable**: todos los productos punto pueden calcularse simultáneamente (multiplicación de matrices)
+- **Sin cuello de botella secuencial**: la longitud del camino entre cualquier par de tokens siempre es 1
 
-### 2.4 Multi-Head Attention
+### 2.4 Atención Multi-Cabezal
 
-Instead of one attention function, use $h$ parallel heads:
+En lugar de una función de atención, usar $h$ cabezas paralelas:
 
 $$\text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, ..., \text{head}_h) W_O$$
 
-Each head learns a different type of relationship. In a language model, different heads might attend to syntax, semantics, coreference, position, etc.
+Cada cabeza aprende un tipo diferente de relación. En un modelo de lenguaje, diferentes cabezas pueden atender a sintaxis, semántica, coreferencia, posición, etc.
 
 ---
 
-## 3. The Transformer Block
+## 3. El Bloque Transformer
 
-Every Transformer block (layer) has the same structure:
+Cada bloque Transformer (capa) tiene la misma estructura:
 
 ```
-Input → LayerNorm → Multi-Head Attention → Add (residual) → 
-LayerNorm → FFN → Add (residual) → Output
+Entrada → LayerNorm → Atención Multi-Cabezal → Add (residual) → 
+LayerNorm → FFN → Add (residual) → Salida
 ```
 
-**Feed-Forward Network (FFN)**:
+**Red Feed-Forward (FFN)**:
 $$\text{FFN}(x) = W_2 \cdot \sigma(W_1 x + b_1) + b_2$$
 
-A two-layer MLP with expansion factor 4 (inner dimension = 4 × outer in most models). The FFN processes each token independently after the attention layer mixes information across tokens.
+Un MLP de dos capas con factor de expansión 4 (dimensión interna = 4 × externa en la mayoría de modelos). La FFN procesa cada token independientemente después de que la capa de atención mezcla información entre tokens.
 
-**Residual connections**: $x + F(x)$. Gradients flow directly through the skip connection, preventing vanishing gradients in deep stacks.
+**Conexiones residuales**: $x + F(x)$. Los gradientes fluyen directamente a través de la conexión skip, previniendo gradientes que desaparecen en apilamientos profundos.
 
-**Layer Normalization**: normalizes across features for each token independently. Stabilizes training.
+**Normalización por Capas**: normaliza a través de features para cada token independientemente. Estabiliza el entrenamiento.
 
 ---
 
-## 4. Positional Encoding
+## 4. Codificación Posicional
 
-Self-attention is **permutation invariant** — it treats the input as a set, not a sequence. "I ate the pizza" and "the pizza ate I" produce identical attention patterns without positional information.
+El self-attention es **invariante a permutaciones** — trata la entrada como un conjunto, no como una secuencia. "I ate the pizza" y "the pizza ate I" producen patrones de atención idénticos sin información posicional.
 
-**Solution**: add positional information to the input.
+**Solución**: añadir información posicional a la entrada.
 
-### 4.1 Sinusoidal (Original Transformer)
+### 4.1 Sinusoidal (Transformer Original)
 
 $$PE_{(pos, 2i)} = \sin(pos / 10000^{2i/d_{model}})$$
 $$PE_{(pos, 2i+1)} = \cos(pos / 10000^{2i/d_{model}})$$
 
-Each position gets a unique pattern of sine/cosine waves at different frequencies. The model can learn to use these to attend to specific positions.
+Cada posición obtiene un patrón único de ondas seno/coseno en diferentes frecuencias. El modelo puede aprender a usarlas para atender a posiciones específicas.
 
-### 4.2 Learned (BERT, GPT-2)
+### 4.2 Aprendido (BERT, GPT-2)
 
-Let the model learn position embeddings during training. Simple and effective.
+Dejar que el modelo aprenda embeddings posicionales durante el entrenamiento. Simple y efectivo.
 
-### 4.3 RoPE (Rotary Position Embedding)
+### 4.3 RoPE (Embedding Posicional Rotatorio)
 
-Applied to queries and keys in attention, not added to input. Encodes relative position by rotating the Q/K vectors. Used in Llama, Mistral, and most modern LLMs.
+Se aplica a queries y keys en la atención, no se añade a la entrada. Codifica la posición relativa rotando los vectores Q/K. Usado en Llama, Mistral y la mayoría de LLMs modernos.
 
 ---
 
-## 5. Encoder vs Decoder
+## 5. Codificador vs Decodificador
 
-| Architecture | Usage | Examples |
+| Arquitectura | Uso | Ejemplos |
 |---|---|---|
-| **Encoder-only** | Understanding (classification, NER, embeddings) | BERT, RoBERTa |
-| **Decoder-only** | Generation (language modeling, text completion) | GPT, Llama, Claude |
-| **Encoder-Decoder** | Seq2Seq (translation, summarization) | T5, BART |
+| **Solo codificador** | Comprensión (clasificación, NER, embeddings) | BERT, RoBERTa |
+| **Solo decodificador** | Generación (modelado de lenguaje, completado de texto) | GPT, Llama, Claude |
+| **Codificador-Decodificador** | Seq2Seq (traducción, resumen) | T5, BART |
 
-**Decoder-only** (modern LLMs): each token can only attend to previous tokens (causal/masked attention). This enables autoregressive generation.
+**Solo decodificador** (LLMs modernos): cada token solo puede atender a tokens anteriores (atención causal/enmascarada). Esto habilita la generación autoregresiva.
 
-**Encoder**: bidirectional attention (each token sees all tokens). Better for understanding tasks.
+**Codificador**: atención bidireccional (cada token ve todos los tokens). Mejor para tareas de comprensión.
 
 ---
 
-## 6. Efficiency
+## 6. Eficiencia
 
-### 6.1 The Quadratic Problem
+### 6.1 El Problema Cuadrático
 
-Self-attention is O(n²) in both compute and memory because each of the $n$ tokens attends to all $n$ tokens. For long sequences, this becomes prohibitive.
+El self-attention es O(n²) tanto en cómputo como en memoria porque cada uno de los $n$ tokens atiende a todos los $n$ tokens. Para secuencias largas, esto se vuelve prohibitivo.
 
 ### 6.2 FlashAttention
 
-Reorganizes attention computation to avoid materializing the full $n \times n$ attention matrix in GPU memory. Uses tiling and kernel fusion. 2-4× faster, less memory, exact attention (not approximate).
+Reorganiza el cómputo de atención para evitar materializar la matriz de atención completa $n \times n$ en la memoria de la GPU. Usa tiling y fusión de kernels. 2-4× más rápido, menos memoria, atención exacta (no aproximada).
 
 ### 6.3 KV Cache
 
-During autoregressive generation, the model computes Q, K, V for each new token. K and V from previous tokens are **cached** and reused — only the new token's Q, K, V are computed. Without caching, generation would be O(n²) per token.
+Durante la generación autoregresiva, el modelo calcula Q, K, V para cada token nuevo. K y V de tokens anteriores se **almacenan en caché** y reutilizan — solo se calculan Q, K, V del token nuevo. Sin caché, la generación sería O(n²) por token.
 
-### 6.4 Grouped Query Attention (GQA)
+### 6.4 Atención de Consultas Agrupadas (GQA)
 
-Multiple query heads share fewer key/value heads. Used in Llama 2/3. Reduces KV cache size by 4-8× with minimal quality loss.
-
----
-
-## 7. Common Mistakes
-
-1. **Not scaling attention scores**: without the $\sqrt{d_k}$ scaling, softmax saturates for large dimensions, producing near-one-hot attention. All tokens attend to one token.
-
-2. **Forgetting causal masking in decoder**: during training, the decoder must not see future tokens. Apply a causal mask (upper triangular of -inf).
-
-3. **Not understanding the KV cache**: autoregressive generation with attention recalculates K and V for every previous token at each step — unless cached. Without caching, generation is $O(n^3)$.
-
-4. **Positional encoding for non-sequential data**: if input order is not meaningful, you may not need positional encoding (e.g., set prediction).
+Múltiples cabezas de consulta comparten menos cabezas de key/value. Usado en Llama 2/3. Reduce el tamaño del KV cache en 4-8× con pérdida mínima de calidad.
 
 ---
 
-## 8. Check Your Understanding
+## 7. Errores Comunes
 
-1. Self-attention is O(n²). If a sequence of length 100 takes 1ms, approximately how long will a sequence of length 500 take? (25ms — 5² × 1ms)
+1. **No escalar puntuaciones de atención**: sin el escalado $\sqrt{d_k}$, el softmax satura para dimensiones grandes, produciendo atención casi one-hot. Todos los tokens atienden a un solo token.
 
-2. Why must decoder-only models use causal (masked) attention? (Each token should only see previous tokens for autoregressive generation.)
+2. **Olvidar el enmascaramiento causal en el decodificador**: durante el entrenamiento, el decodificador no debe ver tokens futuros. Aplicar una máscara causal (triangular superior de -inf).
 
-3. What problem does the KV cache solve, and why does it not apply during training? (Generation repeats previous computations; training sees all tokens at once.)
+3. **No entender el KV cache**: la generación autoregresiva con atención recalcula K y V para cada token anterior en cada paso — a menos que se almacenen en caché. Sin caché, la generación es $O(n^3)$.
 
-4. BERT uses bidirectional attention. GPT uses causal attention. When would you use each?
+4. **Codificación posicional para datos no secuenciales**: si el orden de entrada no es significativo, es posible que no necesites codificación posicional (ej: predicción de conjuntos).
 
-5. A transformer with 12 heads and d_model=768 has each head working in what dimension? (768/12 = 64)
+---
+
+## 8. Comprueba tu Conocimiento
+
+1. El self-attention es O(n²). Si una secuencia de longitud 100 toma 1ms, aproximadamente cuánto tomará una secuencia de longitud 500? (25ms — 5² × 1ms)
+
+2. ¿Por qué los modelos solo decodificador deben usar atención causal (enmascarada)? (Cada token solo debe ver tokens anteriores para generación autoregresiva.)
+
+3. ¿Qué problema resuelve el KV cache y por qué no aplica durante el entrenamiento? (La generación repite cálculos anteriores; el entrenamiento ve todos los tokens a la vez.)
+
+4. BERT usa atención bidireccional. GPT usa atención causal. ¿Cuándo usarías cada uno?
+
+5. Un transformer con 12 cabezas y d_model=768 tiene cada cabeza trabajando en qué dimensión? (768/12 = 64)
 
 ---
 
 ## 9. Resumen
 
-Transformers replaced RNNs by replacing sequential processing with parallel self-attention. Self-attention lets every token directly attend to every other token, solving the long-range dependency problem. Multiple heads learn different relationship types. Positional encoding adds order information. The decoder-only variant (causal attention) enables autoregressive generation and powers modern LLMs.
+Los Transformers reemplazaron a las RNNs reemplazando el procesamiento secuencial con self-attention paralelo. El self-attention permite que cada token atienda directamente a cada otro token, resolviendo el problema de dependencias de largo alcance. Múltiples cabezas aprenden diferentes tipos de relaciones. La codificación posicional añade información de orden. La variante solo decodificador (atención causal) habilita la generación autoregresiva y potencia los LLMs modernos.
 
 ---
 
-## 10. Where to Go Next
+## 10. ¿Dónde ir Siguente?
 
-- [[Transformer Architecture]] — Modern LLM architecture details (RoPE, SwiGLU, GQA)
-- [[Neural Networks]] — Foundational concepts
-- [[RNNs & Sequence Models]] — The architecture Transformers replaced
-- [[Training Techniques]] — Optimizing transformer training
+- [[Transformer Architecture]] — Detalles de arquitectura de LLMs modernos (RoPE, SwiGLU, GQA)
+- [[Neural Networks]] — Conceptos fundacionales
+- [[RNNs & Sequence Models]] — La arquitectura que los Transformers reemplazaron
+- [[Training Techniques]] — Optimización del entrenamiento de transformers
