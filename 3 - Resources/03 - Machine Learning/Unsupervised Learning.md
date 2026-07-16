@@ -4,16 +4,16 @@ status: growing
 created: 2026-06-27
 ---
 
-# Unsupervised Learning
+# Aprendizaje No Supervisado
 
 ## 1. Escenario de aprendizaje
 
-Trabajas en una empresa de comercio electrónico con millones de clientes. Tienes datos de compras, navegación y soporte técnico, pero no tienes etiquetas — nadie te ha dicho "este cliente es de tipo A, este es de tipo B". Necesitas encontrar segmentos de clientes por su comportamiento para personalizar ofertas y campañas de marketing. Sin etiquetas disponibles, el unsupervised learning descubre **estructura oculta en los datos**: agrupa clientes similares, reduce dimensionalidad para visualización y detecta anomalías como fraude.
+Trabajas en una empresa de comercio electrónico con millones de clientes. Tienes datos de compras, navegación y soporte técnico, pero no tienes etiquetas — nadie te ha dicho "este cliente es de tipo A, este es de tipo B". Necesitas encontrar segmentos de clientes por su comportamiento para personalizar ofertas y campañas de marketing. Sin etiquetas disponibles, el aprendizaje no supervisado descubre **estructura oculta en los datos**: agrupa clientes similares, reduce dimensionalidad para visualización y detecta anomalías como fraude.
 
 Tres grandes tareas no supervisadas:
 - **Clustering**: agrupar ítems similares
-- **Dimensionality reduction**: comprimir datos preservando estructura
-- **Anomaly detection**: encontrar patrones inusuales
+- **Reducción de dimensionalidad**: comprimir datos preservando estructura
+- **Detección de anomalías**: encontrar patrones inusuales
 
 Estas son esenciales para el análisis exploratorio de datos, feature engineering y entender tus datos antes de aplicar métodos supervisados.
 
@@ -23,163 +23,163 @@ Estas son esenciales para el análisis exploratorio de datos, feature engineerin
 
 ### 2.1 K-Means
 
-**Goal**: partition $n$ points into $k$ clusters, minimizing within-cluster variance.
+**Objetivo**: particionar $n$ puntos en $k$ clusters, minimizando la varianza dentro de cada cluster.
 
-**The algorithm** (step by step):
-1. Pick $k$ random points as initial centroids
-2. **Assign**: each point goes to the nearest centroid
-3. **Update**: recompute centroids as the mean of points in each cluster
-4. Repeat steps 2-3 until convergence (centroids stop changing)
+**El algoritmo** (paso a paso):
+1. Elegir $k$ puntos aleatorios como centroides iniciales
+2. **Asignar**: cada punto va al centroide más cercano
+3. **Actualizar**: recalcular centroides como la media de los puntos en cada cluster
+4. Repetir pasos 2-3 hasta convergencia (los centroides dejan de cambiar)
 
-**Concrete example** — clustering customers:
+**Ejemplo concreto** — clustering de clientes:
 ```
-Customers: (age, income) = [(25, 30k), (30, 35k), (55, 80k), (60, 85k)]
+Clientes: (edad, ingresos) = [(25, 30k), (30, 35k), (55, 80k), (60, 85k)]
 k = 2
 
-Step 1: centroid1 = (25, 30k), centroid2 = (55, 80k)  (random init)
-Step 2: customer (30, 35k) → centroid1 (closer)
-         customer (60, 85k) → centroid2 (closer)
-Step 3: centroid1 = ((25+30)/2, (30+35)/2) = (27.5, 32.5k)
-         centroid2 = ((55+60)/2, (80+85)/2) = (57.5, 82.5k)
-Repeat → converges in a few iterations
+Paso 1: centroide1 = (25, 30k), centroide2 = (55, 80k)  (inicialización aleatoria)
+Paso 2: cliente (30, 35k) → centroide1 (más cercano)
+         cliente (60, 85k) → centroide2 (más cercano)
+Paso 3: centroide1 = ((25+30)/2, (30+35)/2) = (27.5, 32.5k)
+         centroide2 = ((55+60)/2, (80+85)/2) = (57.5, 82.5k)
+Repetir → converge en pocas iteraciones
 ```
 
-**Choosing $k$**:
-- **Elbow method**: plot inertia (within-cluster variance) vs $k$. Look for the "elbow" where adding more clusters gives diminishing returns.
-- **Silhouette score**: measures how similar points are to their own cluster vs other clusters. Higher is better.
+**Elección de $k$**:
+- **Método del codo**: graficar inercia (varianza dentro del cluster) vs $k$. Buscar el "codo" donde agregar más clusters da rendimientos decrecientes.
+- **Score de silueta**: mide qué tan similares son los puntos a su propio cluster vs otros clusters. Mayor es mejor.
 
-**Limitations**:
-- Need to specify $k$ upfront
-- Sensitive to initialization (k-means++ helps)
-- Assumes spherical clusters of similar size
-- Struggles with non-convex shapes, varying densities
+**Limitaciones**:
+- Necesita especificar $k$ de antemano
+- Sensible a la inicialización (k-means++ ayuda)
+- Asume clusters esféricos de tamaño similar
+- Tiene problemas con formas no convexas, densidades variables
 
 ### 2.2 DBSCAN
 
-**Density-based clustering**: clusters are regions of high density separated by regions of low density.
+**Clustering basado en densidad**: los clusters son regiones de alta densidad separadas por regiones de baja densidad.
 
-**How it works**:
-1. For each point, count neighbors within radius $\epsilon$
-2. If neighbors $\geq$ minPts, the point is a **core point** (start a cluster)
-3. All points within $\epsilon$ of a core point belong to the same cluster
-4. Points not reachable from any core point are **noise** (outliers)
+**Cómo funciona**:
+1. Para cada punto, contar vecinos dentro del radio $\epsilon$
+2. Si vecinos $\geq$ minPts, el punto es un **punto central** (inicia un cluster)
+3. Todos los puntos dentro de $\epsilon$ de un punto central pertenecen al mismo cluster
+4. Puntos no alcanzables desde ningún punto central son **ruido** (outliers)
 
-**Advantages over K-Means**:
-- Does not require $k$
-- Can find arbitrarily shaped clusters
-- Automatically detects outliers
-- Robust to noise
+**Ventajas sobre K-Means**:
+- No requiere $k$
+- Puede encontrar clusters de formas arbitrarias
+- Detecta outliers automáticamente
+- Robusto al ruido
 
-**Disadvantages**:
-- Sensitive to $\epsilon$ and minPts parameters
-- Struggles with varying densities
-- Does not work well in high dimensions (curse of dimensionality)
+**Desventajas**:
+- Sensible a los parámetros $\epsilon$ y minPts
+- Tiene problemas con densidades variables
+- No funciona bien en dimensiones altas (maldición de la dimensionalidad)
 
-### 2.3 Hierarchical Clustering
+### 2.3 Clustering Jerárquico
 
-Builds a tree (dendrogram) of clusters.
+Construye un árbol (dendrograma) de clusters.
 
-**Agglomerative** (bottom-up, most common):
-1. Start: each point is its own cluster
-2. Merge the two closest clusters
-3. Repeat until one cluster remains
+**Aglomerativo** (de abajo hacia arriba, más común):
+1. Inicio: cada punto es su propio cluster
+2. Fusionar los dos clusters más cercanos
+3. Repetir hasta que quede un solo cluster
 
-**Divisive** (top-down): start with one cluster, split recursively.
+**Divisivo** (de arriba hacia abajo): empezar con un cluster, dividir recursivamente.
 
-The dendrogram lets you choose the number of clusters after the fact — just cut the tree at any level.
+El dendrograma te permite elegir el número de clusters después — solo corta el árbol en cualquier nivel.
 
 ---
 
-## 3. Dimensionality Reduction
+## 3. Reducción de Dimensionalidad
 
-### 3.1 Principal Component Analysis (PCA)
+### 3.1 Análisis de Componentes Principales (PCA)
 
-**Goal**: find a lower-dimensional representation that preserves maximum variance.
+**Objetivo**: encontrar una representación de menor dimensión que preserve la varianza máxima.
 
-**Intuition**: imagine a cloud of points in 3D shaped like a flat pancake. Most of the variance (information) is in the plane of the pancake; the thickness is noise. PCA finds the plane.
+**Intuición**: imagina una nube de puntos en 3D con forma de panqueque plano. La mayor parte de la varianza (información) está en el plano del panqueque; el grosor es ruido. PCA encuentra el plano.
 
-**How it works** (via SVD):
-1. Center the data: subtract the mean of each feature
-2. Compute $X = U \Sigma V^T$ (SVD of centered data)
-3. Principal components = columns of $V$ (directions of maximum variance; see [[Linear Algebra]] for SVD details)
-4. Projections = $U_k \Sigma_k$ (data in reduced space)
+**Cómo funciona** (mediante SVD):
+1. Centrar los datos: restar la media de cada feature
+2. Calcular $X = U \Sigma V^T$ (SVD de los datos centrados)
+3. Componentes principales = columnas de $V$ (direcciones de máxima varianza; ver [[Linear Algebra]] para detalles de SVD)
+4. Proyecciones = $U_k \Sigma_k$ (datos en espacio reducido)
 
-**Choosing the number of components**:
-- Look at explained variance ratio: $\frac{\sigma_i^2}{\sum \sigma_j^2}$ (see [[Statistics]] for variance concepts)
-- Choose $k$ such that cumulative variance > 0.9 or 0.95
+**Elección del número de componentes**:
+- Ver la razón de varianza explicada: $\frac{\sigma_i^2}{\sum \sigma_j^2}$ (ver [[Statistics]] para conceptos de varianza)
+- Elegir $k$ tal que la varianza acumulada > 0.9 o 0.95
 
-**When to use PCA**:
-- Visualization (project to 2D or 3D)
-- Noise reduction (small components are often noise)
-- Speed up training (fewer features)
-- Before distance-based algorithms (KNN, K-Means) in high dimensions
+**Cuándo usar PCA**:
+- Visualización (proyectar a 2D o 3D)
+- Reducción de ruido (componentes pequeños suelen ser ruido)
+- Acelerar entrenamiento (menos features)
+- Antes de algoritmos basados en distancia (KNN, K-Means) en dimensiones altas
 
-**Warning**: PCA assumes linear structure. It does not capture non-linear relationships.
+**Advertencia**: PCA asume estructura lineal. No captura relaciones no lineales.
 
 ### 3.2 t-SNE
 
-**Goal**: visualize high-dimensional data in 2D or 3D while preserving local structure.
+**Objetivo**: visualizar datos de alta dimensionalidad en 2D o 3D preservando la estructura local.
 
-**Why it is different from PCA**:
-- PCA preserves global variance (large-scale structure)
-- t-SNE preserves local neighborhoods (nearby points stay nearby)
+**Por qué es diferente de PCA**:
+- PCA preserva la varianza global (estructura a gran escala)
+- t-SNE preserva vecindarios locales (puntos cercanos se mantienen cercanos)
 
-t-SNE is non-deterministic, expensive (O(n²)), and should be used **only for visualization**, not for feature extraction or downstream modeling.
+t-SNE es no determinista, costoso (O(n²)), y debe usarse **solo para visualización**, no para extracción de features o modelado posterior.
 
 ### 3.3 UMAP
 
-Faster than t-SNE, better at preserving global structure, and scalable to larger datasets. Increasingly the default choice for embedding visualization.
+Más rápido que t-SNE, mejor preservando la estructura global, y escalable a datasets más grandes. Cada vez más la opción por defecto para visualización de embeddings.
 
 ---
 
-## 4. Practical Considerations
+## 4. Consideraciones Prácticas
 
-| Task | Algorithm | When to Use |
+| Tarea | Algoritmo | Cuándo Usar |
 |---|---|---|
-| **Clustering** | K-Means | Large data, spherical clusters, known $k$ |
-| | DBSCAN | Arbitrary shapes, unknown $k$, outlier detection |
-| | Hierarchical | Small data, want dendrogram, interpretability |
-| **Dim. reduction** | PCA | Linear structure, speed, preprocessing before ML |
-| | t-SNE | Visualization only, small to medium data |
-| | UMAP | Visualization, larger data, structure preservation |
-| **Anomaly** | Isolation Forest | High dimensions, large data |
-| | LOF | Local density anomalies |
-| | Autoencoder | Complex patterns, enough data |
+| **Clustering** | K-Means | Datos grandes, clusters esféricos, $k$ conocido |
+| | DBSCAN | Formas arbitrarias, $k$ desconocido, detección de outliers |
+| | Jerárquico | Datos pequeños, querer dendrograma, interpretabilidad |
+| **Red. dimensional** | PCA | Estructura lineal, velocidad, preprocesamiento antes de ML |
+| | t-SNE | Solo visualización, datos pequeños a medianos |
+| | UMAP | Visualización, datos grandes, preservación de estructura |
+| **Anomalías** | Isolation Forest | Dimensiones altas, datos grandes |
+| | LOF | Anomalías de densidad local |
+| | Autoencoder | Patrones complejos, suficientes datos |
 
 ---
 
-## 5. Common Mistakes
+## 5. Errores Comunes
 
-1. **PCA without scaling**: if features are on different scales, PCA directions are dominated by high-variance features. Always standardize first.
+1. **PCA sin escalado**: si las features están en diferentes escalas, las direcciones de PCA están dominadas por features de alta varianza. Siempre estandarizar primero.
 
-2. **Using t-SNE for feature extraction**: t-SNE is non-deterministic and distances are not meaningful. It is a visualization tool, not a preprocessing step.
+2. **Usar t-SNE para extracción de features**: t-SNE es no determinista y las distancias no son significativas. Es una herramienta de visualización, no un paso de preprocesamiento.
 
-3. **Assuming clusters found by K-Means are "real"**: K-Means always finds $k$ clusters, even in uniformly random data (see [[Probability]]). Validate with silhouette score or domain knowledge.
+3. **Asumir que los clusters encontrados por K-Means son "reales"**: K-Means siempre encuentra $k$ clusters, incluso en datos aleatorios uniformes (ver [[Probability]]). Validar con score de silueta o conocimiento del dominio.
 
-4. **Not checking for outliers before K-Means**: centroids can be dragged by outliers. Remove or clip extreme values.
+4. **No verificar outliers antes de K-Means**: los centroides pueden ser arrastrados por outliers. Eliminar o recortar valores extremos.
 
-5. **Interpreting PCA components as "features"**: each component is a linear combination of original features. They are not necessarily interpretable.
+5. **Interpretar componentes de PCA como "features"**: cada componente es una combinación lineal de features originales. No son necesariamente interpretables.
 
 ---
 
-## 6. Check Your Understanding
+## 6. Comprueba tu Conocimiento
 
-1. You run K-Means with k=3 on random uniform data. What will the clusters look like? What does this tell you about evaluating clustering?
-2. Why does PCA require scaling the data first? What happens if you skip it?
-3. DBSCAN labels some points as "noise" (-1). What does this mean and why is it useful?
-4. You have 500 features and want to visualize your data. Why might PCA be insufficient and t-SNE be a better choice?
-5. How is the explained variance ratio related to eigenvalues in PCA?
+1. Ejecutas K-Means con k=3 en datos aleatorios uniformes. ¿Cómo se verán los clusters? ¿Qué te dice esto sobre la evaluación de clustering?
+2. ¿Por qué PCA requiere escalar los datos primero? ¿Qué pasa si lo omites?
+3. DBSCAN etiqueta algunos puntos como "ruido" (-1). ¿Qué significa esto y por qué es útil?
+4. Tienes 500 features y quieres visualizar tus datos. ¿Por qué PCA podría ser insuficiente y t-SNE una mejor opción?
+5. ¿Cómo se relaciona la razón de varianza explicada con los eigenvalores en PCA?
 
 ---
 
 ## 7. Resumen
 
-Unsupervised learning finds hidden structure in unlabeled data. Clustering groups similar points (K-Means for spherical clusters, DBSCAN for arbitrary shapes). Dimensionality reduction compresses data while preserving information (PCA for linear structure, t-SNE/UMAP for visualization). These methods are essential for understanding data before applying supervised learning, and for feature engineering in high-dimensional problems.
+El aprendizaje no supervisado encuentra estructura oculta en datos sin etiquetas. Clustering agrupa puntos similares (K-Means para clusters esféricos, DBSCAN para formas arbitrarias). La reducción de dimensionalidad comprime datos preservando información (PCA para estructura lineal, t-SNE/UMAP para visualización). Estos métodos son esenciales para entender datos antes de aplicar aprendizaje supervisado, y para feature engineering en problemas de alta dimensionalidad.
 
 ---
 
-## 8. Where to Go Next
+## 8. ¿Dónde ir Siguente?
 
-- [[Supervised Learning]] — Using representations found by unsupervised methods
-- [[Feature Engineering]] — PCA as a feature extraction technique
-- [[Model Evaluation]] — Evaluating clustering quality
+- [[Supervised Learning]] — Usar representaciones encontradas por métodos no supervisados
+- [[Feature Engineering]] — PCA como técnica de extracción de features
+- [[Model Evaluation]] — Evaluar la calidad de clustering
