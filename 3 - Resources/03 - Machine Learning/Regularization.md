@@ -4,113 +4,113 @@ status: growing
 created: 2026-06-27
 ---
 
-# Regularization
+# Regularización
 
 ## 1. Escenario de aprendizaje
 
-Estás entrenando un modelo para predecir el precio de casas usando 300 características — metros cuadrados, número de habitaciones, año de construcción, distancia al centro, etc. Tu modelo logra un error casi nulo en entrenamiento, pero cuando lo pruebas con casas nuevas, las predicciones son pésimas. El modelo ha memorizado el ruido y los detalles irrelevantes de los datos de entrenamiento en lugar de aprender patrones generales. Regularization es el conjunto de técnicas para **prevenir este overfitting** restringiendo la complejidad del modelo.
+Estás entrenando un modelo para predecir el precio de casas usando 300 características — metros cuadrados, número de habitaciones, año de construcción, distancia al centro, etc. Tu modelo logra un error casi nulo en entrenamiento, pero cuando lo pruebas con casas nuevas, las predicciones son pésimas. El modelo ha memorizado el ruido y los detalles irrelevantes de los datos de entrenamiento en lugar de aprender patrones generales. La regularización es el conjunto de técnicas para **prevenir este overfitting** restringiendo la complejidad del modelo.
 
 La idea central: un modelo más simple es mejor que uno complejo, todo lo demás siendo igual (navaja de Occam). La regularización penaliza la complejidad, empujando al modelo hacia soluciones más simples que generalizan mejor.
 
 ---
 
-## 2. The Intuition — Why Constrain the Model?
+## 2. La Intuición — ¿Por qué Restringir el Modelo?
 
-Imagine fitting a polynomial to 5 points:
-- Degree 1 (line): underfits (high bias, low variance)
-- Degree 4 (perfect fit): overfits (low bias, high variance)
-- Degree 2-3: balanced
+Imagina ajustar un polinomio a 5 puntos:
+- Grado 1 (línea): underfitting (alto sesgo, baja varianza)
+- Grado 4 (ajuste perfecto): overfitting (bajo sesgo, alta varianza)
+- Grado 2-3: equilibrado
 
-Regularization "penalizes" large coefficients. A model with smaller coefficients is simpler — it does not change as dramatically with small input changes, making it more stable and less likely to overfit.
+La regularización "penaliza" coeficientes grandes. Un modelo con coeficientes más pequeños es más simple — no cambia dramáticamente con pequeñas variaciones de entrada, haciéndolo más estable y menos propenso a overfitting.
 
 ---
 
-## 3. L2 Regularization (Ridge)
+## 3. Regularización L2 (Ridge)
 
-### 3.1 The Math
+### 3.1 La Matemática
 
-Add the sum of squared weights to the loss function:
+Añadir la suma de pesos cuadrados a la función de pérdida:
 
-$$L_{\text{ridge}}(w) = \underbrace{\|y - Xw\|^2}_{\text{original loss}} + \underbrace{\lambda \|w\|_2^2}_{\text{penalty}}$$
+$$L_{\text{ridge}}(w) = \underbrace{\|y - Xw\|^2}_{\text{pérdida original}} + \underbrace{\lambda \|w\|_2^2}_{\text{penalización}}$$
 
-The gradient update becomes:
+La actualización del gradiente se convierte:
 
 $$w_{t+1} = w_t - \eta (\nabla L_{\text{original}} + 2\lambda w_t)$$
 
-Each step shrinks weights by $2\lambda \eta w_t$ — **weight decay**. See [[Gradient-Based Optimization]] for more on gradient descent variants.
+Cada paso reduce los pesos en $2\lambda \eta w_t$ — **decaimiento de pesos**. Ver [[Gradient-Based Optimization]] para más sobre variantes de descenso de gradiente.
 
-### 3.2 Intuition
+### 3.2 Intuición
 
-- Large weights are penalized more (squared penalty)
-- Weights shrink toward zero but **never reach exactly zero**
-- All features remain in the model, just with smaller coefficients
-- Especially useful when features are correlated (it keeps all of them but distributes coefficients evenly)
+- Los pesos grandes se penalizan más (penalización cuadrada)
+- Los pesos se reducen hacia cero pero **nunca llegan exactamente a cero**
+- Todas las features permanecen en el modelo, solo con coeficientes más pequeños
+- Especialmente útil cuando las features están correlacionadas (mantiene todas pero distribuye coeficientes uniformemente)
 
-### 3.3 Effect on Different Models
+### 3.3 Efecto en Diferentes Modelos
 
-| Model | Ridge Effect |
+| Modelo | Efecto Ridge |
 |---|---|
-| **Linear regression** | Shrinks coefficients, reduces variance |
-| **Logistic regression** | Smoother decision boundary |
-| **Neural networks** | Weight decay (standard name for L2 in DL) |
+| **Regresión lineal** | Reduce coeficientes, disminuye varianza |
+| **Regresión logística** | Frontera de decisión más suave |
+| **Redes neuronales** | Decaimiento de pesos (nombre estándar para L2 en DL) |
 
-### 3.4 Choosing $\lambda$
+### 3.4 Elección de $\lambda$
 
-- $\lambda = 0$: no regularization (original model)
-- $\lambda \to \infty$: weights → 0 (only intercept remains)
-- Pick $\lambda$ via cross-validation:
+- $\lambda = 0$: sin regularización (modelo original)
+- $\lambda \to \infty$: pesos → 0 (solo queda la intersección)
+- Elegir $\lambda$ vía validación cruzada:
 
 ```python
 from sklearn.linear_model import RidgeCV
 model = RidgeCV(alphas=[0.1, 1.0, 10.0, 100.0])
 model.fit(X, y)
-print(model.alpha_)  # best lambda
+print(model.alpha_)  # mejor lambda
 ```
 
 ---
 
-## 4. L1 Regularization (Lasso)
+## 4. Regularización L1 (Lasso)
 
-### 4.1 The Math
+### 4.1 La Matemática
 
-Add the sum of absolute weights:
+Añadir la suma de pesos absolutos:
 
-$$L_{\text{lasso}}(w) = \|y - Xw\|^2 + \lambda \|w\|_1$$
+$$L_{\\text{lasso}}(w) = \|y - Xw\|^2 + \lambda \|w\|_1$$
 
-### 4.2 Why Lasso Produces Sparse Solutions
+### 4.2 Por qué Lasso Produce Soluciones Dispersas
 
-This is the key insight. The L1 penalty has a **sharp corner at zero** where the derivative is discontinuous. During optimization, weights hit exactly zero and stay there.
+Esta es la idea clave. La penalización L1 tiene una **esquina pronunciada en cero** donde la derivada es discontinua. Durante la optimización, los pesos llegan exactamente a cero y se quedan allí.
 
-**Geometric intuition**: the L1 penalty is a diamond-shaped constraint region in weight space. The optimal solution often lies at a corner of this diamond, where some weights are exactly zero.
+**Intuición geométrica**: la penalización L1 es una región de restricción con forma de diamante en el espacio de pesos. La solución óptima a menudo yace en una esquina de este diamante, donde algunos pesos son exactamente cero.
 
-**Practical consequence**: Lasso does **automatic feature selection** — it drives irrelevant features to exactly zero, leaving only the important ones. See [[Feature Engineering]] for more selection methods.
+**Consecuencia práctica**: Lasso hace **selección automática de features** — impulsa features irrelevantes a exactamente cero, dejando solo las importantes. Ver [[Feature Engineering]] para más métodos de selección.
 
 ### 4.3 L1 vs L2
 
-| Property | L1 (Lasso) | L2 (Ridge) |
+| Propiedad | L1 (Lasso) | L2 (Ridge) |
 |---|---|---|
-| Penalty | $\sum |w_i|$ | $\sum w_i^2$ |
-| Effect | Sparse (many zeros) | Shrinkage (all small) |
-| Feature selection | Yes (drops features) | No (keeps all features) |
-| Correlated features | Picks one arbitrarily | Keeps all, shrinks evenly |
-| Sensitivity to outliers | More robust | Less robust |
-| Gradient | Constant (±1) | Proportional to $w$ |
+| Penalización | $\sum |w_i|$ | $\sum w_i^2$ |
+| Efecto | Disperso (muchos ceros) | Reducción (todos pequeños) |
+| Selección de features | Sí (elimina features) | No (mantiene todas) |
+| Features correlacionadas | Elige una arbitrariamente | Mantiene todas, reduce uniformemente |
+| Sensibilidad a outliers | Más robusto | Menos robusto |
+| Gradiente | Constante (±1) | Proporcional a $w$ |
 
 ### 4.4 Elastic Net
 
-Best of both worlds:
+Lo mejor de ambos mundos:
 
 $$L_{\text{elastic}}(w) = \|y - Xw\|^2 + \lambda_1 \|w\|_1 + \lambda_2 \|w\|_2^2$$
 
-When features are correlated, Lasso picks one at random. Elastic Net tends to select groups of correlated features together — which is often what you want.
+Cuando las features están correlacionadas, Lasso elige una al azar. Elastic Net tiende a seleccionar grupos de features correlacionadas juntas — lo cual a menudo es lo que quieres.
 
 ---
 
-## 5. Dropout (Neural Networks)
+## 5. Dropout (Redes Neuronales)
 
-### 5.1 How It Works
+### 5.1 Cómo Funciona
 
-During each training iteration, randomly "drop" (set to zero) a fraction $p$ of neurons:
+Durante cada iteración de entrenamiento, "eliminar" aleatoriamente (poner en cero) una fracción $p$ de neuronas:
 
 ```python
 import torch.nn as nn
@@ -118,7 +118,7 @@ import torch.nn as nn
 model = nn.Sequential(
     nn.Linear(784, 256),
     nn.ReLU(),
-    nn.Dropout(p=0.5),    # 50% chance of dropping each neuron
+    nn.Dropout(p=0.5),    # 50% de probabilidad de eliminar cada neurona
     nn.Linear(256, 128),
     nn.ReLU(),
     nn.Dropout(p=0.3),
@@ -126,24 +126,24 @@ model = nn.Sequential(
 )
 ```
 
-### 5.2 Why Dropout Works
+### 5.2 Por qué Dropout Funciona
 
-Dropout forces the network to learn **redundant representations** — no single neuron can be essential because it might be dropped at any time. The result: the network learns robust features that work with and without any particular neuron.
+Dropout fuerza a la red a aprender **representaciones redundantes** — ninguna neurona individual puede ser esencial porque podría ser eliminada en cualquier momento. El resultado: la red aprende features robustas que funcionan con y sin cualquier neurona particular.
 
-At test time, dropout is turned off, and all neurons contribute. The weights are scaled by $1-p$ to compensate.
+En tiempo de prueba, dropout se desactiva y todas las neuronas contribuyen. Los pesos se escalan por $1-p$ para compensar.
 
-**Analogy**: it is like training an ensemble of $2^n$ sub-networks (where $n$ is the number of neurons) and averaging them at test time.
+**Analogía**: es como entrenar un ensemble de $2^n$ sub-redes (donde $n$ es el número de neuronas) y promediarlas en tiempo de prueba.
 
 ---
 
-## 6. Early Stopping
+## 6. Parada Temprana
 
-### 6.1 How It Works
+### 6.1 Cómo Funciona
 
-Monitor validation loss during training. Stop when it stops improving. See [[Training Techniques]] for more on training loop best practices.
+Monitorear la pérdida de validación durante el entrenamiento. Parar cuando deja de mejorar. Ver [[Training Techniques]] para más sobre mejores prácticas del bucle de entrenamiento.
 
 ```python
-# PyTorch-like pseudocode
+# Pseudocódigo estilo PyTorch
 best_val_loss = float("inf")
 patience_counter = 0
 
@@ -154,24 +154,24 @@ for epoch in range(max_epochs):
     if val_loss < best_val_loss:
         best_val_loss = val_loss
         patience_counter = 0
-        save_checkpoint(model)           # save best model
+        save_checkpoint(model)           # guardar mejor modelo
     else:
         patience_counter += 1
-        if patience_counter >= patience:  # e.g., patience=5
+        if patience_counter >= patience:  # ej., patience=5
             break
 ```
 
-### 6.2 Why Early Stopping Works
+### 6.2 Por qué la Parada Temprana Funciona
 
-As training progresses, the model first learns general patterns (reducing both train and val loss), then starts overfitting to noise (train loss continues decreasing, val loss increases). Early stopping catches the model right before it starts overfitting.
+A medida que avanza el entrenamiento, el modelo primero aprende patrones generales (reduciendo tanto pérdida de entrenamiento como de validación), luego comienza a hacer overfitting al ruido (la pérdida de entrenamiento sigue disminuyendo, la de validación aumenta). La parada temprana atrapa al modelo justo antes de que empiece a hacer overfitting.
 
 ---
 
-## 7. Data Augmentation
+## 7. Aumentación de Datos
 
-Generate synthetic training data by creating realistic variations:
+Generar datos de entrenamiento sintéticos creando variaciones realistas:
 
-**For images**: rotation, flip, crop, color jitter, noise, cutout
+**Para imágenes**: rotación, volteo, recorte, jitter de color, ruido, cutout
 ```python
 from torchvision import transforms
 
@@ -183,61 +183,61 @@ augment = transforms.Compose([
 ])
 ```
 
-**For text**: back-translation (translate to another language and back), word dropout, synonym replacement, character noise
+**Para texto**: retrotraducción (traducir a otro idioma y volver), eliminación de palabras, reemplazo de sinónimos, ruido de caracteres
 
-**Why it works**: each augmented sample is slightly different from the original, teaching the model to be invariant to irrelevant variations.
+**Por qué funciona**: cada muestra aumentada es ligeramente diferente de la original, enseñando al modelo a ser invariante a variaciones irrelevantes.
 
 ---
 
-## 8. Batch Normalization
+## 8. Normalización por Lotes
 
-Normalizes activations across each mini-batch:
+Normaliza activaciones a través de cada mini-lote:
 
 $$\hat{x} = \frac{x - \mu_B}{\sqrt{\sigma_B^2 + \epsilon}}, \quad y = \gamma \hat{x} + \beta$$
 
-- **Reduces internal covariate shift**: each layer sees normalized inputs
-- **Allows higher learning rates**: gradients are better behaved
-- **Acts as a regularizer**: the noise from batch statistics adds slight regularization
-- **Makes deep networks trainable**: enables 50+ layer networks
+- **Reduce el desplazamiento de covariable interno**: cada capa ve entradas normalizadas
+- **Permite tasas de aprendizaje más altas**: los gradientes se comportan mejor
+- **Actúa como regularizador**: el ruido de las estadísticas del lote añade ligera regularización
+- **Hace entrenables las redes profundas**: permite redes de 50+ capas
 
 ---
 
-## 9. Common Mistakes
+## 9. Errores Comunes
 
-1. **Applying L1/L2 to tree-based models**: trees do not have "coefficients" in the same sense. Use max_depth, min_samples_leaf, and other tree-specific parameters instead.
+1. **Aplicar L1/L2 a modelos basados en árboles**: los árboles no tienen "coeficientes" en el mismo sentido. Usar max_depth, min_samples_leaf y otros parámetros específicos de árboles.
 
-2. **Cross-validating $\lambda$ on the same data used for evaluation**: this leaks information. Always cross-validate on training data only, then evaluate on held-out test data.
+2. **Hacer validación cruzada de $\lambda$ en los mismos datos usados para evaluación**: esto filtra información. Siempre hacer validación cruzada solo en datos de entrenamiento, luego evaluar en datos de prueba apartados.
 
-3. **Setting $\lambda$ too high**: a model with all weights near zero predicts the mean/constant — trivial and useless.
+3. **Poner $\lambda$ demasiado alto**: un modelo con todos los pesos cerca de cero predice la media/constante — trivial e inútil.
 
-4. **Dropout after every layer**: too much dropout prevents learning entirely. Use higher dropout on larger layers, lower (or none) on small layers.
+4. **Dropout después de cada capa**: demasiado dropout impide el aprendizaje por completo. Usar dropout mayor en capas más grandes, menor (o ninguno) en capas pequeñas.
 
-5. **Forgetting to scale dropout at test time**: during inference, dropout must be turned off and weights scaled (PyTorch/TF handle this automatically if you call `model.eval()`).
+5. **Olvidar escalar dropout en tiempo de prueba**: durante la inferencia, dropout debe desactivarse y los pesos escalarse (PyTorch/TF manejan esto automáticamente si llamas `model.eval()`).
 
 ---
 
-## 10. Check Your Understanding
+## 10. Comprueba tu Conocimiento
 
-1. You run Lasso with $\lambda = 0.1$ and 50 features become zero. What happens if you increase $\lambda$ to 1.0? What if you decrease to 0.01?
+1. Ejecutas Lasso con $\lambda = 0.1$ y 50 features se vuelven cero. ¿Qué pasa si aumentas $\lambda$ a 1.0? ¿Y si disminuyes a 0.01?
 
-2. Ridge shrinks all weights proportionally. Lasso drives some to zero. Why does L1 produce sparsity but L2 does not? (Hint: think about the shape of the constraint region.)
+2. Ridge reduce todos los pesos proporcionalmente. Lasso impulsa algunos a cero. ¿Por qué L1 produce dispersión pero L2 no? (Pista: piensa en la forma de la región de restricción.)
 
-3. Dropout rate $p=0.5$ means each neuron has a 50% chance of being zeroed. What happens at test time? How are the weights adjusted?
+3. Tasa de dropout $p=0.5$ significa que cada neurona tiene 50% de probabilidad de ser puesta en cero. ¿Qué pasa en tiempo de prueba? ¿Cómo se ajustan los pesos?
 
-4. Early stopping requires a validation set. What happens if you use the test set for early stopping? Why?
+4. La parada temprana requiere un conjunto de validación. ¿Qué pasa si usas el conjunto de prueba para la parada temprana? ¿Por qué?
 
-5. You train a neural network and observe that training loss decreases but validation loss increases after epoch 10. What do you do?
+5. Entrenas una red neuronal y observas que la pérdida de entrenamiento disminuye pero la de validación aumenta después de la época 10. ¿Qué haces?
 
 ---
 
 ## 11. Resumen
 
-Regularization prevents overfitting by constraining the model. L1 (Lasso) drives weights to zero (feature selection). L2 (Ridge) shrinks weights uniformly (stability). Elastic Net combines both. Dropout and early stopping are specialized for neural networks. Data augmentation and batch normalization also provide regularization effects. The key insight: **a simpler model generalizes better**. Regularization is how you enforce simplicity.
+La regularización previene el overfitting restringiendo el modelo. L1 (Lasso) impulsa pesos a cero (selección de features). L2 (Ridge) reduce pesos uniformemente (estabilidad). Elastic Net combina ambos. Dropout y parada temprana están especializados para redes neuronales. La aumentación de datos y la normalización por lotes también proporcionan efectos de regularización. La idea clave: **un modelo más simple generaliza mejor**. La regularización es cómo enforceas la simplicidad.
 
 ---
 
-## 12. Where to Go Next
+## 12. ¿Dónde ir Siguente?
 
-- [[Supervised Learning]] — Applying regularization to regression/classification
-- [[Model Evaluation]] — Detecting overfitting that regularization should fix
-- [[Neural Networks]] — Dropout, weight decay, and batch norm in DL
+- [[Supervised Learning]] — Aplicar regularización a regresión/clasificación
+- [[Model Evaluation]] — Detectar overfitting que la regularización debería corregir
+- [[Neural Networks]] — Dropout, decaimiento de pesos y normalización por lotes en DL
