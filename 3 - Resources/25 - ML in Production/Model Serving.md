@@ -311,7 +311,7 @@ print(f"Routing to: {router.route()}")
 - **Escalado horizontal** con HPA en K8s; **warmup** obligatorio para evitar cold starts.
 - Monitorear **p99 de latencia** — no promedio.
 
-## Check Your Understanding
+## Comprueba tu Conocimiento
 
 1. ¿Por qué el promedio de latencia no es suficiente para monitorear model serving?
    <!-- El promedio oculta colas largas; el p99 revela la experiencia del percentil más lento. -->
@@ -330,7 +330,7 @@ print(f"Routing to: {router.route()}")
 8. ¿Qué configuración de Triton evita que un request espere demasiado en el batch?
    <!-- max_queue_delay_microseconds — tiempo máximo antes de ejecutar el batch. -->
 
-## Where to Go Next
+## ¿Dónde ir Siguente?
 
 - [[API Design for ML]] — mejores prácticas para APIs de inferencia
 - [[Docker Fundamentals]] — contenedorización de modelos para deploy

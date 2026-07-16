@@ -162,7 +162,7 @@ GROUP BY 1
 ORDER BY 1;
 ```
 
-## 7. Common Mistakes
+## 7. Errores Comunes
 
 1. **Tests sin alertas**: tests que fallan pero nadie se entera hasta 2 meses después.
 2. **No testear fuentes**: asumir que los datos raw son perfectos. Siempre testea `sources` en dbt.
@@ -180,14 +180,14 @@ ORDER BY 1;
 6. El monitoreo continuo con alertas, dashboards y SLOs evita sorpresas de meses.
 7. Errores comunes: tests sin alertas, no testear fuentes, contracts sin versionado, thresholds absolutos.
 
-## Check Your Understanding
+## Comprueba tu Conocimiento
 
 1. ¿Qué dimensión de calidad se viola si un campo "email" tiene valores como "abc"? <!-- Validez: el formato del dato no cumple la regla de negocio (debe contener @) -->
 2. ¿Cuál es la diferencia entre un test genérico y un singular test en dbt? <!-- Genérico: se define declarativamente en YML (not_null, unique). Singular: es una consulta SQL que debe devolver 0 filas -->
 3. ¿Qué incluye un data contract además del schema? <!-- SLOs de calidad y latencia, dueños (productor/consumidor), reglas de evolución y versionado -->
 4. ¿Por qué es importante tener alertas y no solo tests nocturnos? <!-- Porque si el test falla a las 2 AM, sin alerta el problema puede estar 2 meses sin detectarse -->
 
-## Where to Go Next
+## ¿Dónde ir Siguente?
 
 - [[Data Pipelines & ETL]]
 - [[dbt & Data Transformation]]

@@ -182,7 +182,7 @@ weighted avg       0.83     0.83      0.80         6
 5. BERT y transfer learning permiten estado-del-arte con fine-tuning en pocos datos.
 6. Evaluar con F1 macro/weighted y confusion matrix, no solo accuracy.
 
-## Check Your Understanding
+## Comprueba tu Conocimiento
 
 1. ¿Por qué Naive Bayes se considera "ingenuo"? <!-- Porque asume independencia condicional entre palabras dado el label, lo cual es falso en lenguaje natural ("barato" y "económico" no son independientes). -->
 2. ¿Qué interpretación tiene un coeficiente positivo en Logistic Regression para texto? <!-- La palabra está asociada a la clase positiva (ej. "free" → spam). -->
@@ -190,7 +190,7 @@ weighted avg       0.83     0.83      0.80         6
 4. ¿Qué ventaja tiene BERT sobre LSTM para clasificación? <!-- BERT pre-entrenado captura contexto bidireccional profundo y puede fine-tunearse con pocos datos. -->
 5. ¿Cuándo usarías macro F1 en vez de weighted F1? <!-- Cuando cada clase es igualmente importante, incluso las minoritarias. -->
 
-## Where to Go Next
+## ¿Dónde ir Siguente?
 
 - [[Supervised Learning]]
 - [[Model Evaluation]]

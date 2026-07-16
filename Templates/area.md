@@ -7,16 +7,16 @@ modified: {{date:YYYY-MM-DD}}
 
 # {{title}}
 
-**Responsibility:** 
+**Responsabilidad:** 
 
-## Standards
-
-- 
-
-## Projects in this Area
+## Estándares
 
 - 
 
-## Notes
+## Proyectos en esta Área
+
+- 
+
+## Notas
 
 -

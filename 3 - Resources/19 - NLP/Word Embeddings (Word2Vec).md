@@ -167,7 +167,7 @@ FastText puede inferir embeddings para palabras no vistas durante el entrenamien
 5. GloVe usa co-ocurrencia global; FastText usa subword units y maneja OOV.
 6. La similitud coseno mide el ángulo entre vectores en el espacio de embeddings.
 
-## Check Your Understanding
+## Comprueba tu Conocimiento
 
 1. ¿Por qué "king" y "queen" aparecen como ortogonales en BoW? <!-- Porque BoW solo cuenta frecuencias, no relaciones entre palabras; cada dimensión es independiente. -->
 2. ¿Qué ventaja tiene Skip-gram sobre CBOW en un corpus pequeño? <!-- Genera más pares de entrenamiento (cada palabra → múltiples contextos) y funciona mejor con palabras raras. -->
@@ -175,7 +175,7 @@ FastText puede inferir embeddings para palabras no vistas durante el entrenamien
 4. ¿Cómo maneja FastText las palabras OOV que Word2Vec no puede? <!-- Descompone la palabra en n-gramas de caracteres y suma sus vectores, permitiendo inferir embeddings para palabras no vistas. -->
 5. ¿Qué mide la similitud coseno y por qué no se usa distancia euclidiana en embeddings? <!-- Mide el ángulo entre vectores, ignorando magnitud. Euclidiana mezcla ángulo y longitud; en embeddings la dirección importa más que la norma. -->
 
-## Where to Go Next
+## ¿Dónde ir Siguente?
 
 - [[Text Preprocessing & Representation]]
 - [[Text Classification]]

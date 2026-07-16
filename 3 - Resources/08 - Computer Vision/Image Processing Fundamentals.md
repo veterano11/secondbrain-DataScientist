@@ -20,6 +20,32 @@ pip install numpy scipy pillow scikit-image matplotlib
 
 ## 3. La imagen como dato numérico
 
+### Representación Visual de una Imagen
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    IMAGEN COMO MATRIZ                                │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  IMAGEN EN ESCALA DE GRISES           IMAGEN A COLOR (RGB)         │
+│  ┌─────────────────────────┐         ┌─────────────────────────┐  │
+│  │ 120 125 130 128 122    │         │ ROJO    │ VERDE  │ AZUL  │  │
+│  │ 118 122 128 130 125    │         │ ┌─────┐ │┌─────┐│┌─────┐│  │
+│  │ 115 120 125 128 120    │         │ │120  │ ││115  │││130  ││  │
+│  │ 110 115 120 125 118    │         │ │118  │ ││118  │││125  ││  │
+│  │ 108 112 118 122 115    │         │ │115  │ ││120  │││128  ││  │
+│  └─────────────────────────┘         │ └─────┘ │└─────┘│└─────┘│  │
+│                                      └─────────────────────────┘  │
+│  Cada celda = 1 píxel                   3 matrices apiladas       │
+│  Rango: 0 (negro) a 255 (blanco)        Cada una: 0-255          │
+│                                                                     │
+│  FORMAS:                                                            │
+│  • Grayscale: (alto, ancho)            Color: (alto, ancho, 3)    │
+│  • Ej: (1024, 768)                     Ej: (1024, 768, 3)        │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
 Una imagen en escala de grises es una matriz 2D donde cada celda es un píxel con intensidad entre 0 (negro) y 255 (blanco). Una imagen a color son tres matrices apiladas: Rojo, Verde, Azul (RGB).
 
 ```python
@@ -50,6 +76,44 @@ Valor mínimo: 23, máximo: 211
 Cada píxel es un número. Procesar una imagen es manipular estos números.
 
 ## 4. Convolución y filtrado
+
+### Visualización de la Convolución
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    OPERACIÓN DE CONVOLUCIÓN                         │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  IMAGEN (5×5)              KERNEL (3×3)        RESULTADO (3×3)     │
+│  ┌───────────────────┐    ┌───────────┐      ┌───────────────┐    │
+│  │ 10 10 10  0  0   │    │  1  0 -1  │      │  0  0  0      │    │
+│  │ 10 10 10  0  0   │    │  2  0 -2  │      │  0  0  0      │    │
+│  │ 10 10 10  0  0   │  * │  1  0 -1  │  =   │  0  0  0      │    │
+│  │ 10 10 10  0  0   │    │           │      │               │    │
+│  │ 10 10 10  0  0   │    └───────────┘      └───────────────┘    │
+│  └───────────────────┘                                             │
+│                                                                     │
+│  PASO A PASO:                                                      │
+│  1. Colocar kernel en esquina superior izquierda                   │
+│  2. Multiplicar elemento a elemento:                               │
+│     10×1 + 10×0 + 10×(-1) = 0                                     │
+│     10×2 + 10×0 + 10×(-2) = 0                                     │
+│     10×1 + 10×0 + 10×(-1) = 0                                     │
+│  3. Sumar todos: 0 + 0 + 0 = 0                                    │
+│  4. El resultado 0 va a la posición (0,0) del output              │
+│  5. Deslizar kernel a la derecha y repetir                        │
+│                                                                     │
+│  FILTROS COMUNES:                                                  │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐               │
+│  │ Suavizado   │  │ Detección   │  │ Enfocar     │               │
+│  │ Gaussiano   │  │ Bordes (Sobel)│  │ (Sharpen)  │               │
+│  │ 1/16[1 2 1]│  │ [-1 0 1]    │  │ [ 0 -1  0] │               │
+│  │ [2 4 2]    │  │ [-2 0 2]    │  │ [-1  5 -1] │               │
+│  │ [1 2 1]    │  │ [-1 0 1]    │  │ [ 0 -1  0] │               │
+│  └─────────────┘  └─────────────┘  └─────────────┘               │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
 
 Un kernel (o filtro) es una matriz chica que se desliza sobre la imagen. En cada posición, se multiplica elemento a elemento con los píxeles que cubre y se suma. El resultado es un nuevo píxel.
 

@@ -1,10 +1,10 @@
 ---
-tags: [deep-learning, training, advanced]
+tags: [deep-learning, training, advanced, entrenamiento]
 status: growing
 created: 2026-06-27
 ---
 
-# Training Techniques
+# Técnicas de Entrenamiento
 
 ## 1. Escenario de aprendizaje
 
@@ -12,191 +12,243 @@ Has diseñado una red neuronal para clasificar imágenes de retina y diagnostica
 
 ---
 
-## 2. Optimizers
+## 2. Optimizadores
 
-### 2.1 Stochastic Gradient Descent (SGD)
+### 2.1 Descenso por Gradiente Estocástico (SGD)
 
 $$w_{t+1} = w_t - \eta \nabla L(w_t)$$
 
-The simplest optimizer. Each step moves directly opposite the gradient.
+```
+    Pérdida
+    │
+    │    •
+    │      •  ← descenso por gradiente
+    │        •
+    │          •
+    │            •
+    │              •  ← óptimo
+    └──────────────── Pesos
+```
 
-**Pros**: simple, well-understood, good generalization.
-**Cons**: slow convergence, sensitive to learning rate, can get stuck in saddle points.
+El optimizador más simple. Cada paso se mueve directamente opuesto al gradiente.
+
+**Ventajas**: simple, bien entendido, buena generalización.
+**Desventajas**: convergencia lenta, sensible a la tasa de aprendizaje, puede quedar atrapado en puntos de silla.
 
 ### 2.2 SGD + Momentum
 
 $$v_{t+1} = \beta v_t + \nabla L(w_t)$$
 $$w_{t+1} = w_t - \eta v_{t+1}$$
 
-Accumulates past gradients to build velocity. If gradient direction is consistent, momentum accelerates. If it oscillates, momentum smooths it out.
+Acumula gradientes pasados para construir velocidad. Si la dirección del gradiente es consistente, el momentum acelera. Si oscila, el momentum lo suaviza.
 
-**Intuition**: a ball rolling downhill — it builds momentum in consistent directions and is less affected by local noise.
+**Intuición**: una bola rodando cuesta abajo — construye momentum en direcciones consistentes y es menos afectada por ruido local.
 
 ### 2.3 Adam
 
-$$\text{Adaptive Moment Estimation}$$
+$$\text{Estimación Adaptativa de Momentos}$$
 
-The most widely used optimizer. Maintains:
-- First moment (mean) of past gradients → momentum
-- Second moment (variance) of past gradients → per-parameter learning rate
+El optimizador más ampliamente usado. Mantiene:
+- Primer momento (media) de gradientes pasados → momentum
+- Segundo momento (varianza) de gradientes pasados → tasa de aprendizaje por parámetro
 
 $$m_t = \beta_1 m_{t-1} + (1 - \beta_1) g_t$$
 $$v_t = \beta_2 v_{t-1} + (1 - \beta_2) g_t^2$$
 $$\hat{m}_t = \frac{m_t}{1 - \beta_1^t}, \quad \hat{v}_t = \frac{v_t}{1 - \beta_2^t}$$
 $$w_{t+1} = w_t - \eta \frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \epsilon}$$
 
-**Why it is the default**:
-- Per-parameter adaptive learning rates (works well without tuning)
-- Built-in momentum
-- Handles sparse gradients well
-- Robust to different problem scales
+**Por qué es el predeterminado**:
+- Tasas de aprendizaje adaptativas por parámetro (funciona bien sin ajuste)
+- Momentum incorporado
+- Maneja bien gradientes dispersos
+- Robusto a diferentes escalas de problemas
 
 ### 2.4 AdamW
 
-Adam with **decoupled weight decay**. In standard Adam, L2 regularization interacts with the adaptive learning rate. AdamW applies weight decay separately, which is theoretically cleaner and works better for [[Transformers]].
+Adam con **decaimiento de peso desacoplado**. En Adam estándar, la regularización L2 interactúa con la tasa de aprendizaje adaptativa. AdamW aplica el decaimiento de peso separadamente, lo cual es teóricamente más limpio y funciona mejor para [[Transformers]].
 
-### 2.5 Comparing Optimizers
+### 2.5 Comparación de Optimizadores
 
-See [[Hyperparameter Tuning]] for guidance on setting these values.
+Ver [[Ajuste de Hiperparámetros]] para orientación sobre cómo establecer estos valores.
 
-| Optimizer | Best For | Key Hyperparams |
+| Optimizador | Mejor para | Hiperparámetros Clave |
 |---|---|---|
-| **SGD** | Image classification, simple tasks | LR, momentum |
-| **Adam** | General purpose (default) | LR (3e-4 default), β₁, β₂ |
-| **AdamW** | Transformers, LLMs | LR, weight decay |
-| **Lion** | Memory-constrained training | LR |
+| **SGD** | Clasificación de imágenes, tareas simples | LR, momentum |
+| **Adam** | Propósito general (predeterminado) | LR (3e-4 por defecto), β₁, β₂ |
+| **AdamW** | Transformers, LLMs | LR, decaimiento de peso |
+| **Lion** | Entrenamiento con memoria limitada | LR |
 
 ---
 
-## 3. Learning Rate Scheduling
+## 3. Planificación de Tasa de Aprendizaje
 
-### 3.1 Cosine Decay
+### 3.1 Decaimiento Coseno
 
 $$\eta_t = \frac{1}{2} \eta_0 \left(1 + \cos\left(\frac{t\pi}{T}\right)\right)$$
 
-Starts at $\eta_0$, smoothly decreases to 0 at step $T$. Encourages the model to explore broadly early and fine-tune late.
+```
+    LR
+    │
+ η₀ ┤•
+    │  •
+    │    •
+    │      •
+    │        •
+    │          •
+    │            •
+  0 ┤──────────────•──→ pasos
+    0              T
+```
 
-### 3.2 Linear Warmup + Cosine Decay
+Comienza en $\eta_0$, disminuye suavemente hasta 0 en el paso $T$. Anima al modelo a explorar ampliamente al principio y a refinar al final.
 
-Warmup: linearly increase LR from 0 to $\eta_0$ over the first $W$ steps.
-Decay: cosine decay from $\eta_0$ to 0 over remaining steps.
+### 3.2 Calentamiento Lineal + Decaimiento Coseno
 
-Warmup prevents early instability (large updates when the model is randomly initialized).
+Calentamiento: aumentar linealmente la LR de 0 a $\eta_0$ en los primeros $W$ pasos.
+Decaimiento: decaimiento coseno de $\eta_0$ a 0 en los pasos restantes.
 
-### 3.3 Reduce on Plateau
+El calentamiento previene la inestabilidad temprana (actualizaciones grandes cuando el modelo se inicializa aleatoriamente).
 
-Reduce LR by a factor (e.g., 0.5) when validation loss stops improving for $P$ epochs. Simple and effective.
+### 3.3 Reducción en Meseta
 
-### 3.4 One Cycle
+Reducir la LR por un factor (ej. 0.5) cuando la pérdida de validación deja de mejorar por $P$ épocas. Simple y efectivo.
 
-Warmup to high LR → cosine decay to very low LR. Anneal to very low LR at the end. Known for fast convergence.
+### 3.4 Un Ciclo
+
+Calentamiento a LR alta → decaimiento coseno a LR muy baja. Enfriar a LR muy baja al final. Conocido por convergencia rápida.
 
 ---
 
-## 4. Normalization
+## 4. Normalización
 
-### 4.1 Batch Normalization
+### 4.1 Normalización por Lotes (Batch Normalization)
 
 $$\hat{x} = \frac{x - \mu_B}{\sqrt{\sigma_B^2 + \epsilon}}, \quad y = \gamma \hat{x} + \beta$$
 
-Normalizes each feature across the batch. Reduces internal covariate shift. Allows higher learning rates. Adds slight regularization (noise from batch statistics).
+Normaliza cada característica a través del lote. Reduce el desplazamiento interno de covariable. Permite tasas de aprendizaje más altas. Agrega ligera regularización (ruido de estadísticas de lote).
 
-**Limitation**: batch size must be large enough for reliable statistics. Unstable with batch size 1 or variable-length sequences.
+**Limitación**: el tamaño del lote debe ser lo suficientemente grande para estadísticas confiables. Inestable con tamaño de lote 1 o secuencias de longitud variable.
 
-### 4.2 Layer Normalization
+### 4.2 Normalización por Capa (Layer Normalization)
 
-Normalizes across features for each sample independently:
+Normaliza a través de características para cada muestra independientemente:
 
 $$\hat{x} = \frac{x - \mu_L}{\sqrt{\sigma_L^2 + \epsilon}}$$
 
-Independent of batch size. Works for RNNs and Transformers (where batch norm fails due to variable lengths).
+Independiente del tamaño del lote. Funciona para RNNs y Transformers (donde batch norm falla por longitudes variables).
 
 ### 4.3 RMSNorm
 
 $$y = \frac{x}{\sqrt{\text{RMS}(x) + \epsilon}} \cdot \gamma, \quad \text{RMS}(x) = \sqrt{\frac{1}{d}\sum x_i^2}$$
 
-Simplification of LayerNorm — no mean centering. Faster, used in Llama and modern LLMs.
+Simplificación de LayerNorm — sin centrado en la media. Más rápido, usado en Llama y LLMs modernos.
 
 ---
 
-## 5. Gradient and Regularization Techniques
+## 5. Técnicas de Gradiente y Regularización
 
-See [[Gradient-Based Optimization]] for foundational concepts.
+Ver [[Optimización Basada en Gradiente]] para conceptos fundamentales.
 
-| Technique | What It Does | When To Use |
+| Técnica | Qué Hace | Cuándo Usar |
 |---|---|---|
-| **Gradient Clipping** | Caps gradient norm to prevent explosion | RNNs, deep transformers, unstable training |
-| **Gradient Accumulation** | Sum gradients over multiple batches | Simulating large batch on limited GPU memory |
-| **Mixed Precision** | FP16/BF16 with FP32 master weights | 2× faster training, half GPU memory |
-| **Label Smoothing** | Soften target labels: $y' = (1-\epsilon)y + \epsilon/K$ | Classification, reduces overconfidence |
-| **Stochastic Depth** | Randomly drop layers during training | Very deep networks (1000+ layers) |
+| **Recorte de Gradiente** | Limita la norma del gradiente para prevenir explosión | RNNs, transformers profundos, entrenamiento inestable |
+| **Acumulación de Gradiente** | Suma gradientes sobre múltiples lotes | Simular lote grande con memoria GPU limitada |
+| **Precisión Mixta** | FP16/BF16 con pesos maestros FP32 | Entrenamiento 2× más rápido, mitad de memoria GPU |
+| **Suavizado de Etiquetas** | Suavizar etiquetas objetivo: $y' = (1-\epsilon)y + \epsilon/K$ | Clasificación, reduce sobreconfianza |
+| **Profundidad Estocástica** | Eliminar capas aleatoriamente durante entrenamiento | Redes muy profundas (1000+ capas) |
 
 ---
 
-## 6. Transfer Learning
+## 6. Aprendizaje por Transferencia
 
-Training from scratch is rarely optimal. Instead, start from a pre-trained model:
+Entrenar desde cero rara vez es óptimo. En cambio, empezar desde un modelo pre-entrenado:
 
-| Strategy | What You Update | Data Needed | Example |
+```
+    Modelo Pre-entrenado (ej: BERT)
+              │
+    ┌─────────┴─────────┐
+    │                   │
+  Congelar           Fine-tuning
+  backbone           todos los parámetros
+    │                   │
+  Agregar            Entrenar con
+  clasificador       datos nuevos
+    │                   │
+  Datos pocos        Datos medianos
+```
+
+| Estrategia | Qué Actualizas | Datos Necesarios | Ejemplo |
 |---|---|---|---|
-| **Feature extraction** | Freeze backbone, train classifier | Small | ResNet on custom image dataset |
-| **Full fine-tuning** | All parameters | Medium | BERT for sentiment analysis |
-| **LoRA** | Low-rank adapters | Small | Llama for custom chat task |
-| **Adapter** | Small inserted layers | Small | Any large model |
+| **Extracción de características** | Congelar backbone, entrenar clasificador | Pocos | ResNet en dataset de imágenes personalizado |
+| **Fine-tuning completo** | Todos los parámetros | Medianos | BERT para análisis de sentimiento |
+| **LoRA** | Adaptadores de bajo rango | Pocos | Llama para tarea de chat personalizada |
+| **Adapter** | Capas pequeñas insertadas | Pocos | Cualquier modelo grande |
 
 ---
 
-## 7. Distributed Training
+## 7. Entrenamiento Distribuido
 
-For models too large for one GPU:
+Para modelos demasiado grandes para una GPU:
 
-| Strategy | How It Works |
+```
+    Modelo Grande
+         │
+    ┌────┼────┬────┐
+    │    │    │    │
+   GPU1 GPU2 GPU3 GPU4
+    │    │    │    │
+    └────┼────┴────┘
+         │
+    Sincronizar gradientes
+```
+
+| Estrategia | Cómo Funciona |
 |---|---|
-| **DDP** | Each GPU has full model copy, different data batches, sync gradients |
-| **FSDP** | Shard model parameters across GPUs, reconstruct during forward/backward |
-| **Tensor Parallel** | Split a single layer's computation across GPUs |
-| **Pipeline Parallel** | Put different layers on different GPUs |
+| **DDP** | Cada GPU tiene copia completa del modelo, diferentes lotes de datos, sincroniza gradientes |
+| **FSDP** | Fragmentar parámetros del modelo en GPUs, reconstruir durante adelante/atrás |
+| **Paralelismo de Tensor** | Dividir el cómputo de una capa en múltiples GPUs |
+| **Paralelismo de Pipeline** | Poner diferentes capas en diferentes GPUs |
 
-FSDP is the most common for training LLMs (splits parameters, gradients, and optimizer states).
-
----
-
-## 8. Common Mistakes
-
-1. **Learning rate too high**: the most common training failure. If loss oscillates or goes to NaN, reduce LR.
-
-2. **Not using learning rate scheduling**: a constant LR is rarely optimal. Cosine decay or Reduce on Plateau are almost always better.
-
-3. **Batch size too large without adjusting LR**: if you double batch size, double the LR (linear scaling rule). Otherwise, gradients are less stochastic and updates are too small.
-
-4. **Forgetting gradient clipping for RNNs/transformers**: these architectures are prone to gradient explosion. Clip to norm 1.0 as a default.
-
-5. **Not monitoring gradient norms**: watching only the loss can miss instability. Log gradient norms to spot problems early.
+FSDP es el más común para entrenar LLMs (divide parámetros, gradientes y estados del optimizador).
 
 ---
 
-## 9. Check Your Understanding
+## 8. Errores Comunes
 
-1. Adam has two momentum parameters ($\beta_1, \beta_2$). What does each control? ($\beta_1$: gradient direction momentum, $\beta_2$: gradient magnitude momentum)
+1. **Tasa de aprendizaje demasiado alta**: la falla de entrenamiento más común. Si la pérdida oscila o va a NaN, reducir la LR.
 
-2. Why does AdamW separate weight decay from the adaptive learning rate? (Standard Adam with L2 regularization scales regularization by the adaptive LR, which is incorrect.)
+2. **No usar planificación de tasa de aprendizaje**: una LR constante rara vez es óptima. El decaimiento coseno o la reducción en meseta casi siempre son mejores.
 
-3. You have a batch size of 32 but can only fit 8 on your GPU. What do you do? (Use gradient accumulation — sum gradients over 4 micro-batches.)
+3. **Tamaño de lote demasiado grande sin ajustar LR**: si duplicas el tamaño de lote, duplica la LR (regla de escalado lineal). De lo contrario, los gradientes son menos estocásticos y las actualizaciones son demasiado pequeñas.
 
-4. LayerNorm normalizes across the feature dimension. BatchNorm normalizes across the batch dimension. When would each be preferred?
+4. **Olvidar el recorte de gradiente para RNNs/transformers**: estas arquitecturas son propensas a la explosión de gradientes. Recortar a norma 1.0 por defecto.
 
-5. A 1B parameter model does not fit on one GPU. Which distributed training strategy do you use?
+5. **No monitorear normas de gradiente**: observar solo la pérdida puede pasar por alto la inestabilidad. Registrar normas de gradiente para detectar problemas temprano.
+
+---
+
+## 9. Verifica tu Comprensión
+
+1. Adam tiene dos parámetros de momentum ($\beta_1, \beta_2$). ¿Qué controla cada uno? ($\beta_1$: momentum de dirección del gradiente, $\beta_2$: momentum de magnitud del gradiente)
+
+2. ¿Por qué AdamW separa el decaimiento de peso de la tasa de aprendizaje adaptativa? (Adam estándar con regularización L2 escala la regularización por la LR adaptativa, lo cual es incorrecto.)
+
+3. Tienes un tamaño de lote de 32 pero solo caben 8 en tu GPU. ¿Qué haces? (Usar acumulación de gradiente — sumar gradientes sobre 4 micro-lotes.)
+
+4. LayerNorm normaliza a través de la dimensión de características. BatchNorm normaliza a través de la dimensión de lote. ¿Cuándo se preferiría cada uno?
+
+5. Un modelo de 1B de parámetros no cabe en una GPU. ¿Qué estrategia de entrenamiento distribuido usas?
 
 ---
 
 ## 10. Resumen
 
-Training a neural network effectively requires choosing the right optimizer, learning rate schedule, normalization, and regularization. Adam is the default optimizer. Cosine decay with linear warmup is the default schedule. LayerNorm/RMSNorm are standard for transformers. Gradient clipping prevents explosion. Transfer learning saves data and compute. Pick the right combination and monitor both loss and gradient norms throughout training.
+Entrenar una red neuronal efectivamente requiere elegir el optimizador correcto, la planificación de tasa de aprendizaje, la normalización y la regularización. Adam es el optimizador predeterminado. El decaimiento coseno con calentamiento lineal es la planificación predeterminada. LayerNorm/RMSNorm son estándar para transformers. El recorte de gradiente previene la explosión. El aprendizaje por transferencia ahorra datos y cómputo. Elige la combinación correcta y monitorea tanto la pérdida como las normas de gradiente durante todo el entrenamiento.
 
 ---
 
-## 11. Where to Go Next
+## 11. Dónde Ir Ahora
 
-- [[Neural Networks]] — What these techniques train
-- [[Fine-tuning]] — Applying these techniques to pre-trained models
-- [[Regularization]] — Preventing overfitting during training
+- [[Redes Neuronales]] — Qué entrenan estas técnicas
+- [[Fine-tuning]] — Aplicar estas técnicas a modelos pre-entrenados
+- [[Regularización]] — Prevenir sobreajuste durante el entrenamiento

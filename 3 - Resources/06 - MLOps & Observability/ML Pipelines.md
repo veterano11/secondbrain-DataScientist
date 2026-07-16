@@ -18,6 +18,39 @@ Los pipelines aseguran que cada paso — desde la ingesta de datos hasta el desp
 
 ## 2. Etapas del Pipeline
 
+### Flujo Visual del Pipeline de ML
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    PIPELINE DE ML                                    │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  ┌─────────┐   ┌─────────┐   ┌─────────┐   ┌─────────┐           │
+│  │ Ingesta │──▶│Validac. │──▶│Transf.  │──▶│Entrena. │           │
+│  │ Datos   │   │ Datos   │   │Features │   │ Modelo  │           │
+│  └─────────┘   └─────────┘   └─────────┘   └─────────┘           │
+│       │             │             │             │                   │
+│       ▼             ▼             ▼             ▼                   │
+│  ┌─────────┐   ┌─────────┐   ┌─────────┐   ┌─────────┐           │
+│  │  CSV    │   │ Great   │   │ sklearn │   │ MLflow  │           │
+│  │  API    │   │Expectat.│   │ pipeline│   │ W&B     │           │
+│  │  DB     │   │ Pandera │   │ feature │   │ DVC     │           │
+│  └─────────┘   └─────────┘   └─────────┘   └─────────┘           │
+│                                                                     │
+│                           ┌─────────┐   ┌─────────┐               │
+│                           │ Evaluar │──▶│Despleg. │               │
+│                           │ Modelo  │   │ API     │               │
+│                           └─────────┘   └─────────┘               │
+│                                 │             │                     │
+│                                 ▼             ▼                     │
+│                           ┌─────────┐   ┌─────────┐               │
+│                           │Métricas │   │ Docker  │               │
+│                           │Gráficas │   │ K8s     │               │
+│                           └─────────┘   └─────────┘               │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
 ```
 Ingesta de Datos → Validación → Transformación → Entrenamiento → Evaluación → Despliegue
 ```
@@ -167,12 +200,12 @@ Todas modelan los pipelines como **DAGs** (grafos acíclicos dirigidos) — paso
 
 ## 7. Resumen
 
-ML pipelines automate the end-to-end ML workflow: ingest → validate → transform → train → evaluate → deploy. The key principles are: share feature code between training and serving, version everything (data, code, model), automate all deployment steps, and monitor for failures. A well-built pipeline makes model updates safe, fast, and auditable.
+Los pipelines de ML automatizan el flujo de trabajo de ML de extremo a extremo: ingerir → validar → transformar → entrenar → evaluar → desplegar. Los principios clave son: compartir código de características entre entrenamiento y servicio, versionar todo (datos, código, modelo), automatizar todos los pasos de despliegue, y monitorear fallos. Un pipeline bien construido hace que las actualizaciones de modelos sean seguras, rápidas y auditables.
 
 ---
 
-## 8. Where to Go Next
+## 8. Dónde Ir Ahora
 
-- [[Experiment Tracking]] — Registrando experimentos dentro de pipelines
-- [[Model Monitoring]] — Monitoreando modelos desplegados
-- [[Feature Engineering]] — Características que fluyen a través del pipeline
+- [[Seguimiento de Experimentos]] — Registrando experimentos dentro de pipelines
+- [[Monitoreo de Modelos]] — Monitoreando modelos desplegados
+- [[Ingeniería de Características]] — Características que fluyen a través del pipeline

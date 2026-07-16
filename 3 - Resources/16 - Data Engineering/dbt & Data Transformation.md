@@ -140,7 +140,7 @@ jobs:
 
 En PRs típicamente ejecutas solo los modelos afectados con `dbt build --select state:modified+`, usando `dbt clone` para copiar datos de producción a un schema de desarrollo.
 
-## 7. Common Mistakes
+## 7. Errores Comunes
 
 1. **No usar `ref()`**: hardcodear nombres de tablas → dbt no resuelve dependencias ni orden.
 2. **Modelos demasiado grandes**: 500 líneas de SQL en un solo archivo → difícil de testear y mantener. Divide en modelos pequeños.
@@ -158,14 +158,14 @@ En PRs típicamente ejecutas solo los modelos afectados con `dbt build --select 
 6. En CI/CD, `dbt build` ejecuta modelos + tests, y `dbt clone` replica datos para desarrollo.
 7. Errores comunes: no usar `ref()`, modelos monolíticos, no testear fuentes, mala config incremental.
 
-## Check Your Understanding
+## Comprueba tu Conocimiento
 
 1. ¿Qué diferencia hay entre `ref()` y `source()` en dbt? <!-- `ref()` referencia otro modelo dbt (gestiona dependencias); `source()` referencia una tabla raw externa (definida en sources.yml) -->
 2. ¿Cuándo usarías un modelo incremental en lugar de table o view? <!-- Cuando la tabla fuente es muy grande y solo cambian los datos recientes; el incremental procesa solo lo nuevo en cada ejecución -->
 3. ¿Qué significa que un singular test falle (devuelva filas)? <!-- Que la condición de calidad se violó: hay datos que no cumplen la regla definida en la consulta SQL del test -->
 4. ¿Por qué `profiles.yml` no debe versionarse en el repositorio? <!-- Contiene credenciales de base de datos - debe manejarse con variables de entorno o secretos del CI/CD -->
 
-## Where to Go Next
+## ¿Dónde ir Siguente?
 
 - [[Data Warehousing & Lakehouse]]
 - [[Data Pipelines & ETL]]

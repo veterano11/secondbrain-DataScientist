@@ -272,7 +272,7 @@ def explain_decision(model, instance: dict) -> dict:
 
 GDPR y CCPA/CPRA exigen que las empresas puedan encontrar, exportar y eliminar datos personales en plazos definidos (30 días generalmente). El GDPR se basa en siete principios y requiere una base legal para procesar datos. El EU AI Act añade una capa de regulación para sistemas de IA según su nivel de riesgo. Un DSAR efectivo requiere un inventario completo de sistemas, un proceso automatizado de búsqueda, y cobertura de datos estructurados y no estructurados. El right to explanation demanda que las decisiones automatizadas sean interpretables con herramientas como SHAP.
 
-## Check Your Understanding
+## Comprueba tu Conocimiento
 
 1. ¿Cuál es el plazo máximo para responder a un DSAR según GDPR?
 2. Diferencia entre "right to erasure" (GDPR Art. 17) y "opt-out" (CCPA).
@@ -288,7 +288,7 @@ GDPR y CCPA/CPRA exigen que las empresas puedan encontrar, exportar y eliminar d
 5. Eliminar = borrar irreversiblemente el registro. Anonimizar = transformar los datos para que no puedan asociarse a una persona (irreversible). La anonimización se usa cuando hay obligación legal de retener los datos pero no de mantenerlos identificables.
 -->
 
-## Where to Go Next
+## ¿Dónde ir Siguente?
 
 - [[ML Governance & Regulation]]
 - [[Data Classification & Governance]]

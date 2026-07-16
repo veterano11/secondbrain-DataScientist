@@ -8,7 +8,7 @@ created: 2026-06-27
 
 Operacionalización, monitoreo y mantenimiento de modelos en producción.
 
-## Topics
+## Temas
 
 - [[ML Pipelines]] — Feature stores, entrenamiento automatizado, deploy
 - [[Model Monitoring]] — Métricas de performance en producción
@@ -17,7 +17,7 @@ Operacionalización, monitoreo y mantenimiento de modelos en producción.
 - [[A/B Testing]] — Diseño experimental, inferencia en producción
 - [[Observability]] — Logging, tracing, alerting para ML systems
 
-## Progression
+## Progresión
 
 ```
 Foundational → ML Pipelines, Experiment Tracking

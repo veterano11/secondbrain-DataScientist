@@ -302,7 +302,7 @@ Si ves que cohorts recientes tienen peor retención en semana 1 que cohorts viej
 - Un heatmap de retención condensa semanas de datos en una visualización digerible.
 - Los cohorts te permiten separar el efecto de cambios de producto de tendencias estacionales.
 
-## Common Mistakes
+## Errores Comunes
 
 - **Definir etapas ambiguas**: "engagement" no es una etapa. Cada etapa debe ser un evento binario y medible.
 - **Ignorar el tiempo entre etapas**: un usuario puede tardar 3 días en pasar de signup a onboarding. Si medís todo en el mismo día, perdés usuarios lentos pero valiosos. Usá ventanas de tiempo.
@@ -311,7 +311,7 @@ Si ves que cohorts recientes tienen peor retención en semana 1 que cohorts viej
 - **Funnel sin segmentación**: el funnel promedio es mentira. Segmentá por plataforma (iOS vs Android), país o fuente de adquisición.
 - **No considerar survivorship bias**: los usuarios que llegan a la etapa 5 son intrínsecamente diferentes a los que se fueron en etapa 2. No asumas que lo que funciona para ellos funciona para todos.
 
-## Check Your Understanding
+## Comprueba tu Conocimiento
 
 1. Tu funnel muestra 70% de conversión en Download → Signup pero solo 10% en Onboarding → First Workout. ¿Dónde pondrías los recursos? <!-- En onboarding → first workout. Es el mayor drop-off relativo. Mejorar la conversión de 10% a 20% duplica los usuarios que llegan a plan. -->
 2. ¿Qué cohort type usarías para probar si un nuevo tutorial en video mejora retención? <!-- Behavioral cohort: usuarios expuestos al video vs no expuestos. Compará retención semanal entre ambos grupos. -->
@@ -319,7 +319,7 @@ Si ves que cohorts recientes tienen peor retención en semana 1 que cohorts viej
 4. En un heatmap de retención, ¿qué significa que una columna entera se ilumine de repente? <!-- Algo afectó a todas las cohorts por igual en esa semana: un cambio de producto, una campaña de marketing, un bug que infla el conteo, o un evento externo (ej: año nuevo). -->
 5. Calculá manualmente: si 5000 users entran a etapa 1, 3000 pasan a etapa 2 y 1500 a etapa 3, ¿cuál es la conversión etapa 1 → etapa 3? <!-- Conversión global = 1500/5000 = 30%. Conversión etapa a etapa: 1→2 = 60%, 2→3 = 50%. -->
 
-## Where to Go Next
+## ¿Dónde ir Siguente?
 
 - [[Data Product Thinking]] — cómo elegir la north star metric que tu funnel debe optimizar.
 - [[Experimentation & Growth]] — después de diagnosticar, experimentá para mejorar cada etapa.

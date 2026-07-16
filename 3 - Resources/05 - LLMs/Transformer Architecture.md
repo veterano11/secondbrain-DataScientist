@@ -18,6 +18,41 @@ Esta nota cubre la arquitectura **solo decoder** que impulsa los LLMs actuales, 
 
 ## 2. Del Transformer Original al LLM Moderno
 
+### Arquitectura Visual del Transformer
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    ARQUITECTURA TRANSFORMER                         │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  TRANSFORMER ORIGINAL (2017)      LLM MODERNO (2024)               │
+│  ┌─────────────────────────┐     ┌─────────────────────────┐      │
+│  │      ENCODER            │     │                         │      │
+│  │  ┌─────────────────┐   │     │    SOLO DECODER          │      │
+│  │  │ Multi-Head      │   │     │  ┌─────────────────┐    │      │
+│  │  │ Attention       │   │     │  │ Grouped Query   │    │      │
+│  │  └─────────────────┘   │     │  │ Attention (GQA) │    │      │
+│  │  ┌─────────────────┐   │     │  └─────────────────┘    │      │
+│  │  │ Feed Forward    │   │     │  ┌─────────────────┐    │      │
+│  │  └─────────────────┘   │     │  │ SwiGLU FFN      │    │      │
+│  └─────────────────────────┘     │  └─────────────────┘    │      │
+│                                  └─────────────────────────┘      │
+│  ┌─────────────────────────┐                                       │
+│  │      DECODER            │     CAMBIOS CLAVE:                    │
+│  │  ┌─────────────────┐   │     • Pre-RMSNorm (no Post-LN)       │
+│  │  │ Masked Multi-   │   │     • RoPE (no sinusoidal)           │
+│  │  │ Head Attention  │   │     • SwiGLU (no ReLU)               │
+│  │  └─────────────────┘   │     • GQA (no MHA completa)          │
+│  │  ┌─────────────────┐   │                                       │
+│  │  │ Cross-Attention │   │                                       │
+│  │  └─────────────────┘   │                                       │
+│  │  ┌─────────────────┐   │                                       │
+│  │  │ Feed Forward    │   │                                       │
+│  │  └─────────────────┘   │                                       │
+│  └─────────────────────────┘                                       │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
 ### 2.1 El Cambio
 
 | Componente | Transformer Original (2017) | LLM Moderno (2024) |
@@ -56,6 +91,28 @@ Más simple que LayerNorm (sin resta de media). Más rápido y funciona igual de
 **Pre-normalización**: la normalización se aplica **antes** de cada subcapa (atención, FFN), no después. Esto hace que el entrenamiento sea más estable, especialmente en la inicialización.
 
 ### 3.2 Grouped Query Attention (GQA)
+
+#### Comparación de Tipos de Atención
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│              MÚLTIPLES CABEZAS DE ATENCIÓN                         │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  MULTI-HEAD ATTENTION (MHA)      GROUPED QUERY ATTENTION (GQA)    │
+│  ┌─────────────────────────┐     ┌─────────────────────────┐      │
+│  │ Q1  Q2  Q3  Q4  Q5  Q6 │     │ Q1  Q2  Q3  Q4  Q5  Q6 │      │
+│  │ │   │   │   │   │   │   │     │ │   │   │   │   │   │   │      │
+│  │ ▼   ▼   ▼   ▼   ▼   ▼   │     │ ▼   ▼   ▼   ▼   ▼   ▼   │      │
+│  │ K1  K2  K3  K4  K5  K6 │     │ K1  K1  K2  K2  K3  K3 │      │
+│  │ V1  V2  V3  V4  V5  V6 │     │ V1  V1  V2  V2  V3  V3 │      │
+│  └─────────────────────────┘     └─────────────────────────┘      │
+│                                                                     │
+│  6 Q, 6 K, 6 V                  6 Q, 3 K, 3 V                     │
+│  Caché KV: 12 tensores          Caché KV: 6 tensores (50% menos)  │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
 
 La atención multi-head estándar tiene $h$ cabezas de consulta, $h$ cabezas de clave, $h$ cabezas de valor. GQA usa menos cabezas de clave/valor que cabezas de consulta:
 
@@ -96,6 +153,29 @@ $$\text{RoPE}(x_m, m) = R(m) \cdot x_m$$
 ## 4. Tokenización
 
 ### 4.1 Por qué Importa la Tokenización
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    PROCESO DE TOKENIZACIÓN                          │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  TEXTO DE ENTRADA: "Hola, ¿cómo estás?"                           │
+│                                                                     │
+│  PASO 1: Dividir en caracteres                                     │
+│  ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐      │
+│  │ H │ o │ l │ a │ , │   │ ¿ │ c │ ó │ m │ o │   │ e │ ...│      │
+│  └───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘      │
+│                                                                     │
+│  PASO 2: Fusionar pares frecuentes (BPE)                          │
+│  ┌──────┬──────┬──────┬──────┬──────┬──────┬──────┬──────┐        │
+│  │ Hola │  ,   │  ¿   │ c ó │ m o  │  ¿   │ e s │ t á s│        │
+│  └──────┴──────┴──────┴──────┴──────┴──────┴──────┴──────┘        │
+│                                                                     │
+│  PASO 3: Asignar IDs del vocabulario                              │
+│  [15496, 11, 30, 2368, 564, 30, 257, 356, 5765]                  │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
 
 El modelo no ve caracteres — ve tokens (subpalabras). El vocabulario y el algoritmo de tokenización determinan:
 - Cuántos tokens se necesitan para codificar texto (afecta la longitud de secuencia)
@@ -161,12 +241,32 @@ Llama 3 muestra que más datos continúa mejorando el rendimiento incluso más a
 ### 6.1 El Bucle de Generación
 
 ```
-Input: "La capital de Francia es"
-Paso 1: tokens = [La, capital, de, Francia, es]
-Paso 2: calcular logits para el siguiente token
-Paso 3: muestrear "París" (probabilidad 0.7) o greedy (siempre "París")
-Paso 4: tokens = [..., es, París]
-Paso 5: repetir hasta <EOS> o longitud máxima
+┌─────────────────────────────────────────────────────────────────────┐
+│                    PROCESO DE GENERACIÓN AUTORREGRESIVA             │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  PROMPT: "La capital de Francia es"                                │
+│                                                                     │
+│  Paso 1: Tokenizar                                                 │
+│  ┌─────┬─────┬─────┬─────┬─────┐                                  │
+│  │ La  │capit│  de │Fran │  es │                                  │
+│  └─────┴─────┴─────┴─────┴─────┘                                  │
+│                                                                     │
+│  Paso 2: Calcular logits para siguiente token                      │
+│  ┌─────────────────────────────────────────┐                      │
+│  │ París: 0.7  │ Madrid: 0.1 │ Roma: 0.05 │ ...                 │
+│  └─────────────────────────────────────────┘                      │
+│                                                                     │
+│  Paso 3: Muestrear token (París)                                   │
+│  ┌─────┬─────┬─────┬─────┬─────┬─────┐                           │
+│  │ La  │capit│  de │Fran │  es │París│                           │
+│  └─────┴─────┴─────┴─────┴─────┴─────┘                           │
+│                                                                     │
+│  Paso 4: Repetir hasta <EOS> o longitud máxima                    │
+│                                                                     │
+│  SALIDA: "La capital de Francia es París"                          │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
 ```
 
 ### 6.2 Temperatura y Muestreo
@@ -198,7 +298,7 @@ Para Llama 3 70B con contexto de 8K: ~16GB para la caché KV por secuencia.
 
 ---
 
-## 8. Check Your Understanding
+## 8. Comprueba tu Conocimiento
 
 1. ¿Por qué GQA reduce el tamaño de la caché KV en comparación con la atención multi-head estándar? (Menos cabezas de clave/valor que cabezas de consulta.)
 
@@ -214,11 +314,11 @@ Para Llama 3 70B con contexto de 8K: ~16GB para la caché KV por secuencia.
 
 ## 9. Resumen
 
-Modern LLMs are decoder-only Transformers with key optimizations: RoPE for position, GQA for efficient inference, SwiGLU for expressiveness, and RMSNorm for stability. Tokenization converts text to tokens (subwords). Scaling laws guide how much data to train on. Inference uses autoregressive generation with a KV cache for efficiency. Understanding these components is essential for working with, fine-tuning, or deploying LLMs.
+Los LLMs modernos son Transformers solo decoder con optimizaciones clave: RoPE para posición, GQA para inferencia eficiente, SwiGLU para expresividad, y RMSNorm para estabilidad. La tokenización convierte texto en tokens (subpalabras). Las leyes de escalado guían cuántos datos usar para entrenamiento. La inferencia usa generación autoregresiva con caché KV para eficiencia. Entender estos componentes es esencial para trabajar con, fine-tunear, o desplegar LLMs.
 
 ---
 
-## 10. Where to Go Next
+## 10. ¿Dónde ir Siguente?
 
 - [[Transformers]] — La arquitectura original
 - [[Prompt Engineering]] — Usando LLMs efectivamente

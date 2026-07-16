@@ -8,7 +8,7 @@ created: 2026-06-27
 
 Más allá de las CNNs: tareas, arquitecturas y aplicaciones de visión por computadora.
 
-## Topics
+## Temas
 
 - [[Image Processing Fundamentals]] — Filtrado, transformadas, detección de bordes, segmentación clásica
 - [[Object Detection & Segmentation]] — YOLO, R-CNN, Mask R-CNN, SAM
@@ -16,7 +16,7 @@ Más allá de las CNNs: tareas, arquitecturas y aplicaciones de visión por comp
 - [[Vision Transformers]] — ViT, DETR, arquitecturas sin convoluciones
 - [[Self-Supervised & Multimodal Vision]] — CLIP, DINO, contrastive learning, image-text models
 
-## Progression
+## Progresión
 
 ```
 Foundational → Image Processing Fundamentals

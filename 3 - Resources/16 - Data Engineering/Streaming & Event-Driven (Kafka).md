@@ -23,6 +23,47 @@ $ pip install confluent-kafka
 
 ## 1. Batch vs Streaming
 
+### Comparación Visual
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    BATCH vs STREAMING                               │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  BATCH (procesamiento por lotes)                                   │
+│  ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐                                 │
+│  │ Lote│ │ Lote│ │ Lote│ │ Lote│  ← Cada hora/día/semana         │
+│  │  1  │ │  2  │ │  3  │ │  4  │                                 │
+│  └─────┘ └─────┘ └─────┘ └─────┘                                 │
+│      │        │        │        │                                   │
+│      ▼        ▼        ▼        ▼                                   │
+│  ┌─────────────────────────────────────┐                          │
+│  │         Procesamiento               │                          │
+│  └─────────────────────────────────────┘                          │
+│                                                                     │
+│  Latencia: minutos a horas                                        │
+│  Throughput: alto (procesa lotes grandes)                          │
+│  Ejemplo: reportes diarios, ETL nocturno                          │
+│                                                                     │
+│  ─────────────────────────────────────────────────────────────     │
+│                                                                     │
+│  STREAMING (procesamiento en tiempo real)                         │
+│  ┌───┐┌───┐┌───┐┌───┐┌───┐┌───┐┌───┐┌───┐                       │
+│  │ E ││ E ││ E ││ E ││ E ││ E ││ E ││ E │  ← Cada evento         │
+│  └───┘└───┘└───┘└───┘└───┘└───┘└───┘└───┘                       │
+│      │    │    │    │    │    │    │    │                           │
+│      ▼    ▼    ▼    ▼    ▼    ▼    ▼    ▼                           │
+│  ┌─────────────────────────────────────┐                          │
+│  │         Procesamiento               │                          │
+│  └─────────────────────────────────────┘                          │
+│                                                                     │
+│  Latencia: milisegundos a segundos                                │
+│  Throughput: alto (procesa eventos individuales rápido)            │
+│  Ejemplo: alertas, dashboards en vivo, fraudes                    │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
 | Característica | Batch | Streaming |
 |---|---|---|
 | Latencia | Minutos a horas | Milisegundos a segundos |
@@ -38,6 +79,33 @@ Kafka es la plataforma de streaming más adoptada. [[Data Pipelines & ETL|Los pi
 ---
 
 ## 2. Kafka concepts
+
+### Arquitectura Visual de Kafka
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    ARQUITECTURA KAFKA                                │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  PRODUCERS              KAFKA CLUSTER              CONSUMERS       │
+│  ┌─────────┐       ┌─────────────────────┐       ┌─────────┐      │
+│  │ App 1   │──────▶│  ┌─────────────┐   │──────▶│ App 1   │      │
+│  └─────────┘       │  │   Topic     │   │       └─────────┘      │
+│  ┌─────────┐       │  │  "compras"  │   │       ┌─────────┐      │
+│  │ App 2   │──────▶│  │             │   │──────▶│ App 2   │      │
+│  └─────────┘       │  │ P0: [e1,e2] │   │       └─────────┘      │
+│  ┌─────────┐       │  │ P1: [e3,e4] │   │       ┌─────────┐      │
+│  │ App 3   │──────▶│  │ P2: [e5,e6] │   │──────▶│ App 3   │      │
+│  └─────────┘       │  └─────────────┘   │       └─────────┘      │
+│                    │                     │                          │
+│                    │  ┌─────────────┐   │                          │
+│                    │  │  Brokers    │   │                          │
+│                    │  │  (3 nodos)  │   │                          │
+│                    │  └─────────────┘   │                          │
+│                    └─────────────────────┘                          │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
 
 | Concepto | Definición |
 |---|---|
@@ -272,7 +340,7 @@ El monitoreo del consumer lag debe estar en tu dashboard desde el día 1. [[Data
 
 ---
 
-## Check Your Understanding
+## Comprueba tu Conocimiento
 
 1. ¿Cuál es la diferencia entre un offset y una partición?
    <!-- Una partición es una división física del topic; el offset es el número secuencial de cada evento dentro de una partición. -->
@@ -291,7 +359,7 @@ El monitoreo del consumer lag debe estar en tu dashboard desde el día 1. [[Data
 
 ---
 
-## Where to Go Next
+## ¿Dónde ir Siguente?
 
 - [[Data Pipelines & ETL]] — complementa streaming con pipelines batch
 - [[Workflow Orchestration (Airflow)]] — orquesta consumers que escriben a sinks

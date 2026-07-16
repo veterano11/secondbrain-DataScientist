@@ -312,7 +312,7 @@ Mirar el experimento todos los días y detenerlo cuando el p-value cruza 0.05 **
 - **CUPED** reduce varianza usando datos pre-experimento.
 - **Peeking** sin corrección invalida tus conclusiones. Usá sequential testing.
 
-## Common Mistakes
+## Errores Comunes
 
 - **Experimento sin poder estadístico**: terminás con conclusión "no significativo" cuando el efecto existe pero no tenías suficientes usuarios.
 - **Múltiples tests sin corrección**: si mirás 20 métricas secundarias, una va a ser "significativa" por azar. Aplicá Bonferroni o Benjamini-Hochberg.
@@ -321,7 +321,7 @@ Mirar el experimento todos los días y detenerlo cuando el p-value cruza 0.05 **
 - **Contaminación entre grupos**: si control y tratamiento son usuarios de la misma app y se enteran de la diferencia, el comportamiento cambia.
 - **Selección de métrica post-hoc**: primero definís qué medís, después analizás. Elegir la métrica después de ver los resultados es p-hacking.
 
-## Check Your Understanding
+## Comprueba tu Conocimiento
 
 1. Diseñá un experimento para probar si un push de "¡Vamos! Hora de entrenar" aumenta workouts semanales. Especificá hipótesis, métrica primaria, y duración. <!-- Hipótesis: push aumenta workouts semanales en 10%. Métrica: workouts completados en los 7 días post-push. Duración: 14 días (2 semanas, cubriendo efecto novelty). -->
 2. ¿Por qué no basta con un p-value < 0.05 para declarar ganador? <!-- Podría ser falso positivo por múltiples tests, efecto novelty, o sesgo de segmentación. También necesitás significancia práctica (effect size mínimo relevante). -->
@@ -329,7 +329,7 @@ Mirar el experimento todos los días y detenerlo cuando el p-value cruza 0.05 **
 4. ¿Qué es peeking y por qué es peligroso? <!-- Mirar el p-value repetidamente y detener cuando cruza 0.05. Infla la tasa de falsos positivos porque cada mirada es una oportunidad extra de cruzar el umbral por azar. -->
 5. Si el tratamiento mejora la métrica primaria 15% pero empeora el NPS 5 puntos, ¿qué hacés? <!-- No hay respuesta automática. Depende de la prioridad del negocio. Lo correcto es reportar ambos efectos y dejar la decisión al PM. Por eso siempre medís contramétricas. -->
 
-## Where to Go Next
+## ¿Dónde ir Siguente?
 
 - [[Experimental Design]] — diseño de experimentos más riguroso: aleatorización, blocking, factorial designs.
 - [[A-B Testing]] — implementación técnica de A/B tests en la práctica.

@@ -143,14 +143,14 @@ Esto da jerarquía espacial 4× → 8× → 16× → 32×, como una CNN. Swin es
 | Necesitás features multi-escala | Swin (piramidal) |
 | Trabajás con video (muchos frames) | ViT + factorización temporal |
 
-## 7. Common Mistakes
+## 7. Errores Comunes
 
 1. **ViT sin suficiente aumento de datos**: recortes aleatorios, color jitter, mixup, cutmix — ViT necesita todo. Sin esto, overfitea feo.
 2. **Positional encoding que no generaliza**: si entrenaste con resolución 224 y querés usar 448, los embeddings aprendidos no funcionan. Necesitás interpolación.
 3. **Usar ViT para segmentación sin arquitectura piramidal**: ViT da una sola escala. Para segmentación necesitás algo como Swin o ViT-Adapter.
 4. **Confundir ViT con MLP-Mixer**: ViT tiene self-attention. MLP-Mixer usa MLPs en lugar de atención. No son lo mismo.
 
-## 8. Check Your Understanding
+## 8. Verifica tu Comprensión
 
 1. ViT sin pre-training en JFT-300M rinde peor que ResNet-50 en ImageNet. ¿Por qué exactamente?
 2. Si Swin usa ventanas chicas, ¿cómo logra comunicación global?
@@ -167,7 +167,7 @@ Esto da jerarquía espacial 4× → 8× → 16× → 32×, como una CNN. Swin es
 
 Vision Transformer adapta el Transformer de NLP a imágenes dividiéndolas en parches y tratándolos como tokens de secuencia. Es más flexible que las CNNs (no tiene sesgos de localidad prefijados), pero necesita 10-100× más datos para alcanzar su potencial. Arquitecturas como Swin y DeiT resuelven limitaciones específicas (jerarquía y datos insuficientes). La elección entre ViT y CNN depende del tamaño del dataset y los recursos de cómputo.
 
-## 10. Where to Go Next
+## 10. Dónde Ir Ahora
 
 - [[Transformers]] — la arquitectura original que ViT adapta
 - [[Object Detection & Segmentation]] — DETR y Mask2Former son transformer-based

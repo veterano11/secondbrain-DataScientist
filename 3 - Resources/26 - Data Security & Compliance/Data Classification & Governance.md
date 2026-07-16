@@ -274,7 +274,7 @@ curl -X POST https://openmetadata.empresa.cl/api/v1/policies \
 
 Data classification y governance son la base de cualquier programa de seguridad de datos. Clasificar (pública, interna, confidencial, restringida) permite aplicar políticas de acceso proporcionadas. La detección de PII combina regex, heurísticas y ML para identificar datos sensibles automáticamente. Un data catalog con metadatos, lineage y ownership centraliza el inventario, mientras que los data contracts garantizan acuerdos formales entre productores y consumidores. Sin automation, la gobernanza muere. Sin clasificación precisa, los controles no funcionan.
 
-## Check Your Understanding
+## Comprueba tu Conocimiento
 
 1. ¿Cuál es la diferencia entre un dato "confidencial" y uno "restringido"?
 2. ¿Por qué clasificar todo como "confidencial" es contraproducente?
@@ -290,7 +290,7 @@ Data classification y governance son la base de cualquier programa de seguridad 
 5. Un data contract es un acuerdo formal entre productor y consumidor que garantiza schema, calidad y clasificación del dataset. Resuelve la falta de comunicación y los breaking changes silenciosos.
 -->
 
-## Where to Go Next
+## ¿Dónde ir Siguente?
 
 - [[Data Quality & Testing]]
 - [[Encryption & Access Control]]

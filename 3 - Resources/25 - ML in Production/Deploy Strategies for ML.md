@@ -326,7 +326,7 @@ print(rec.recommend("123"))
 - **Rollback automático**: detectar degradación y revertir a versión estable.
 - **Feature flags**: activar/desactivar modelos sin redeployar (kill switch).
 
-## Check Your Understanding
+## Comprueba tu Conocimiento
 
 1. ¿Cuál es la diferencia entre shadow deployment y canary release?
    <!-- Shadow no afecta al usuario (copia del tráfico), canary sí afecta a un % de usuarios reales. -->
@@ -345,7 +345,7 @@ print(rec.recommend("123"))
 8. ¿Qué rol cumple Istio en estrategias de deploy de modelos?
    <!-- Service mesh que permite mirroring (shadow), weighted routing (canary), y header-based routing (A/B). -->
 
-## Where to Go Next
+## ¿Dónde ir Siguente?
 
 - [[Model Serving]] — infraestructura de servidores de modelos
 - [[CI-CD & GitOps]] — automatizar pipelines de deploy y rollback

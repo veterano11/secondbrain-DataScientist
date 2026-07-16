@@ -272,7 +272,7 @@ Distilled         0.909       52.2             45.0
 - **ONNX**: optimizaciones de grafo + runtime dedicado. Hasta 4x más rápido que PyTorch eager.
 - Combinación logra 8-10x de compresión con pérdida mínima. Evaluar accuracy, tamaño y latencia en hardware objetivo.
 
-## Check Your Understanding
+## Comprueba tu Conocimiento
 
 1. ¿Cuál es la diferencia entre cuantización dinámica y estática?
    <!-- Dinámica: pesos INT8, activaciones FP32. Estática: pesos y activaciones INT8 + calibración. -->
@@ -291,7 +291,7 @@ Distilled         0.909       52.2             45.0
 8. ¿Qué métrica usarías para seleccionar la mejor técnica de compresión?
    <!-- Score ponderado: accuracy * w_acc + (1-size/max)*w_size + (1-latency/max)*w_lat. -->
 
-## Where to Go Next
+## ¿Dónde ir Siguente?
 
 - [[Transformer Architecture]] — entender la arquitectura que estás comprimiendo
 - [[Model Serving]] — servir modelos comprimidos con Triton y ONNX Runtime

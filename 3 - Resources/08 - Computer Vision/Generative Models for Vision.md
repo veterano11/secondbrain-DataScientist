@@ -155,14 +155,14 @@ $$\mathcal{L} = \underbrace{-\mathbb{E}_{z \sim q_\phi}[\log p_\theta(x|z)]}_{\t
 | Log-likelihood trazable | Sí | No | Sí |
 | Complejidad de entrenamiento | Baja | Alta | Media |
 
-## 7. Common Mistakes
+## 7. Errores Comunes
 
 1. **Mode collapse en GANs**: el generador produce solo 1-2 tipos de imágenes. Soluciones: minibatch discrimination, spectral normalization, o cambiarse a diffusion.
 2. **Color shifting en diffusion**: errores acumulados durante sampling producen imágenes decoloradas. Usar classifier-free guidance con scale bien calibrado (7.5 para Stable Diffusion).
 3. **NeRF muy lento**: NeRF vanilla tarda minutos por vista. Para aplicaciones interactivas usá Instant NGP (hash grids) o Gaussian Splatting.
 4. **VAE blur**: la reconstrucción borrosa es intrínseca al modelo (el término KL empuja a latentes suaves). Para imágenes nítidas, diffusion es mejor.
 
-## 8. Check Your Understanding
+## 8. Verifica tu Comprensión
 
 1. En una GAN, si el discriminador se vuelve perfecto muy rápido, ¿qué pasa con el generador? (El gradiente se vuelve 0 — el generador deja de aprender)
 2. Diffusion requiere 50-1000 pasos para generar una imagen. ¿Cómo hace Stable Diffusion para generar en segundos? (Corre la diffusion en el espacio latente, que es 64× más chico)
@@ -173,7 +173,7 @@ $$\mathcal{L} = \underbrace{-\mathbb{E}_{z \sim q_\phi}[\log p_\theta(x|z)]}_{\t
 
 Tres familias de modelos generativos compiten hoy. GANs (dos redes compitiendo) fueron el estándar 2018-2022 pero sufren mode collapse. Diffusion models (agregar y remover ruido gradualmente) son el estado del arte para generación de imágenes. VAEs ofrecen un espacio latente estructurado pero imágenes borrosas. NeRF extiende la generación a 3D. Stable Diffusion combina VAE + Diffusion para generar imágenes de alta calidad en segundos.
 
-## 10. Where to Go Next
+## 10. Dónde Ir Ahora
 
 - [[Self-Supervised & Multimodal Vision]] — CLIP guidance para texto→imagen
 - [[CNNs]] — backbone de discriminadores GAN y encoder-decoder

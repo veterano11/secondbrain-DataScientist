@@ -8,7 +8,7 @@ created: 2026-06-27
 
 Fundamentos de programación para data science.
 
-## Topics
+## Temas
 
 - [[Python Fundamentals]] — Sintaxis, tipos, estructuras de datos nativas
 - [[Data Structures & Algorithms]] — Complejidad, arrays, hash tables, trees
@@ -17,7 +17,7 @@ Fundamentos de programación para data science.
 - [[Python for Data Science]] — NumPy, pandas, manejo de datos
 - [[Polars for Data Science]] — DataFrames rápidos, lazy evaluation, streaming
 
-## Progression
+## Progresión
 
 ```
 Foundational → Python Fundamentals

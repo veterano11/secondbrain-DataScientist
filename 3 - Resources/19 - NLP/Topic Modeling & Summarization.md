@@ -233,7 +233,7 @@ Estos modelos requieren GPU para fine-tuning y generación, y pueden _alucinar_ 
 5. BART, T5 y PEGASUS son abstractive: generan resúmenes nuevos (riesgo de alucinaciones).
 6. Coherence score (C_v) y pyLDAvis ayudan a evaluar calidad de tópicos; revisión humana es indispensable.
 
-## Check Your Understanding
+## Comprueba tu Conocimiento
 
 1. ¿Qué asume LDA sobre cómo se genera un documento? <!-- Que cada documento es una mezcla de temas y cada palabra se genera eligiendo primero un tema y luego una palabra de ese tema. -->
 2. ¿Cuándo preferirías NMF sobre LDA? <!-- Cuando la escalabilidad y velocidad importan más que la interpretabilidad probabilística (ej. millones de documentos). -->
@@ -241,7 +241,7 @@ Estos modelos requieren GPU para fine-tuning y generación, y pueden _alucinar_ 
 4. ¿Qué diferencia hay entre summarization extractive y abstractive? <!-- Extractive selecciona oraciones originales; abstractive genera texto nuevo (puede alucinar). -->
 5. ¿Qué mide el coherence score C_v? <!-- Si las palabras de un tópico aparecen juntas frecuentemente en el corpus real, indicando coherencia semántica. -->
 
-## Where to Go Next
+## ¿Dónde ir Siguente?
 
 - [[Unsupervised Learning]]
 - [[Text Preprocessing & Representation]]

@@ -270,7 +270,7 @@ La desviación estándar pre-cambio es $2.100. La caída post-cambio fue $18.750
 - **Una idea por slide**: reducir carga cognitiva de la audiencia.
 - **Executive summary de 30 segundos**: si no podés resumirlo, no lo entendiste.
 
-## Common Mistakes
+## Errores Comunes
 
 - **Mostrar todo el análisis**: la C-suite no necesita ver los 20 queries que corriste. Mostrá solo los resultados relevantes.
 - **No tener recomendación**: "los datos muestran que las ventas cayeron" no es útil. "Recomiendo revertir el cambio de precios para el segmento 6+ meses" es útil.
@@ -279,7 +279,7 @@ La desviación estándar pre-cambio es $2.100. La caída post-cambio fue $18.750
 - **No practicar**: la primera vez que escuchás tu presentación no debería ser en la reunión.
 - **No leer la sala**: si ves que el CEO mira el celular, saltá al final. Tené un "skip to conclusions" preparado.
 
-## Check Your Understanding
+## Comprueba tu Conocimiento
 
 1. El equipo de producto te pide que presentes un análisis de abandono de 30 minutos. El CEO se suma. ¿Qué hacés? <!-- Prepará dos versiones: una de 30 min con detalle para producto y un executive summary de 5 min para el CEO. Preguntá al inicio cuánto tiempo tienen realmente. -->
 2. Convertí este hallazgo técnico a una frase para la C-suite: "El odds ratio de churn para usuarios con sesiones < 2 por semana es 3.2 (IC 95%: 2.8-3.6, p < 0.001) comparado con usuarios con sesiones >= 2." <!-- "Los usuarios que entrenan menos de 2 veces por semana abandonan 3 veces más que los que entrenan más." -->
@@ -287,7 +287,7 @@ La desviación estándar pre-cambio es $2.100. La caída post-cambio fue $18.750
 4. ¿Por qué el Pyramid Principle funciona para la C-suite pero no necesariamente para un equipo técnico? <!-- La C-suite necesita decisión rápida (conclusión primero). El equipo técnico necesita entender el proceso para validar y ejecutar (contexto primero). Una misma estructura no sirve para todas las audiencias. -->
 5. Tu dashboard muestra 20 KPIs en una página. ¿Cuál es el problema? <!-- La audiencia no sabe qué mirar. Un dashboard debe priorizar 3-5 KPIs críticos y esconder el detalle detrás de filtros o drill-downs. Si todo es importante, nada es importante. -->
 
-## Where to Go Next
+## ¿Dónde ir Siguente?
 
 - [[Storytelling with Data]] — el libro de Cole Nussbaumer Knaflic en formato note.
 - [[Visualization Fundamentals]] — cómo elegir el gráfico correcto para cada mensaje.

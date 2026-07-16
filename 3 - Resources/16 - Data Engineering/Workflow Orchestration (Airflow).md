@@ -263,7 +263,7 @@ La idempotencia es el principio más importante — sin ella, los reintentos gen
 
 ---
 
-## Check Your Understanding
+## Comprueba tu Conocimiento
 
 1. ¿Qué es un DAG y por qué debe ser acíclico?
    <!-- Un Directed Acyclic Graph define el pipeline. Es acíclico para evitar loops infinitos. -->
@@ -282,7 +282,7 @@ La idempotencia es el principio más importante — sin ella, los reintentos gen
 
 ---
 
-## Where to Go Next
+## ¿Dónde ir Siguente?
 
 - [[Data Pipelines & ETL]] — construye los pipelines que Airflow va a orquestar
 - [[Python for Data Science]] — Python para escribir operators efectivos

@@ -159,14 +159,14 @@ person: 0.89, bbox=(400,500,450,600)
 traffic light: 0.76, bbox=(600,100,620,150)
 ```
 
-## 6. Common Mistakes
+## 6. Errores Comunes
 
 1. **Anchor boxes mal dimensionadas**: si tu dataset tiene objetos alargados y las anchors son cuadradas, las detecciones serán malas. Clusteriza los bboxes del dataset para redefinir anchors.
 2. **NMS mal configurado**: threshold muy bajo → cajas duplicadas. Muy alto → objetos perdidos. 0.5 es típico.
 3. **Objetos pequeños**: detectan muy mal sin FPN. Usá YOLOv8 o DETR con multi-scale features.
 4. **Dataset desbalanceado**: la mayoría de las celdas en YOLO son fondo. Focal Loss ayuda.
 
-## 7. Check Your Understanding
+## 7. Verifica tu Comprensión
 
 1. ¿Por qué YOLO es más rápido que Faster R-CNN? (Una sola pasada vs propuesta + clasificación)
 2. ¿Qué ventaja tiene DETR sobre YOLO? (No necesita anchors ni NMS; es más simple conceptualmente)
@@ -177,7 +177,7 @@ traffic light: 0.76, bbox=(600,100,620,150)
 
 Detection localiza objetos con bounding boxes (YOLO para velocidad, Faster R-CNN para precisión, DETR para simplicidad). Segmentation etiqueta píxeles (semántica: U-Net, DeepLab; instancias: Mask R-CNN, SAM). La evaluación usa mAP con IoU. Las herramientas modernas (YOLOv8, SAM) hacen que detection y segmentation sean accesibles desde pocas líneas de código.
 
-## 9. Where to Go Next
+## 9. Dónde Ir Ahora
 
 - [[Image Processing Fundamentals]] — la base clásica
 - [[Vision Transformers]] — DETR y arquitecturas attention-based

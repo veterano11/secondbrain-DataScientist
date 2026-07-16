@@ -133,12 +133,12 @@ $$a^* = \arg\min_a \int L(\theta, a) P(\theta | D) d\theta$$
 
 ## 9. Resumen
 
-Bayesian Inference actualiza creencias (prior → posterior) usando el teorema de Bayes. Los priors conjugados (Beta-Binomial, Normal-Normal) permiten actualización cerrada. La posterior da una distribución completa de probabilidad del parámetro, no solo un punto. Los intervalos de credibilidad son intuitivos ("95% de probabilidad"). La regla principal: siempre probar sensibilidad al prior.
+La Inferencia Bayesiana actualiza creencias (prior → posterior) usando el teorema de Bayes. Los priors conjugados (Beta-Binomial, Normal-Normal) permiten actualización cerrada. La posterior da una distribución completa de probabilidad del parámetro, no solo un punto. Los intervalos de credibilidad son intuitivos ("95% de probabilidad"). La regla principal: siempre probar sensibilidad al prior.
 
-## 10. Where to Go Next
+## 10. Dónde Ir Ahora
 
-- [[Probabilistic Programming]] — Bayesian inference con PyMC (sin conjugados)
-- [[Markov Chain Monte Carlo]] — sampling de posteriores arbitrarias
-- [[Gaussian Processes]] — Bayesian non-parametric regression
-- [[A-B Testing]] — aplicar Bayesian A/B testing en producción
-- [[Probability]] — distribución Beta y Binomial en detalle
+- [[Programación Probabilística]] — Inferencia bayesiana con PyMC (sin conjugados)
+- [[Cadena de Markov Monte Carlo]] — muestreo de posteriores arbitrarias
+- [[Procesos Gaussianos]] — Regresión bayesiana no paramétrica
+- [[Pruebas A/B]] — aplicar pruebas A/B bayesianas en producción
+- [[Probabilidad]] — distribución Beta y Binomial en detalle

@@ -276,7 +276,7 @@ incident:
 
 Los modelos de ML tienen vectores de ataque únicos: data poisoning, model extraction, adversarial examples y membership inference. Defenderse requiere múltiples capas: adversarial training para robustez, input sanitization para prevenir adversarial examples, output perturbation contra extracción, rate limiting en API, differential privacy, y monitoreo continuo de patrones de consulta anómalos. Un incident response playbook específico para ML debe cubrir detect, contain, eradicate, recover, y post-mortem. La seguridad en ML no es opcional — es un requisito regulatorio y de negocio.
 
-## Check Your Understanding
+## Comprueba tu Conocimiento
 
 1. ¿Qué diferencia hay entre model extraction y membership inference?
 2. ¿Por qué FGSM se considera un ataque de "caja blanca"?
@@ -292,7 +292,7 @@ Los modelos de ML tienen vectores de ataque únicos: data poisoning, model extra
 5. Porque expone al modelo a ejemplos adversariales durante el entrenamiento, forzándolo a aprender fronteras de decisión más suaves y menos sensibles a pequeñas perturbaciones. Es análogo a la regularización.
 -->
 
-## Where to Go Next
+## ¿Dónde ir Siguente?
 
 - [[Privacy & Security in ML]]
 - [[Privacy Regulations]]

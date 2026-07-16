@@ -8,14 +8,14 @@ created: 2026-06-27
 
 Matemáticas fundamentales para machine learning.
 
-## Topics
+## Temas
 
 - [[Linear Algebra]] — Vectores, matrices, eigenvalores, SVD
 - [[Calculus]] — Derivadas, gradientes, optimización
 - [[Probability]] — Axiomas, distribuciones, Bayes, inferencia
 - [[Statistics]] — Descriptiva, inferencial, tests de hipótesis
 
-## Progression
+## Progresión
 
 ```
 Foundational → Linear Algebra, Calculus

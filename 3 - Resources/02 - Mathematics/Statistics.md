@@ -4,6 +4,7 @@ status: growing
 created: 2026-06-27
 ---
 
+
 # Estadística
 
 ## 1. Escenario de aprendizaje
@@ -204,41 +205,41 @@ Una tendencia que aparece en varios grupos pero desaparece o se invierte cuando 
 
 ---
 
-## 7. Common Mistakes
+## 7. Errores Comunes
 
-1. **p-hacking**: running many tests and reporting only the significant ones. If you test 20 features for significance with $\alpha=0.05$, one will appear significant by chance alone.
+1. **p-hacking**: correr muchas pruebas y reportar solo las significativas. Si pruebas 20 características para significancia con $\alpha=0.05$, una parecerá significativa por casualidad sola.
 
-2. **Ignoring multiple comparisons**: if you compare 10 models and pick the best, the probability that the best is an overestimate is much higher than 5%. Correct with Bonferroni or FDR.
+2. **Ignorar comparaciones múltiples**: si comparas 10 modelos y eliges el mejor, la probabilidad de que el mejor sea una sobreestimación es mucho mayor que 5%. Corregir con Bonferroni o FDR.
 
-3. **Confusing practical and statistical significance**: a result can be statistically significant (p < 0.05) but practically irrelevant (0.001% improvement).
+3. **Confundir significancia práctica y estadística**: un resultado puede ser estadísticamente significativo (p < 0.05) pero prácticamente irrelevante (mejora de 0.001%).
 
-4. **Not checking assumptions**: t-tests assume normality. Linear regression assumes homoscedasticity. Violating assumptions can invalidate conclusions.
+4. **No verificar supuestos**: los t-tests asumen normalidad. La regresión lineal asume homocedasticidad. Violar supuestos puede invalidar conclusiones.
 
-5. **Survivorship bias**: analyzing only successful cases. In ML: evaluating models only on data that reached production ignores the failures, which contain valuable information.
+5. **Sesgo de supervivencia**: analizar solo los casos exitosos. En ML: evaluar modelos solo en datos que llegaron a producción ignora los fracasos, que contienen información valiosa.
 
 ---
 
-## 8. Check Your Understanding
+## 8. Verifica tu Comprensión
 
-1. A/B test: model A has 94.2% accuracy, model B has 94.5% accuracy, p = 0.04. What can you conclude?
-2. Your model has high training accuracy but low test accuracy. Is this bias or variance? What do you do?
-3. Why does cross-validation give a better estimate of generalization error than a single train/test split?
-4. You find a correlation of -0.9 between years of experience and errors. Can you conclude that more experience causes fewer errors?
-5. A 95% confidence interval for the click-through rate is [0.032, 0.038]. Does this mean there is a 95% chance the true CTR is between 3.2% and 3.8%?
+1. Test A/B: modelo A tiene 94.2% de precisión, modelo B tiene 94.5% de precisión, p = 0.04. ¿Qué puedes concluir?
+2. Tu modelo tiene alta precisión de entrenamiento pero baja precisión de prueba. ¿Es esto sesgo o varianza? ¿Qué haces?
+3. ¿Por qué la validación cruzada da una mejor estimación del error de generalización que una sola división entrenamiento/prueba?
+4. Encuentras una correlación de -0.9 entre años de experiencia y errores. ¿Puedes concluir que más experiencia causa menos errores?
+5. Un intervalo de confianza del 95% para la tasa de clics es [0.032, 0.038]. ¿Esto significa que hay un 95% de probabilidad de que la CTR real esté entre 3.2% y 3.8%?
 
 ---
 
 ## 9. Resumen
 
-Statistics is the bridge between data and decisions. Descriptive statistics summarizes what you see. Inferential statistics tells you what you can conclude beyond your data. Hypothesis testing helps you separate signal from noise. The bias-variance tradeoff is the unifying concept that connects statistics to ML — it explains overfitting, underfitting, and why model complexity must be carefully controlled.
+La estadística es el puente entre los datos y las decisiones. La estadística descriptiva resume lo que ves. La estadística inferencial te dice qué puedes concluir más allá de tus datos. Las pruebas de hipótesis te ayudan a separar la señal del ruido. La compensación sesgo-varianza es el concepto unificador que conecta la estadística con ML — explica el sobreajuste, el subajuste, y por qué la complejidad del modelo debe ser cuidadosamente controlada.
 
 ---
 
-## 10. Where to Go Next
+## 10. Dónde Ir Ahora
 
-- [[Probability]] — The mathematical foundation for statistics
-- [[Model Evaluation]] — Cross-validation, metrics, and how to measure performance
-- [[A/B Testing]] — Applying hypothesis testing to compare models in production
-- [[Feature Engineering]] — Why standardization, encoding, and selection matter
-- [[Bayesian Inference]] — Bayesian vs. frequentist approaches to statistics
-- [[Linear Algebra]] — Covariance, PCA, and the math behind statistical methods
+- [[Probabilidad]] — La base matemática de la estadística
+- [[Evaluación de Modelos]] — Validación cruzada, métricas y cómo medir rendimiento
+- [[Pruebas A/B]] — Aplicar pruebas de hipótesis para comparar modelos en producción
+- [[Ingeniería de Características]] — Por qué el escalado, la codificación y la selección importan
+- [[Inferencia Bayesiana]] — Enfoques bayesianos vs frecuentistas de la estadística
+- [[Álgebra Lineal]] — Covarianza, PCA y las matemáticas detrás de los métodos estadísticos

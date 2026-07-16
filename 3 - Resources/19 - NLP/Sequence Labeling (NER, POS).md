@@ -184,7 +184,7 @@ print(classification_report(y_true, y_pred))
 5. La evaluación span-based (seqeval) es más estricta que token-level y es el estándar en la literatura.
 6. BIO/BILOU son esquemas de etiquetado secuencial para marcar límites de entidades.
 
-## Check Your Understanding
+## Comprueba tu Conocimiento
 
 1. ¿Qué diferencia hay entre POS tagging y NER? <!-- POS etiqueta categorías gramaticales (sustantivo, verbo); NER identifica entidades del mundo real (personas, lugares). -->
 2. ¿Por qué CRF es mejor que clasificar cada token independientemente? <!-- Porque modela dependencias entre etiquetas vecinas: "New York" es una entidad, no dos independientes. -->
@@ -192,7 +192,7 @@ print(classification_report(y_true, y_pred))
 4. ¿Cómo se evalúa NER correctamente? <!-- Con span-based F1 (seqeval): una entidad es correcta solo si coinciden texto exacto y label. -->
 5. ¿Qué ventaja tiene BILOU sobre BIO? <!-- BILOU añade L (last) y U (unit) para entidades de un solo token, dando más información al modelo. -->
 
-## Where to Go Next
+## ¿Dónde ir Siguente?
 
 - [[RNNs & Sequence Models]]
 - [[Text Preprocessing & Representation]]

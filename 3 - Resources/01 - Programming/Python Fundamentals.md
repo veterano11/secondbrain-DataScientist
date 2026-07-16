@@ -276,53 +276,53 @@ Los administradores de contexto se usan ampliamente en scripts de [[CLI & Produc
 
 ---
 
-## 8. Common Mistakes
+## 8. Errores Comunes
 
-1. **Mutable default arguments**: defaults are evaluated once at function definition, not each call.
+1. **Argumentos mutables por defecto**: los valores por defecto se evalúan una vez en la definición de la función, no en cada llamada.
 
 ```python
-def add_item(item, lst=[]):  # BAD: lst is shared across calls
+def add_item(item, lst=[]):  # MAL: lst se comparte entre llamadas
     lst.append(item)
     return lst
 
 add_item(1)  # [1]
-add_item(2)  # [1, 2] — not [2]!
+add_item(2)  # [1, 2] — ¡no [2]!
 ```
 
-**Fix**: use `None` and create a new list each time.
+**Solución**: usar `None` y crear una nueva lista cada vez.
 
-2. **Modifying a list while iterating**: skip elements or cause infinite loops. Iterate over a copy instead.
+2. **Modificar una lista mientras se itera**: se saltan elementos o se causan bucles infinitos. Iterar sobre una copia en su lugar.
 
 ```python
-for item in list[:]:    # iterate over a slice copy
+for item in list[:]:    # iterar sobre una copia del slice
     if condition(item):
         list.remove(item)
 ```
 
-3. **Using `==` instead of `is` for None**: `None` is a singleton. Use `is None` (identity check), not `== None` (equality check).
+3. **Usar `==` en lugar de `is` para None**: `None` es un singleton. Usar `is None` (verificación de identidad), no `== None` (verificación de igualdad).
 
-4. **Not using `with` for file operations**: files left open can cause resource leaks. Always use context managers.
+4. **No usar `with` para operaciones de archivos**: los archivos dejados abiertos pueden causar fugas de recursos. Siempre usar administradores de contexto.
 
 ---
 
-## 9. Check Your Understanding
+## 9. Verifica tu Comprensión
 
-1. What is the difference between a list and a tuple? When would you use each?
-2. Why does `[0] * 5` produce `[0, 0, 0, 0, 0]` but `[[]] * 5` produces a list of 5 references to the SAME empty list?
-3. What is the output of `[x**2 for x in range(5) if x % 2 == 1]`?
-4. A generator yields values. How is this different from returning a list? What are the memory implications?
-5. What does `is` check that `==` does not?
+1. ¿Cuál es la diferencia entre una lista y una tupla? ¿Cuándo usarías cada una?
+2. ¿Por qué `[0] * 5` produce `[0, 0, 0, 0, 0]` pero `[[]] * 5` produce una lista de 5 referencias a la MISMA lista vacía?
+3. ¿Cuál es la salida de `[x**2 for x in range(5) if x % 2 == 1]`?
+4. Un generador produce valores. ¿Cómo difiere esto de retornar una lista? ¿Cuáles son las implicaciones de memoria?
+5. ¿Qué verifica `is` que `==` no verifica?
 
 ---
 
 ## 10. Resumen
 
-Python's design philosophy — readability, explicitness, and simplicity — makes it the ideal language for data science. Its built-in types (list, dict, set) cover most needs, comprehensions make code concise, generators handle large data, and context managers ensure clean resource management. Master these fundamentals before moving to the specialized libraries.
+La filosofía de diseño de Python — legibilidad, explicititud y simplicidad — lo convierte en el lenguaje ideal para ciencia de datos. Sus tipos incorporados (list, dict, set) cubren la mayoría de las necesidades, las comprensiones hacen el código conciso, los generadores manejan datos grandes, y los administradores de contexto aseguran una gestión limpia de recursos. Domina estos fundamentos antes de pasar a las bibliotecas especializadas.
 
 ---
 
-## 11. Where to Go Next
+## 11. Dónde Ir Ahora
 
-- [[Python for Data Science]] — NumPy, pandas, practical data manipulation
-- [[Object-Oriented Programming]] — Classes, inheritance, design patterns
-- [[Functional Programming]] — Lambdas, map, filter, reduce, immutability
+- [[Python para Ciencia de Datos]] — NumPy, pandas, manipulación práctica de datos
+- [[Programación Orientada a Objetos]] — Clases, herencia, patrones de diseño
+- [[Programación Funcional]] — Lambdas, map, filter, reduce, inmutabilidad

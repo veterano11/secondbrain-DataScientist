@@ -18,6 +18,38 @@ El monitoreo de modelos detecta estos cambios antes de que causen impacto en el 
 
 ## 2. Los Tres Pilares del Monitoreo de ML
 
+### Diagrama Visual de los Tres Pilares
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    TRES PILARES DEL MONITOREO                       │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│                    ┌─────────────────────┐                         │
+│                    │   MONITOREO DE ML   │                         │
+│                    └─────────────────────┘                         │
+│                              │                                      │
+│          ┌───────────────────┼───────────────────┐                  │
+│          │                   │                   │                  │
+│          ▼                   ▼                   ▼                  │
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐            │
+│  │   DERIVA    │    │   DERIVA    │    │ DEGRADACIÓN │            │
+│  │   DATOS     │    │  CONCEPTO   │    │  SISTEMA    │            │
+│  └─────────────┘    └─────────────┘    └─────────────┘            │
+│          │                   │                   │                  │
+│          ▼                   ▼                   ▼                  │
+│  P(X) cambia         P(y|X) cambia      Problemas ops             │
+│  • Nuevos patrones   • Relación desact.  • Latencia ↑             │
+│  • Distribuciones    • Modelo obsoleto   • Fugas memoria          │
+│  • Valores atípicos  • Spammers nuevos   • Cortes servicio        │
+│                                                                     │
+│  EJEMPLO:               EJEMPLO:               EJEMPLO:            │
+│  Compras prepandemia    Spam 2023 vs 2024     Servicio lento       │
+│  vs durante pandemia    Phishing sofisticado  50ms → 5s            │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
 ### 2.1 Deriva de Datos
 
 La distribución de entrada $P(X)$ cambia → el modelo ve patrones desconocidos.

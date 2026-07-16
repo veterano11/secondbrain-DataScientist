@@ -25,6 +25,68 @@ $ pip install pandas
 
 ETL significa **Extract, Transform, Load** — el proceso backbone de la ingeniería de datos:
 
+### Flujo Visual del Proceso ETL
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    PROCESO ETL                                       │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  EXTRACT (Extraer)                                                 │
+│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐              │
+│  │  CSV    │  │   API   │  │   DB    │  │   S3    │              │
+│  └────┬────┘  └────┬────┘  └────┬────┘  └────┬────┘              │
+│       │            │            │            │                      │
+│       └────────────┴──────┬─────┴────────────┘                      │
+│                           ▼                                         │
+│                    ┌─────────────┐                                  │
+│                    │   pandas    │                                  │
+│                    └──────┬──────┘                                  │
+│                           │                                         │
+│  TRANSFORM (Transformar) ▼                                         │
+│  ┌─────────────────────────────────────────────────────────────┐   │
+│  │  1. Limpieza    │  2. Validación  │  3. Enriquecimiento    │   │
+│  │  • dropna()     │  • pandera      │  • merge()             │   │
+│  │  • fillna()     │  • checks       │  • groupby()           │   │
+│  │  • astype()     │  • schema       │  • agg()               │   │
+│  └─────────────────────────────────────────────────────────────┘   │
+│                           │                                         │
+│  LOAD (Cargar)           ▼                                         │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                │
+│  │   SQLite    │  │  PostgreSQL │  │  Data Lake  │                │
+│  └─────────────┘  └─────────────┘  └─────────────┘                │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### ETL vs ELT
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    ETL vs ELT                                       │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  ETL (clásico):                     ELT (moderno):                 │
+│  Extract → Transform → Load         Extract → Load → Transform     │
+│                                                                     │
+│  ┌─────────┐    ┌─────────┐        ┌─────────┐    ┌─────────┐    │
+│  │ Fuente  │───▶│ staging │───▶    │ Fuente  │───▶│  DW/Lake│    │
+│  └─────────┘    └─────────┘        └─────────┘    └─────────┘    │
+│                     │                                     │         │
+│                ┌────▼────┐                           ┌────▼────┐   │
+│                │Transform│                           │Transform│   │
+│                └────┬────┘                           └────┬────┘   │
+│                     │                                     │         │
+│                ┌────▼────┐                           ┌────▼────┐   │
+│                │   DW    │                           │  Destino│   │
+│                └─────────┘                           └─────────┘   │
+│                                                                     │
+│  Usado en: sistemas     Usado en: Snowflake, BigQuery,             │
+│  tradicionales          Redshift, Databricks                       │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
 1. **Extract**: leer datos de fuentes (CSV, API, base de datos, S3).
 2. **Transform**: limpiar, validar, enriquecer y agregar los datos.
 3. **Load**: escribir los datos transformados en un destino (DB, data warehouse, lake).
@@ -232,7 +294,7 @@ Este patrón se escala a [[Workflow Orchestration (Airflow)|DAGs de Airflow]] y 
 
 ---
 
-## 7. Common Mistakes
+## 7. Errores Comunes
 
 | Error | Explicación |
 |---|---|
@@ -258,7 +320,7 @@ El [[Python for Data Science]] mindset de "validar primero, cargar después" aho
 
 ---
 
-## Check Your Understanding
+## Comprueba tu Conocimiento
 
 1. ¿Qué diferencia hay entre ETL y ELT?
    <!-- ETL transforma antes de cargar; ELT carga crudo y transforma dentro del destino. -->
@@ -277,7 +339,7 @@ El [[Python for Data Science]] mindset de "validar primero, cargar después" aho
 
 ---
 
-## Where to Go Next
+## ¿Dónde ir Siguente?
 
 - [[Workflow Orchestration (Airflow)]] — orquesta pipelines multi-paso con reintentos
 - [[Streaming & Event-Driven (Kafka)]] — baja la latencia a tiempo real

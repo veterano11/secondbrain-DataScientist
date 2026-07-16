@@ -283,7 +283,7 @@ monitor.check_drift("amount_avg_7d", prod_amounts)
 - **Feast** define features como código y ofrece serving offline (BigQuery, S3) y online (Redis, DynamoDB).
 - La **validación de features** con Great Expectations y KS test previene degradaciones silenciosas.
 
-## Check Your Understanding
+## Comprueba tu Conocimiento
 
 1. ¿Cuál es la diferencia principal entre online features y offline features?
    <!-- Online: baja latencia, Redis/DynamoDB. Offline: grandes volúmenes, batch, data warehouse. -->
@@ -302,7 +302,7 @@ monitor.check_drift("amount_avg_7d", prod_amounts)
 8. ¿Cómo detectarías que una feature dejó de actualizarse en el online store?
    <!-- Monitorear el timestamp de última actualización y alertar si supera un umbral configurable. -->
 
-## Where to Go Next
+## ¿Dónde ir Siguente?
 
 - [[Feature Engineering]] — técnicas de creación de features
 - [[Data Pipelines & ETL]] — orquestación del cálculo de features offline

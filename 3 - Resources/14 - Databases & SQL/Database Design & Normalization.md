@@ -23,6 +23,38 @@ $ sqlite3 --version
 
 ## 1. Primer intento — el desastre de una sola tabla
 
+### Visualización del Problema
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    EL PROBLEMA: UNA SOLA TABLA                      │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  ┌─────────────────────────────────────────────────────────────┐   │
+│  │ TABLA "todo" (MAL DISEÑO)                                   │   │
+│  ├─────────────────────────────────────────────────────────────┤   │
+│  │ id │ cliente_nombre │ cliente_email │ producto_nombre │ ... │   │
+│  ├─────────────────────────────────────────────────────────────┤   │
+│  │ 1  │ Ana López      │ ana@email.com │ Laptop          │ ... │   │
+│  │ 2  │ Ana López      │ ana@email.com │ Mouse           │ ... │   │
+│  │ 3  │ Luis Pérez     │ luis@email.com│ Teclado         │ ... │   │
+│  └─────────────────────────────────────────────────────────────┘   │
+│                                                                     │
+│  PROBLEMAS:                                                        │
+│  ✗ Redundancia: "Ana López" aparece en cada fila                   │
+│  ✗ Anomalía de actualización: cambiar dirección = N filas          │
+│  ✗ Anomalía de borrado: borrar pedido = perder producto            │
+│  ✗ Anomalía de inserción: no se puede registrar proveedor          │
+│                                                                     │
+│  SOLUCIÓN: Normalizar en múltiples tablas                          │
+│                                                                     │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐               │
+│  │  clientes   │  │  productos  │  │  pedidos    │               │
+│  └─────────────┘  └─────────────┘  └─────────────┘               │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
 Abres SQLite y escribes esto:
 
 ```sql
@@ -66,6 +98,49 @@ Este diseño viola las formas normales. La [[Data Engineering|ingeniería de dat
 ---
 
 ## 2. First Normal Form (1NF)
+
+### Diagrama de Normalización
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    PROCESO DE NORMALIZACIÓN                         │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  ANTES (1 tabla):                                                  │
+│  ┌─────────────────────────────────────────────────────────────┐   │
+│  │ todo: id, cliente_nombre, cliente_email, producto_nombre,   │   │
+│  │       producto_precio, pedido_fecha, pedido_cantidad, ...   │   │
+│  └─────────────────────────────────────────────────────────────┘   │
+│                              │                                      │
+│                              ▼ 1NF: valores atómicos               │
+│  DESPUÉS 1NF:                                                     │
+│  ┌─────────────────────────────────────────────────────────────┐   │
+│  │ clientes: id, nombre, email, dirección                     │   │
+│  │ productos: id, nombre, precio                              │   │
+│  │ pedidos: id, cliente_id, producto_id, cantidad, fecha      │   │
+│  └─────────────────────────────────────────────────────────────┘   │
+│                              │                                      │
+│                              ▼ 2NF: dependencia parcial            │
+│  DESPUÉS 2NF:                                                     │
+│  ┌─────────────────────────────────────────────────────────────┐   │
+│  │ clientes: id, nombre, email, dirección                     │   │
+│  │ productos: id, nombre, precio                              │   │
+│  │ pedidos: id, cliente_id, fecha                             │   │
+│  │ pedido_items: pedido_id, producto_id, cantidad             │   │
+│  └─────────────────────────────────────────────────────────────┘   │
+│                              │                                      │
+│                              ▼ 3NF: dependencia transitiva        │
+│  DESPUÉS 3NF:                                                     │
+│  ┌─────────────────────────────────────────────────────────────┐   │
+│  │ clientes: id, nombre, email, dirección                     │   │
+│  │ productos: id, nombre, precio, categoria_id                │   │
+│  │ categorias: id, nombre                                     │   │
+│  │ pedidos: id, cliente_id, fecha                             │   │
+│  │ pedido_items: pedido_id, producto_id, cantidad             │   │
+│  └─────────────────────────────────────────────────────────────┘   │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
 
 Una tabla está en **1NF** si:
 

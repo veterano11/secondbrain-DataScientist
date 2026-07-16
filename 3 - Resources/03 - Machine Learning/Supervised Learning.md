@@ -1,10 +1,10 @@
 ---
-tags: [machine-learning, supervised, core]
+tags: [machine-learning, supervised, core, aprendizaje-supervisado]
 status: growing
 created: 2026-06-27
 ---
 
-# Supervised Learning
+# Aprendizaje Supervisado
 
 ## 1. Escenario de aprendizaje
 
@@ -12,215 +12,307 @@ Imagina que trabajas en un banco y te piden predecir si un cliente va a dejar el
 
 ---
 
-## 2. The Supervised Learning Framework
+## 2. El Marco de Aprendizaje Supervisado
 
-### 2.1 Formal Definition
+### 2.1 Definición Formal
 
-Given:
-- Training data $(x_1, y_1), (x_2, y_2), ..., (x_n, y_n)$
-- $x_i \in \mathcal{X}$ (feature space)
-- $y_i \in \mathcal{Y}$ (label space: $\mathbb{R}$ for regression, $\{1,...,K\}$ for classification)
+Dado:
+- Datos de entrenamiento $(x_1, y_1), (x_2, y_2), ..., (x_n, y_n)$
+- $x_i \in \mathcal{X}$ (espacio de características)
+- $y_i \in \mathcal{Y}$ (espacio de etiquetas: $\mathbb{R}$ para regresión, $\{1,...,K\}$ para clasificación)
 
-Find $f: \mathcal{X} \to \mathcal{Y}$ that minimizes expected loss on new data.
+Encontrar $f: \mathcal{X} \to \mathcal{Y}$ que minimice la pérdida esperada en datos nuevos.
 
-### 2.2 The Two Main Branches
+### 2.2 Las Dos Ramas Principales
 
-| Branch | $y$ type | Example |
+```
+                    Aprendizaje Supervisado
+                           │
+              ┌────────────┴────────────┐
+              │                         │
+         Regresión                 Clasificación
+     (y continuo)               (y discreto)
+              │                         │
+    ┌─────────┴─────────┐     ┌─────────┴─────────┐
+    │                   │     │                   │
+Pronosticar        Temperatura  Detectar         Diagnosticar
+precio casa        ventas       spam             enfermedad
+```
+
+| Rama | Tipo de $y$ | Ejemplo |
 |---|---|---|
-| **Regression** | Continuous | Predict house price, temperature, sales |
-| **Classification** | Discrete | Detect spam, classify images, diagnose disease |
+| **Regresión** | Continuo | Predecir precio de vivienda, temperatura, ventas |
+| **Clasificación** | Discreto | Detectar spam, clasificar imágenes, diagnosticar enfermedad |
 
 ---
 
-## 3. Linear Models
+## 3. Modelos Lineales
 
-### 3.1 Linear Regression
+### 3.1 Regresión Lineal
 
-The simplest and most interpretable model. Assumes a linear relationship between features and target:
+El modelo más simple e interpretable. Asume una relación lineal entre las características y el objetivo:
 
 $$y = w_1 x_1 + w_2 x_2 + ... + w_d x_d + b + \epsilon = Xw + \epsilon$$
 
-**Geometric intuition**: find a hyperplane that best fits the data points.
+```
+    y
+    │        ╱  ← recta de regresión
+    │      ╱
+    │    ╱ • datos reales
+    │  ╱
+    │╱
+    └──────────── x
+```
 
-**The Normal Equation** (closed-form solution — see [[Linear Algebra]] for matrix inversion details):
+**Intuición geométrica**: encontrar un hiperplano que mejor se ajuste a los puntos de datos.
+
+**La Ecuación Normal** (solución cerrada — ver [[Álgebra Lineal]] para detalles de inversión de matrices):
 
 $$\hat{w} = (X^T X)^{-1} X^T y$$
 
-**Step-by-step**:
-1. $X^T X$: compute the covariance-like matrix (d × d)
-2. $(X^T X)^{-1}$: invert it (requires full rank — no multicollinearity)
-3. $X^T y$: compute correlation between features and target
-4. Multiply: $\hat{w}$ gives the optimal weights
+**Paso a paso**:
+1. $X^T X$: calcular la matriz de covarianza (d × d)
+2. $(X^T X)^{-1}$: invertirla (requiere rango completo — sin multicolinealidad)
+3. $X^T y$: calcular la correlación entre características y objetivo
+4. Multiplicar: $\hat{w}$ da los pesos óptimos
 
-**Concrete example** — predicting salary from years experience:
+**Ejemplo concreto** — predecir salario según años de experiencia:
 ```
-Data: (1yr, 40k), (2yr, 45k), (3yr, 50k), (4yr, 55k)
+Datos: (1año, 40k), (2años, 45k), (3años, 50k), (4años, 55k)
 
 X = [[1], [2], [3], [4]]
 y = [40000, 45000, 50000, 55000]
 
 w = (X^T X)^(-1) X^T y
-  = (sum x_i²)^(-1) × sum(x_i y_i)
+  = (suma x_i²)^(-1) × suma(x_i y_i)
   = 1/30 × 150000 = 5000
 
-So: salary ≈ 35000 + 5000 × years_experience
+Entonces: salario ≈ 35000 + 5000 × años_experiencia
 ```
 
-**Assumptions** (worth knowing because violating them degrades performance — see [[Statistics]] for deeper context):
-1. **Linearity**: relationship between features and target is linear
-2. **Independence**: observations are independent (no autocorrelation)
-3. **Homoscedasticity**: constant variance of errors across all x values
-4. **Normality**: errors are normally distributed (for inference, not prediction)
+**Supuestos** (vale la pena conocer porque violarlos degrada el rendimiento — ver [[Estadística]] para contexto más profundo):
+1. **Linealidad**: la relación entre características y objetivo es lineal
+2. **Independencia**: las observaciones son independientes (sin autocorrelación)
+3. **Homocedasticidad**: varianza constante de errores en todos los valores de x
+4. **Normalidad**: los errores están distribuidos normalmente (para inferencia, no predicción)
 
-When these assumptions are violated, use regularization (Ridge/Lasso), non-linear models, or transformations.
+Cuando estos supuestos se violan, usa regularización (Ridge/Lasso), modelos no lineales o transformaciones.
 
-### 3.2 Logistic Regression
+### 3.2 Regresión Logística
 
-Despite the name, it is a **classification** algorithm. It models the probability of belonging to a class:
+A pesar del nombre, es un algoritmo de **clasificación**. Modela la probabilidad de pertenecer a una clase:
 
 $$P(y=1|x) = \sigma(w^T x) = \frac{1}{1 + e^{-w^T x}}$$
 
-**Why sigmoid?** Linear regression outputs unbounded values $(-\infty, \infty)$. A probability must be in $[0, 1]$. The sigmoid function squashes any real number into this range:
+**¿Por qué sigmoid?** La regresión lineal produce valores sin restricción $(-\infty, \infty)$. Una probabilidad debe estar en $[0, 1]$. La función sigmoid comprime cualquier número real en este rango:
+
+```
+ σ(z)
+  1 ┤                 ___________
+    │               /
+    │             /
+0.5 ┤─ ─ ─ ─ ─ ─/─ ─ ─ ─ ─ ─ ─  ← frontera de decisión
+    │          /
+    │        /
+  0 ┤________/
+    └──────────────────────────── z
+         -∞    0    +∞
+```
 
 $$ \sigma(z) = \frac{1}{1 + e^{-z}} $$
 
-- When $z \to \infty$: $\sigma(z) \to 1$
-- When $z \to -\infty$: $\sigma(z) \to 0$
-- When $z = 0$: $\sigma(0) = 0.5$ (decision boundary)
+- Cuando $z \to \infty$: $\sigma(z) \to 1$
+- Cuando $z \to -\infty$: $\sigma(z) \to 0$
+- Cuando $z = 0$: $\sigma(0) = 0.5$ (frontera de decisión)
 
-**Decision boundary**: the set of points where $P(y=1|x) = 0.5$, i.e., $w^T x = 0$. This is a linear surface.
+**Frontera de decisión**: el conjunto de puntos donde $P(y=1|x) = 0.5$, es decir, $w^T x = 0$. Esta es una superficie lineal.
 
-**Multiclass extension**: softmax regression (also called multinomial logistic regression):
+**Extensión multiclase**: regresión softmax (también llamada regresión logística multinomial):
 
 $$P(y=k|x) = \frac{e^{w_k^T x}}{\sum_{j=1}^K e^{w_j^T x}}$$
 
 ---
 
-## 4. Tree-Based Models
+## 4. Modelos Basados en Árboles
 
-### 4.1 Decision Trees
+### 4.1 Árboles de Decisión
 
-A decision tree splits data recursively based on feature values.
+Un árbol de decisión divide los datos recursivamente basándose en valores de características.
 
-**How it works** (step by step):
-1. Look at all features and all possible split points
-2. Choose the split that best separates the target (lowest impurity)
-3. Repeat recursively on each partition
-4. Stop when max depth is reached, min samples per leaf is met, or no split improves purity
+```
+              ¿Edad > 30?
+              /          \
+            Sí            No
+            /              \
+    ¿Ingresos > 50k?   ¿Tiene hogar?
+      /       \          /       \
+    Sí        No        Sí        No
+   [Aprobado] [Rechazado] [Aprobado] [Rechazado]
+```
 
-**Impurity metrics**:
-- **Gini**: $2p(1-p)$ for binary classification
-- **Entropy**: $-p\log p - (1-p)\log(1-p)$
-- **MSE** (regression): variance of target in the node
+**Cómo funciona** (paso a paso):
+1. Observa todas las características y todos los puntos de división posibles
+2. Elige la división que mejor separa el objetivo (menor impureza)
+3. Repite recursivamente en cada partición
+4. Detén cuando se alcanza la profundidad máxima, se cumple el mínimo de muestras por hoja, o ninguna división mejora la pureza
 
-**Intuition**: imagine sorting emails by "contains word 'free'" — the first split separates it into two groups, one with mostly spam (left) and one with mostly ham (right). Now split the left group by "contains word 'urgent'", and so on.
+**Métricas de impureza**:
+- **Gini**: $2p(1-p)$ para clasificación binaria
+- **Entropía**: $-p\log p - (1-p)\log(1-p)$
+- **MSE** (regresión): varianza del objetivo en el nodo
 
-### 4.2 Random Forest
+**Intuición**: imagina clasificar correos por "contiene la palabra 'gratis'" — la primera división los separa en dos grupos, uno con mayormente spam (izquierda) y otro con mayormente correos legítimos (derecha). Ahora divide el grupo izquierdo por "contiene la palabra 'urgente'", y así sucesivamente.
 
-Builds many decision trees and averages their predictions.
+### 4.2 Bosque Aleatorio (Random Forest)
 
-**Why it works**: each tree is trained on a different bootstrap sample of the data (bagging), and each split considers only a random subset of features. This decorrelates the trees. The average of many imperfect trees is more stable and accurate than any single tree.
+Construye muchos árboles de decisión y promedia sus predicciones.
 
-- **Reduces variance** without increasing bias significantly
-- **Handles non-linearity** naturally
-- **Feature importance**: features used near the top of many trees are more important
+**Por qué funciona**: cada árbol se entrena con una muestra bootstrap diferente de los datos (bagging), y cada división considera solo un subconjunto aleatorio de características. Esto descorrelaciona los árboles. El promedio de muchos árboles imperfectos es más estable y preciso que cualquier árbol individual.
 
-### 4.3 Gradient Boosting (XGBoost, LightGBM)
+```
+    Datos de entrenamiento
+            │
+    ┌───────┼───────┐
+    │       │       │
+  Muestra  Muestra  Muestra
+  Bootstrap Bootstrap Bootstrap
+    │       │       │
+  Árbol 1  Árbol 2  Árbol 3
+    │       │       │
+    └───────┼───────┘
+            │
+       Promedio
+            │
+      Predicción Final
+```
 
-**Intuition**: instead of averaging many independent trees (Random Forest), build trees **sequentially**, where each tree tries to correct the errors of the previous ones.
+- **Reduce la varianza** sin aumentar significativamente el sesgo
+- **Maneja no linealidad** de forma natural
+- **Importancia de características**: las características usadas cerca de la parte superior de muchos árboles son más importantes
 
-1. Start with a simple prediction (e.g., mean of target)
-2. Compute residuals (errors) of current prediction
-3. Train a small tree to predict the residuals
-4. Add the tree's prediction to the ensemble (with a learning rate)
-5. Repeat steps 2-4 hundreds or thousands of times
+### 4.3 Boosting por Gradiente (XGBoost, LightGBM)
 
-XGBoost adds regularization to the trees, handles missing values, and is heavily optimized for performance via [[Gradient-Based Optimization]]. It is the go-to algorithm for tabular data competitions.
+**Intuición**: en lugar de promediar muchos árboles independientes (Random Forest), construir árboles **secuencialmente**, donde cada árbol intenta corregir los errores de los anteriores.
+
+1. Empezar con una predicción simple (ej. media del objetivo)
+2. Calcular residuos (errores) de la predicción actual
+3. Entrenar un árbol pequeño para predecir los residuos
+4. Agregar la predicción del árbol al ensemble (con una tasa de aprendizaje)
+5. Repetir los pasos 2-4 cientos o miles de veces
+
+XGBoost agrega regularización a los árboles, maneja valores faltantes y está altamente optimizado para rendimiento vía [[Optimización Basada en Gradiente]]. Es el algoritmo predilecto para competiciones de datos tabulares.
 
 ---
 
-## 5. Support Vector Machines (SVM)
+## 5. Máquinas de Soporte Vectorial (SVM)
 
-**Core idea**: find the hyperplane that separates classes with the **maximum margin**.
+**Idea central**: encontrar el hiperplano que separa las clases con el **máximo margen**.
 
-The margin is the distance from the hyperplane to the nearest points of each class (the support vectors). Maximizing the margin improves generalization.
+```
+    Clase A (●)              Clase B (○)
+         ●                        ○
+       ● ●         MARGEN       ○ ○
+     ● ● ● │                 │ ○ ○ ○
+       ● ● │   ●  ← soporte │ ○ ○
+         ● │   vectorial     ○
+           │                 │
+    ───────┼─────────────────┼─────── Hiperplano
+           │                 │
+         ● │   ●  ← soporte │ ○
+       ● ● │   vectorial     ○ ○
+     ● ● ● │                 │ ○ ○ ○
+       ● ●         MARGEN       ○ ○
+         ●                        ○
+```
 
-**Kernel trick**: map data to a higher-dimensional space where it becomes linearly separable, without explicitly computing the mapping:
+El margen es la distancia desde el hiperplano hasta los puntos más cercanos de cada clase (los vectores de soporte). Maximizar el margen mejora la generalización.
+
+**Truco del kernel**: mapear datos a un espacio de mayor dimensionalidad donde se vuelven linealmente separables, sin calcular explícitamente el mapeo:
 
 $$K(x_i, x_j) = \phi(x_i)^T \phi(x_j)$$
 
-Common kernels:
-- **Linear**: $K(x_i, x_j) = x_i^T x_j$ — no mapping, just linear SVM
-- **RBF** (Gaussian): $K(x_i, x_j) = \exp(-\gamma \|x_i - x_j\|^2)$ — infinite-dimensional mapping
-- **Polynomial**: $K(x_i, x_j) = (x_i^T x_j + c)^d$
+Kernels comunes:
+- **Lineal**: $K(x_i, x_j) = x_i^T x_j$ — sin mapeo, solo SVM lineal
+- **RBF** (Gaussiano): $K(x_i, x_j) = \exp(-\gamma \|x_i - x_j\|^2)$ — mapeo de dimensión infinita
+- **Polinomial**: $K(x_i, x_j) = (x_i^T x_j + c)^d$
 
-SVMs work well when the number of features is large relative to samples (e.g., text classification with bag-of-words).
-
----
-
-## 6. K-Nearest Neighbors (KNN)
-
-The simplest algorithm: store all training data. To predict a new point, find the $k$ closest training points and vote.
-
-- **No training** (lazy learner) — just memorize the data
-- Prediction is O(n) — must compute distance to every training point
-- Sensitive to feature scaling (use StandardScaler)
-- Works best with few features (curse of dimensionality)
+Las SVM funcionan bien cuando el número de características es grande en relación con las muestras (ej. clasificación de texto con bolsa de palabras).
 
 ---
 
-## 7. Evaluating Supervised Models
+## 6. K-Vecinos Más Cercanos (KNN)
 
-Train/test split is non-negotiable:
+El algoritmo más simple: almacenar todos los datos de entrenamiento. Para predecir un nuevo punto, encontrar los $k$ puntos de entrenamiento más cercanos y votar.
+
+```
+    ¿A qué clase pertenece ★?
+    
+    ● ● ●
+    ● ★ ●     → K=3: 2● vs 1○ → Clase ●
+    ● ● ○
+      ○ ○
+      ○
+```
+
+- **Sin entrenamiento** (aprendiz perezoso) — solo memorizar los datos
+- La predicción es O(n) — debe calcular la distancia a cada punto de entrenamiento
+- Sensible al escalado de características (usar StandardScaler)
+- Funciona mejor con pocas características (maldición de la dimensionalidad)
+
+---
+
+## 7. Evaluando Modelos Supervisados
+
+La división entrenamiento/prueba es innegociable:
 
 ```python
 from sklearn.model_selection import train_test_split
 
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42, stratify=y  # for classification
+    X, y, test_size=0.2, random_state=42, stratify=y  # para clasificación
 )
 ```
 
-For reliable evaluation:
-- Always use a held-out test set (not just validation)
-- Use cross-validation for [[Hyperparameter Tuning]]
-- Stratify classification splits to preserve class proportions
+Para una evaluación confiable:
+- Siempre usar un conjunto de prueba aparte (no solo validación)
+- Usar validación cruzada para [[Ajuste de Hiperparámetros]]
+- Estratificar las divisiones de clasificación para preservar las proporciones de clases
 
 ---
 
-## 8. Common Mistakes
+## 8. Errores Comunes
 
-1. **Data leakage**: using information from the test set during training. Common forms: scaling before splitting, using future data to predict the past, group-level features without group splitting.
+1. **Fuga de datos**: usar información del conjunto de entrenamiento durante el entrenamiento. Formas comunes: escalar antes de dividir, usar datos futuros para predecir el pasado, características a nivel de grupo sin división de grupos.
 
-2. **Training on imbalanced data without care**: 99% accuracy on a 99:1 imbalance is meaningless. Use class weights, resampling (SMOTE), or different metrics (F1, precision-recall AUC).
+2. **Entrenar en datos desbalanceados sin cuidado**: 99% de precisión en un desbalance de 99:1 no tiene sentido. Usar pesos de clase, remuestreo (SMOTE) o diferentes métricas (F1, precisión-recall AUC).
 
-3. **Using accuracy for imbalanced problems**: a model that predicts "no disease" for everyone achieves 99% accuracy when disease prevalence is 1%. Always check the confusion matrix.
+3. **Usar precisión en problemas desbalanceados**: un modelo que predice "no enfermedad" para todos logra 99% de precisión cuando la prevalencia de la enfermedad es 1%. Siempre verificar la matriz de confusión.
 
-4. **Not checking model assumptions**: linear regression assumes linearity and homoscedasticity. If violated, predictions can be systematically biased.
+4. **No verificar supuestos del modelo**: la regresión lineal asume linealidad y homocedasticidad. Si se violan, las predicciones pueden estar sistemáticamente sesgadas.
 
-5. **Overfitting before seeing test data**: tuning hyperparameters on the test set invalidates it. Use a separate validation set or cross-validation.
+5. **Sobreajuste antes de ver datos de prueba**: ajustar hiperparámetros en el conjunto de prueba lo invalida. Usar un conjunto de validación separado o validación cruzada.
 
 ---
 
-## 9. Check Your Understanding
+## 9. Verifica tu Comprensión
 
-1. Why does Lasso regression (L1) produce sparse coefficients (many exactly zero) while Ridge (L2) does not?
-2. A decision tree of depth 10 has at most how many leaf nodes? How many parameters?
-3. Why does Random Forest reduce variance compared to a single decision tree?
-4. Logistic regression outputs a probability. You need a binary decision. Where do you set the threshold? What tradeoffs does the threshold control?
-5. You have 10 features and 50 samples. Which algorithms are most/least suitable and why?
+1. ¿Por qué la regresión Lasso (L1) produce coeficientes dispersos (muchos exactamente cero) mientras que Ridge (L2) no?
+2. ¿Cuántos nodos hoja como máximo tiene un árbol de decisión de profundidad 10? ¿Cuántos parámetros?
+3. ¿Por qué Random Forest reduce la varianza en comparación con un solo árbol de decisión?
+4. La regresión logística produce una probabilidad. Necesitas una decisión binaria. ¿Dónde estableces el umbral? ¿Qué compensaciones controla el umbral?
+5. Tienes 10 características y 50 muestras. ¿Cuáles algoritmos son más/menos adecuados y por qué?
 
 ---
 
 ## 10. Resumen
 
-Supervised learning learns a mapping from inputs to outputs using labeled data. Linear models offer simplicity and interpretability (regression, logistic). Tree-based models handle non-linearity and interactions naturally (Random Forest, XGBoost). The key challenge is generalization — the model must perform well on data it has never seen. Proper evaluation (train/test split, cross-validation) and awareness of bias-variance tradeoffs separate effective practitioners from those who overfit to noise.
+El aprendizaje supervisado aprende un mapeo de entradas a salidas usando datos etiquetados. Los modelos lineales ofrecen simplicidad e interpretabilidad (regresión, logística). Los modelos basados en árboles manejan no linealidad e interacciones naturalmente (Random Forest, XGBoost). El desafío clave es la generalización — el modelo debe funcionar bien con datos que nunca ha visto. Una evaluación adecuada (división entrenamiento/prueba, validación cruzada) y la conciencia de las compensaciones sesgo-varianza separan a los profesionales efectivos de aquellos que se sobreajustan al ruido.
 
 ---
 
-## 11. Where to Go Next
+## 11. Dónde Ir Ahora
 
-- [[Unsupervised Learning]] — Finding structure without labels
-- [[Model Evaluation]] — Metrics, validation strategies, and best practices
-- [[Feature Engineering]] — Creating features that make models work
-- [[Regularization]] — Preventing overfitting in depth
+- [[Aprendizaje No Supervisado]] — Encontrar estructura sin etiquetas
+- [[Evaluación de Modelos]] — Métricas, estrategias de validación y mejores prácticas
+- [[Ingeniería de Características]] — Crear características que hagan funcionar los modelos
+- [[Regularización]] — Prevenir sobreajuste en profundidad

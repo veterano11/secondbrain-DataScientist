@@ -155,14 +155,14 @@ loss = MSE(decoded[mascara], parches[mascara])  # solo en píxeles enmascarados
 | **Flamingo** | Interleaved images-text con gating |
 | **ImageBind** | Embedding conjunto de 6 modalidades (imagen, texto, audio, etc.) |
 
-## 9. Common Mistakes
+## 9. Errores Comunes
 
 1. **Batch size chico en SimCLR**: < 512 → no hay suficientes negativos. Usá MoCo o incrementá batch.
 2. **Augmentaciones débiles**: sin color jitter, el modelo aprende a coincidir basado en color en vez de contenido.
 3. **CLIP zero-shot no es mágico**: funciona bien para categorías generales ("perro", "gato") pero mal para específicas ("golden retriever con juguete rojo").
 4. **MAE decoder muy pesado**: si el decoder es tan grande como el encoder, perdés la eficiencia del diseño asimétrico.
 
-## 10. Check Your Understanding
+## 10. Verifica tu Comprensión
 
 1. Contrastive learning necesita pares positivos y negativos. ¿Por qué no puede usar solo positivos? (Sin negativos, todas las imágenes colapsan al mismo embedding)
 2. ¿Por qué DINO no necesita pares negativos? (La combinación de centering + sharpening previene el colapso)
@@ -172,7 +172,7 @@ loss = MSE(decoded[mascara], parches[mascara])  # solo en píxeles enmascarados
 
 Self-supervised learning aprende representaciones sin etiquetas. Contrastive learning (SimCLR, MoCo) maximiza similitud entre vistas de la misma imagen. DINO usa self-distillation y produce atención segmentada. CLIP aprende un espacio imagen-texto conjunto para zero-shot classification. MAE reconstruye parches enmascarados. SSL es la técnica estándar para pre-entrenar modelos visuales cuando las etiquetas son escasas.
 
-## 12. Where to Go Next
+## 12. Dónde Ir Ahora
 
 - [[Transfer Learning]] — cómo fine-tunear modelos pre-entrenados con SSL
 - [[Vision Transformers]] — ViT es el backbone de DINO, MAE, y CLIP

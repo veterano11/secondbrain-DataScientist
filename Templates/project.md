@@ -8,20 +8,20 @@ deadline:
 
 # {{title}}
 
-**Goal:** 
+**Objetivo:** 
 
-## Next Actions
+## Próximas Acciones
 
 - [ ] 
 
-## Status
+## Estado
 
 
 
-## Notes
+## Notas
 
 
 
-## Related
+## Relacionado
 
 -

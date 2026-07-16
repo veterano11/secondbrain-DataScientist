@@ -8,7 +8,7 @@ created: 2026-06-27
 
 Herramientas esenciales y buenas prácticas para el data scientist.
 
-## Topics
+## Temas
 
 - [[Git]] — Control de versiones, branching, colaboración
 - [[Testing for Data Science]] — Unit tests, data validation, pytest
@@ -16,7 +16,7 @@ Herramientas esenciales y buenas prácticas para el data scientist.
 - [[CLI & Productivity]] — Terminal, dotfiles, automatización
 - [[Code Quality]] — Linting, formatting, type hints, pre-commit
 
-## Progression
+## Progresión
 
 ```
 Foundational → Git, Virtual Environments

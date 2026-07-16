@@ -8,7 +8,7 @@ created: 2026-06-28
 
 Infraestructura como código, Terraform, y despliegue automatizado en AWS.
 
-## Topics
+## Temas
 
 - [[Infrastructure as Code Fundamentals]] — Qué es IaC, por qué importa, declarativo vs imperativo, GitOps
 - [[Terraform Foundations]] — HCL, providers, resources, init/plan/apply, variables, outputs
@@ -16,7 +16,7 @@ Infraestructura como código, Terraform, y despliegue automatizado en AWS.
 - [[Terraform Modules & Project Structure]] — Organización, módulos reutilizables, entornos
 - [[AWS CodeBuild with Terraform]] — Pipeline CI/CD para Terraform en AWS
 
-## Progression
+## Progresión
 
 ```
 Foundational → IaC Fundamentals

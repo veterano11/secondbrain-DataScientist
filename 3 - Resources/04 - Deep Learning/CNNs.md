@@ -14,6 +14,25 @@ Trabajas en una aplicación de diagnóstico médico por imágenes. Tienes radiog
 
 ## 2. The Convolution Operation
 
+### Arquitectura Visual de CNN
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    ARQUITECTURA CNN                                  │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  INPUT        CONV+ReLU     POOL        CONV+ReLU     POOL        │
+│  ┌─────┐     ┌─────┐      ┌─────┐     ┌─────┐      ┌─────┐       │
+│  │     │────▶│     │─────▶│     │────▶│     │─────▶│     │       │
+│  │     │     │     │      │     │     │     │      │     │       │
+│  └─────┘     └─────┘      └─────┘     └─────┘      └─────┘       │
+│  32×32×3      32×32×64     16×16×64    16×16×128    8×8×128       │
+│                                                                     │
+│  CAPA FINAL: Flatten → Dense → Softmax → PREDICCIÓN               │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
 ### 2.1 Intuition
 
 A convolution slides a small filter (kernel) over the input, computing dot products at each position. Each filter detects a specific pattern — edges, textures, shapes. See [[Image Processing Fundamentals]] for more on traditional image filters.
@@ -66,15 +85,60 @@ Each convolution extracts features. Pooling downsamples (reduces size). ReLU add
 
 ### 3.2 Pooling
 
-**Max pooling**: take the maximum value in each window. Preserves strongest features, discards spatial detail.
+#### Comparación de Métodos de Pooling
 
-**Average pooling**: take the average. Preserves overall activation level.
+```
+MAX POOLING (2×2, stride 2):
 
-**Global average pooling**: average the entire feature map. Often used before the final layer to avoid overfitting (no parameters to learn).
+┌─────┬─────┬─────┬─────┐      ┌─────┬─────┐
+│  1  │  3  │  2  │  1  │      │  4  │  3  │
+├─────┼─────┼─────┼─────┤  ──▶ ├─────┼─────┤
+│  4  │  2  │  3  │  1  │      │  5  │  4  │
+├─────┼─────┼─────┼─────┤      └─────┴─────┘
+│  5  │  1  │  4  │  2  │
+├─────┼─────┼─────┼─────┤
+│  3  │  2  │  1  │  3  │
+└─────┴─────┴─────┴─────┘
+
+AVERAGE POOLING (2×2, stride 2):
+
+┌─────┬─────┬─────┬─────┐      ┌─────┬─────┐
+│  1  │  3  │  2  │  1  │      │ 2.5 │ 1.5 │
+├─────┼─────┼─────┼─────┤  ──▶ ├─────┼─────┤
+│  4  │  2  │  3  │  1  │      │ 2.5 │ 2.5 │
+├─────┼─────┼─────┼─────┤      └─────┴─────┘
+│  5  │  1  │  4  │  2  │
+├─────┼─────┼─────┼─────┤
+│  3  │  2  │  1  │  3  │
+└─────┴─────┴─────┴─────┘
+```
 
 ---
 
 ## 4. Classic Architectures
+
+### Comparación de Arquitecturas CNN
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│              EVOLUCIÓN DE ARQUITECTURAS CNN                         │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  LeNet (1998)    AlexNet (2012)    VGG (2014)    ResNet (2015)     │
+│  ┌─────┐        ┌─────┐          ┌─────┐        ┌─────┐           │
+│  │ 2   │        │ 5   │          │ 16  │        │ 152 │           │
+│  │capas│        │capas│          │capas│        │capas│           │
+│  └─────┘        └─────┘          └─────┘        └─────┘           │
+│  60K params     60M params       138M params    25M params        │
+│                                                                     │
+│  MNIST          ImageNet #1      ImageNet       ImageNet #1        │
+│                 (top-5: 15.3%)  (top-5: 7.3%) (top-5: 3.6%)      │
+│                                                                     │
+│  CLAVE:           CLAVE:           CLAVE:          CLAVE:           │
+│  Primera CNN      ReLU, Dropout    Uniformidad     Skip Connections │
+│  funcional        Data Augment.    $3\times3$      (Residual)       │
+└─────────────────────────────────────────────────────────────────────┘
+```
 
 ### 4.1 LeNet-5 (1998)
 
@@ -97,15 +161,34 @@ Each convolution extracts features. Pooling downsamples (reduces size). ReLU add
 
 ### 4.4 ResNet (2015)
 
-**The breakthrough**: residual connections.
+**El avance**: conexiones residuales.
 
 $$y = F(x) + x$$
 
-Instead of learning $F(x)$ directly, the network learns the **residual** $F(x) = H(x) - x$. If the optimal mapping is the identity, the network can learn $F(x) = 0$ (easy) instead of $H(x) = x$ (hard).
+En lugar de aprender $F(x)$ directamente, la red aprende el **residual** $F(x) = H(x) - x$. Si el mapping óptimo es la identidad, la red puede aprender $F(x) = 0$ (fácil) en lugar de $H(x) = x$ (difícil).
 
-**Why this matters**: it allowed training 152-layer networks (previous best was ~20). Residual connections ensure gradients can flow directly to early layers.
+**Por qué importa**: permitió entrenar redes de 152 capas (el anterior mejor era ~20). Las conexiones residuales aseguran que los gradientes puedan fluir directamente a las capas tempranas.
 
-ResNet variants (ResNet-50, ResNet-101, ResNet-152) remain popular as feature extractors.
+```
+CONEXIÓN RESIDUAL:
+                    
+    ┌───────────────┐
+    │               │
+    ▼               │
+┌─────┐        ┌─────┐
+│Conv │───────▶│ +   │───────▶ Salida
+└─────┘        └─────┘
+    │               ▲
+    │   ┌─────┐     │
+    └──▶│Conv │─────┘
+        └─────┘
+        
+    x ─────────────▶ +
+    
+    y = F(x) + x
+```
+
+Las variantes ResNet (ResNet-50, ResNet-101, ResNet-152) siguen populares como extractores de características.
 
 ### 4.5 EfficientNet (2019)
 
@@ -134,42 +217,43 @@ For detection and segmentation architectures built on CNNs, see [[Object Detecti
 
 ---
 
-## 7. Common Mistakes
+## 7. Errores Comunes
 
-1. **Kernel size too large**: $7\times7$ and larger are rarely needed. Stack of $3\times3$ is more parameter-efficient and allows more non-linearity.
+1. **Kernel size demasiado grande**: $7\times7$ y más grandes rara vez son necesarios. Apilar $3\times3$ es más eficiente en parámetros y permite más no-linealidad.
 
-2. **Too much pooling too fast**: aggressive downsampling loses spatial information. Pool gradually.
+2. **Demasiado pooling demasiado rápido**: el downsampling agresivo pierde información espacial. Pool gradualmente.
 
-3. **Forgetting that CNNs expect fixed-size inputs**: fully connected layers require fixed input size. Use global average pooling or adaptive pooling to handle variable sizes.
+3. **Olvidar que las CNNs esperan entradas de tamaño fijo**: las capas fully connected requieren tamaño de entrada fijo. Usa global average pooling o adaptive pooling para manejar tamaños variables.
 
-4. **Not using data augmentation**: vision models benefit enormously from augmentation (rotation, flip, color jitter). Without it, they overfit badly. See [[Regularization]] for more augmentation techniques.
+4. **No usar data augmentation**: los modelos de visión se benefician enormemente de augmentation (rotación, flip, color jitter). Sin él, hacen overfitting severamente. Ver [[Regularization]] para más técnicas de augmentation.
 
-5. **Pretrained vs scratch**: unless you have millions of images, use a pretrained model (transfer learning). Training from scratch is rarely justified.
+5. **Pretrained vs desde cero**: a menos que tengas millones de imágenes, usa un modelo preentrenado (transfer learning). Entrenar desde cero rara vez está justificado.
 
 ---
 
-## 8. Check Your Understanding
+## 8. Comprueba tu Conocimiento
 
-1. A $3\times3$ convolution on a $224\times224\times3$ input with 64 filters, stride 1, same padding. What is the output shape? How many parameters?
+1. Una convolución $3\times3$ en una entrada $224\times224\times3$ con 64 filtros, stride 1, same padding. ¿Cuál es la forma de salida? ¿Cuántos parámetros tiene?
 
-2. Why does stacking two $3\times3$ convolutions give the same receptive field as one $5\times5$? Which is better and why?
+2. ¿Por qué apilar dos convoluciones $3\times3$ da el mismo receptive field que una $5\times5$? ¿Cuál es mejor y por qué?
 
-3. ResNet uses skip connections. How do they help with vanishing gradients?
+3. ResNet usa skip connections. ¿Cómo ayudan con el problema de gradientes que desaparecen?
 
-4. You have 1000 images of dogs and cats. Should you train a CNN from scratch or use transfer learning? Why?
+4. Tienes 1000 imágenes de perros y gatos. ¿Debes entrenar una CNN desde cero o usar transfer learning? ¿Por qué?
 
-5. What is the difference between max pooling and average pooling? When would you use each?
+5. ¿Cuál es la diferencia entre max pooling y average pooling? ¿Cuándo usarías cada uno?
 
 ---
 
 ## 9. Resumen
 
-CNNs use convolutions to efficiently learn spatial patterns. The convolution operation detects local features, pooling downsamples, and the composition of many layers builds hierarchical representations (edges → textures → parts → objects). Key innovations — residual connections, depthwise convolutions, and compound scaling — have pushed accuracy while reducing parameters.
+Las CNNs usan convoluciones para aprender patrones espaciales de forma eficiente. La operación de convolución detecta características locales, el pooling hace downsampling, y la composición de muchas capas construye representaciones jerárquicas (bordes → texturas → partes → objetos). Las innovaciones clave — conexiones residuales, convoluciones depthwise y escalado compuesto — han empujado la precisión mientras reducen parámetros.
 
 ---
 
-## 10. Where to Go Next
+## 10. ¿Dónde ir Siguente?
 
-- [[Neural Networks]] — Foundational concepts for CNNs
-- [[Transfer Learning]] — Using pretrained CNNs for new tasks
+- [[Neural Networks]] — Conceptos fundacionales para CNNs
+- [[Transfer Learning]] — Usar CNNs preentrenadas para nuevas tareas
+- [[Object Detection & Segmentation]] — Arquitecturas de detección y segmentación basadas en CNNs
 - [[Training Techniques]] — Optimizers and regularization for vision models

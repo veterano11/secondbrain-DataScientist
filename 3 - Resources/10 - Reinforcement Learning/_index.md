@@ -8,7 +8,7 @@ created: 2026-06-27
 
 Aprendizaje por refuerzo: del tablero de ajedrez a robots y LLMs.
 
-## Topics
+## Temas
 
 - [[RL Fundamentals]] — MDP, rewards, value functions, policy, exploration vs exploitation
 - [[Value-Based Methods]] — Dynamic programming, Q-Learning, DQN, Double DQN
@@ -16,7 +16,7 @@ Aprendizaje por refuerzo: del tablero de ajedrez a robots y LLMs.
 - [[Model-Based RL]] — Dyna, Monte Carlo Tree Search, world models
 - [[RLHF & Preference Optimization]] — Reward modeling, DPO, reinforcement learning from human feedback
 
-## Progression
+## Progresión
 
 ```
 Foundational → RL Fundamentals

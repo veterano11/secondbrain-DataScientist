@@ -293,14 +293,14 @@ Este query te dice quién está usando qué. Si `daily_kpis` tiene 3 consumidore
 - La **governance** es condición necesaria: accesos, certificación y linaje evitan el caos.
 - Empezá chico: resolvé las 10 preguntas más frecuentes antes de construir el semantic layer perfecto.
 
-## Common Mistakes
+## Errores Comunes
 
 - **Dar acceso a datos crudos**: el equipo de producto no debería tocar tablas de staging ni raw. Exponé solo tablas curadas (gold layer).
 - **No tener un feedback loop**: self-serve es bidireccional. El equipo necesita un canal para reportar datos incorrectos o métricas faltantes.
 - **Dashboards lentos**: si un dashboard tarda más de 5 segundos en cargar, el equipo no lo usa. Optimizá agregaciones pre-calculadas.
 - **Ignorar la estacionalidad**: el equipo compara el lunes con el domingo y cree que algo explotó. Educá sobre comparaciones like-for-like (WoW, YoY).
 
-## Check Your Understanding
+## Comprueba tu Conocimiento
 
 1. ¿Cuál es la diferencia entre semantic layer y metrics store? <!-- Semantic layer es la implementación técnica (vistas SQL, LookML, tablas gold) que unifica la definición de métricas. Metrics store es el repositorio de metadata que documenta y versiona esas definiciones. -->
 2. Tu equipo de producto usa Metabase. ¿Cómo implementás un semantic layer sin LookML? <!-- Creando vistas gold en la base de datos (schemas self_serve o gold) que exponen métricas pre-calculadas con JOINs resueltos. Metabase se conecta a esas vistas como si fueran tablas. -->
@@ -308,7 +308,7 @@ Este query te dice quién está usando qué. Si `daily_kpis` tiene 3 consumidore
 4. El equipo de producto te pide 5 métricas nuevas por semana. ¿Cuál es tu estrategia? <!-- Implementar un proceso: (1) documentar la métrica en el metrics store, (2) priorizar según frecuencia de consulta, (3) si es una métrica que ya existe con otro nombre, educar al equipo en lugar de duplicar. -->
 5. ¿Qué métrica monitoreás para saber si tu self-serve strategy funciona? <!-- Número de consultas del equipo de producto sin intervención del data team, tiempo desde que preguntan hasta que obtienen respuesta, y satisfacción con los datos (encuesta trimestral). -->
 
-## Where to Go Next
+## ¿Dónde ir Siguente?
 
 - [[dbt & Data Transformation]] — cómo construir el semantic layer con dbt.
 - [[Data Warehousing & Lakehouse]] — arquitectura de datos que soporta self-serve (medallion architecture: bronze → silver → gold).

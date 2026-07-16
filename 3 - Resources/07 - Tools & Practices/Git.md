@@ -143,42 +143,42 @@ Los notebooks de Jupyter son archivos JSON — hacer diff de ellos es tedioso (l
 
 ---
 
-## 5. Common Mistakes
+## 5. Errores Comunes
 
-1. **Committing large files**: a 5GB CSV in Git forever. Use DVC or Git LFS.
+1. **Hacer commit de archivos grandes**: un CSV de 5GB en Git para siempre. Usar DVC o Git LFS.
 
-2. **Meaningless commit messages**: "fix", "update", "changes" — write messages that explain WHY.
+2. **Mensajes de commit sin significado**: "fix", "update", "changes" — escribe mensajes que expliquen POR QUÉ.
 
-3. **Working on main**: always create feature branches. main should always be deployable.
+3. **Trabajar en main**: siempre crear ramas de funcionalidad. main siempre debe ser desplegable.
 
-4. **Not pulling before pushing**: creates merge conflicts. Pull (or fetch + rebase) before push.
+4. **No hacer pull antes de push**: crea conflictos de fusión. Pull (o fetch + rebase) antes de push.
 
-5. **Merging without review**: direct pushes to main skip code review. Use Pull Requests. Enforce [[Code Quality]] checks in CI before merging.
+5. **Fusión sin revisión**: los pushes directos a main saltan la revisión de código. Usar Pull Requests. Aplicar verificaciones de [[Calidad de Código]] en CI antes de fusionar.
 
 ---
 
-## 6. Check Your Understanding
+## 6. Verifica tu Comprensión
 
-1. What is the difference between `git pull` and `git fetch`? (Fetch downloads changes but does not merge. Pull = fetch + merge.)
+1. ¿Cuál es la diferencia entre `git pull` y `git fetch`? (Fetch descarga cambios pero no fusiona. Pull = fetch + merge.)
 
-2. A teammate commits "fixed bug". What information is missing? (Which bug? How was it fixed? What was the root cause?)
+2. Un compañero hace commit de "fixed bug". ¿Qué información falta? (¿Qué bug? ¿Cómo se arregló? ¿Cuál fue la causa raíz?)
 
-3. You accidentally committed a 2GB CSV file. What do you do? (Use `git filter-branch` or `BFG Repo Cleaner` to remove it from history.)
+3. Haces accidentalmente commit de un archivo CSV de 2GB. ¿Qué haces? (Usar `git filter-branch` o `BFG Repo Cleaner` para eliminarlo del historial.)
 
-4. Why should a Jupyter notebook be stripped of outputs before committing? (Outputs change every run, creating noisy diffs. They also contain large base64 encoded images.)
+4. ¿Por qué se deben eliminar las salidas de un Jupyter notebook antes de hacer commit? (Las salidas cambian en cada ejecución, creando diffs ruidosos. También contienen imágenes grandes codificadas en base64.)
 
-5. main should always be deployable. What workflow ensures this? (Feature branches → code review → CI passes → merge to main.)
+5. main siempre debe ser desplegable. ¿Qué flujo de trabajo asegura esto? (Ramas de funcionalidad → revisión de código → CI pasa → fusión a main.)
 
 ---
 
 ## 7. Resumen
 
-Git tracks changes, enables collaboration, and links code versions to experiment results. Use branches for features, write descriptive commit messages, exclude large files and outputs with .gitignore, and use DVC for data/model versioning. The golden rule: main should always be deployable.
+Git rastrea cambios, permite la colaboración, y vincula versiones de código con resultados de experimentos. Usa ramas para funcionalidades, escribe mensajes de commit descriptivos, excluye archivos grandes y salidas con .gitignore, y usa DVC para versionado de datos/modelos. La regla de oro: main siempre debe ser desplegable.
 
 ---
 
-## 8. Where to Go Next
+## 8. Dónde Ir Ahora
 
-- [[Experiment Tracking]] — Linking git commits to experiment runs
-- [[Testing for Data Science]] — CI/CD with git-based workflows
-- [[Virtual Environments]] — Reproducible environments
+- [[Seguimiento de Experimentos]] — Vincular commits de git con ejecuciones de experimentos
+- [[Testing para Ciencia de Datos]] — CI/CD con flujos de trabajo basados en git
+- [[Entornos Virtuales]] — Entornos reproducibles

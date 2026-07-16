@@ -15,8 +15,24 @@ Trabajas en una startup de fintech y tienes datos crudos de transacciones: monto
 ## 2. The Feature Engineering Pipeline
 
 ```
-Raw Data → Cleaning → Transformation → Encoding → Creation → Selection → Model
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│  Raw Data   │───▶│  Cleaning   │───▶│Transform.   │───▶│  Encoding   │
+└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
+                                                                    │
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐             │
+│   Model     │◀───│ Selection   │◀───│  Creation   │◀────────────┘
+└─────────────┘    └─────────────┘    └─────────────┘
 ```
+
+### Pasos del Pipeline:
+
+| Paso | Descripción | Ejemplo |
+|------|-------------|---------|
+| **1. Limpieza** | Manejar valores faltantes, duplicados | `dropna()`, `fillna()` |
+| **2. Transformación** | Escalar, normalizar, manejar sesgo | `StandardScaler`, `log1p()` |
+| **3. Encoding** | Convertir categorías a numéricos | One-Hot, Target Encoding |
+| **4. Creación** | Generar nuevas features | Interacciones, ratios |
+| **5. Selección** | Elegir las mejores features | `SelectKBest`, `RFE` |
 
 ---
 
@@ -44,6 +60,27 @@ Sometimes *why* a value is missing matters. Create a binary feature: `is_age_mis
 ---
 
 ## 4. Encoding Categorical Variables
+
+### Comparación de Métodos de Encoding
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    MÉTODOS DE ENCODING                              │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  ORDINAL ENCODING          ONE-HOT ENCODING         TARGET ENCODING │
+│  ┌──────────────┐         ┌──────────────┐         ┌──────────────┐│
+│  │ low  → 0     │         │ red  → 1,0,0  │         │ red  → 0.85  ││
+│  │ med  → 1     │         │ blue → 0,1,0  │         │ blue → 0.42  ││
+│  │ high → 2     │         │ green→ 0,0,1  │         │ green→ 0.67  ││
+│  └──────────────┘         └──────────────┘         └──────────────┘│
+│                                                                     │
+│  ✓ Categorías con orden   ✓ Sin orden             ✓ Alta cardinalidad│
+│  ✓ Solo 1 columna         ✗ Muchas columnas       ✓ 1 columna      │
+│  ✗ Asume distancia igual  ✗ Muy disperso          ✗ Puede causar   │
+│                                                  leakage           │
+└─────────────────────────────────────────────────────────────────────┘
+```
 
 ### 4.1 Ordinal Encoding
 
@@ -95,17 +132,35 @@ smoothed = (counts * means + smoothing * global_mean) / (counts + smoothing)
 
 ### 5.1 Scaling
 
-| Scaler | Formula | Robust to outliers? | Output range |
+#### Comparación Visual de Métodos de Escalado
+
+```
+ANTES DE ESCALAR:                    DESPUÉS DE ESCALAR:
+                                      
+   │    •                              │      •    •
+   │  •   •                            │  •        •
+   │    • •                            │    •    •
+   │  •   •                            │  •    •
+   │• •                                │•     •
+   └──────────────                     └──────────────
+   [0, 100000]                         [0, 1]
+   
+StandardScaler        MinMaxScaler        RobustScaler
+z = (x - μ) / σ       x' = (x-min)/(max-min)   x' = (x-median)/IQR
+Media=0, Var=1        Rango [0,1]         Robusto a outliers
+```
+
+| Scaler | Formula | ¿Robusto a outliers? | Rango de salida |
 |---|---|---|---|
-| **StandardScaler** | $z = (x - \mu) / \sigma$ | No | Theoretical (-∞, ∞) |
+| **StandardScaler** | $z = (x - \mu) / \sigma$ | No | Teórico (-∞, ∞) |
 | **MinMaxScaler** | $x' = (x - min) / (max - min)$ | No | [0, 1] |
-| **RobustScaler** | $x' = (x - median) / IQR$ | Yes | Theoretical (-∞, ∞) |
+| **RobustScaler** | $x' = (x - median) / IQR$ | Sí | Teórico (-∞, ∞) |
 | **MaxAbsScaler** | $x' = x / | max|$ | No | [-1, 1] |
 
-**When each matters**:
-- **Tree-based models** (RF, XGBoost): scaling is NOT needed (splits are threshold-based)
-- **Distance-based models** (KNN, SVM, linear models): scaling is ESSENTIAL
-- **Neural networks**: scaling is strongly recommended for stable training
+**¿Cuándo usar cada método?**:
+- **Modelos basados en árboles** (RF, XGBoost): NO necesitan escalado (los splits son por umbral)
+- **Modelos basados en distancia** (KNN, SVM, modelos lineales): escalado es ESENCIAL
+- **Redes neuronales**: escalado es muy recomendado para entrenamiento estable
 
 ### 5.2 Handling Skew
 
@@ -193,6 +248,43 @@ vectorizer = TfidfVectorizer(max_features=1000, ngram_range=(1, 2))
 
 ## 7. Feature Selection
 
+### Métodos de Selección de Features
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    MÉTODOS DE SELECCIÓN                             │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  FILTER METHODS         WRAPPER METHODS         EMBEDDED METHODS    │
+│  ┌──────────────┐      ┌──────────────┐        ┌──────────────┐   │
+│  │ Correlación  │      │ RFE          │        │ Lasso (L1)   │   │
+│  │ Mutual Info  │      │ Forward/Back │        │ Ridge (L2)   │   │
+│  │ Chi-cuadrado │      │ Stepwise     │        │ Árboles      │   │
+│  └──────────────┘      └──────────────┘        └──────────────┘   │
+│                                                                     │
+│  ✓ Rápido               ✓ Considera interacciones  ✓ Integrado     │
+│  ✓ Modelo-agnóstico     ✗ Muy lento               ✗ Modelo-       │
+│  ✗ Ignora interacciones ✗ Costoso computacionalmente  específico   │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### Flujo de Decisión
+
+```
+¿Muchas features?
+    │
+    ▼ Sí
+¿Cuántas? ──── <100 ───▶ Usar Filter Methods (correlación, mutual info)
+    │
+    ▼ >100
+¿Modelo lineal? ── Sí ──▶ Usar Lasso (L1) para selección automática
+    │
+    ▼ No
+¿Necesitas interpretabilidad? ── Sí ──▶ Usar RFE con Random Forest
+    │
+    ▼ No
+Usar Embedded Methods (feature importance de árboles)
+
 ### 7.1 Filter Methods
 
 Rank features independently of the model:
@@ -275,38 +367,39 @@ model.fit(X_train, y_train)  # fit_transform on train, transform on test
 
 ---
 
-## 9. Common Mistakes
+## 9. Errores Comunes
 
-1. **Data leakage in feature engineering**: computing `df.mean()` on the whole dataset before splitting — the mean "knows" the test data. Always compute statistics on training data only.
+1. **Data leakage en feature engineering**: calcular `df.mean()` en todo el dataset antes de dividir — la media "conoce" los datos de prueba. Siempre calcula estadísticas solo en los datos de entrenamiento.
 
-2. **Creating too many features**: 100 samples with 1000 features will almost certainly overfit. Feature selection is not optional in high dimensions.
+2. **Crear demasiadas features**: 100 muestras con 1000 features casi siempre causarán overfitting. La selección de features no es opcional en dimensiones altas.
 
-3. **Assuming more features = better**: irrelevant features add noise, not signal. A model with 10 good features beats a model with 1000 mediocre features.
+3. **Asumir que más features = mejor**: features irrelevantes añaden ruido, no señal. Un modelo con 10 buenas features supera a uno con 1000 features mediocres.
 
-4. **Not handling rare categories in one-hot encoding**: a category that appears once in training and never in test (or vice versa) causes errors. Use `handle_unknown="ignore"`.
+4. **No manejar categorías raras en one-hot encoding**: una categoría que aparece una vez en entrenamiento y nunca en prueba (o viceversa) causa errores. Usa `handle_unknown="ignore"`.
 
-5. **Applying log transform to negative or zero values**: `log(0)` is undefined. Use `np.log1p(x)` or Yeo-Johnson transform.
+5. **Aplicar transformación logarítmica a valores negativos o cero**: `log(0)` no está definido. Usa `np.log1p(x)` o la transformación Yeo-Johnson.
 
 ---
 
-## 10. Check Your Understanding
+## 10. Comprueba tu Conocimiento
 
-1. Why does a tree-based model not need scaled features, while SVM does?
-2. You have a categorical column with 5000 unique values. What encoding strategy do you use?
-3. How can forward-fill (`method="ffill"`) cause data leakage in time series?
-4. A feature has correlation 0.8 with the target. Is it necessarily a good feature? What could go wrong?
-5. You engineer 500 features from 2000 samples. What problem are you likely to encounter?
+1. ¿Por qué un modelo basado en árboles no necesita features escaladas, mientras que SVM sí?
+2. Tienes una columna categórica con 5000 valores únicos. ¿Qué estrategia de encoding usas?
+3. ¿Cómo puede el llenado hacia adelante (`method="ffill"`) causar data leakage en series temporales?
+4. Una feature tiene correlación 0.8 con el target. ¿Es necesariamente buena? ¿Qué podría salir mal?
+5. Creas 500 features a partir de 2000 muestras. ¿Qué problema probablemente encontrarás?
 
 ---
 
 ## 11. Resumen
 
-Feature engineering is where domain knowledge meets data science. Good features make simple models perform well. The process involves handling missing data, encoding categories, scaling numerics, creating interaction features, and selecting the most informative subset. Always wrap feature engineering in a pipeline to prevent data leakage. The golden rule: compute statistics on training data only, then transform test data using those statistics.
+Feature engineering es donde el conocimiento del dominio se encuentra con la ciencia de datos. Buenas features hacen que modelos simples rindan bien. El proceso implica manejar datos faltantes, codificar categorías, escalar numéricos, crear features de interacción y seleccionar el subconjunto más informativo. Siempre envuelve feature engineering en un pipeline para evitar data leakage. La regla de oro: calcula estadísticas solo en datos de entrenamiento, luego transforma los datos de prueba usando esas estadísticas.
 
 ---
 
-## 12. Where to Go Next
+## 12. ¿Dónde ir Siguente?
 
-- [[Supervised Learning]] — Using engineered features in models
-- [[Model Evaluation]] — How feature selection affects bias-variance
-- [[Unsupervised Learning]] — PCA as automated feature extraction
+- [[Supervised Learning]] — Usar features ingenierizadas en modelos
+- [[Model Evaluation]] — Cómo la selección de features afecta bias-variance
+- [[Unsupervised Learning]] — PCA como extracción automatizada de features
+- [[Regularization]] — Cómo L1/L2 seleccionan features automáticamente

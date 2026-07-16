@@ -153,6 +153,32 @@ SELECT * FROM clientes WHERE nombre LIKE 'A%';
 
 Los `JOIN` combinamos filas de dos tablas según una condición. [[Advanced Querying|Dominar los JOINs]] es la habilidad más importante en SQL.
 
+### Comparación Visual de JOINs
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    TIPOS DE JOIN                                    │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  INNER JOIN              LEFT JOIN               RIGHT JOIN         │
+│  ┌─────┐ ┌─────┐       ┌─────┐ ┌─────┐        ┌─────┐ ┌─────┐   │
+│  │█████│█│█████│       │█████│█│░░░░░│        │░░░░░│█│█████│   │
+│  │█████│ │█████│       │█████│ │░░░░░│        │░░░░░│ │█████│   │
+│  └─────┘ └─────┘       └─────┘ └─────┘        └─────┘ └─────┘   │
+│  Solo coinciden         Todas las izq.          Todas las der.    │
+│  en ambas               + coinciden             + coinciden       │
+│                                                                     │
+│  FULL OUTER JOIN        CROSS JOIN                                   │
+│  ┌─────┐ ┌─────┐       ┌─────┐ ┌─────┐                            │
+│  │█████│█│█████│       │█████│█│█████│                            │
+│  │░░░░░│ │░░░░░│       │█████│ │█████│                            │
+│  └─────┘ └─────┘       └─────┘ └─────┘                            │
+│  Todas las filas         Combinación cartesiana                    │
+│  de ambas tablas         (cada fila × cada fila)                  │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
 ### INNER JOIN — solo filas que coinciden en ambas tablas
 
 ```sql

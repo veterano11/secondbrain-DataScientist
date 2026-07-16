@@ -6,18 +6,18 @@ modified: {{date:YYYY-MM-DD}}
 
 # {{date:YYYY-MM-DD}} - {{date:dddd}}
 
-## Today's Focus
+## Enfoque de Hoy
 
 - 
 
-## Notes
+## Notas
 
 
 
-## Wins
+## Logros
 
 
 
-## Tomorrow
+## Mañana
 
 -

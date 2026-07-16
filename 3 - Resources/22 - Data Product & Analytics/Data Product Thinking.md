@@ -264,7 +264,7 @@ Las **contramétricas** son igual de importantes: si optimizás workouts complet
 - Leading indicators predicen el futuro; lagging indicators confirman el pasado.
 - Las contramétricas evitan que optimices una dimensión a costa de otra.
 
-## Common Mistakes
+## Errores Comunes
 
 - **Vanity metrics**: métricas que se ven bien en una slide pero no generan acción (ej: "total de descargas acumuladas").
 - **Demasiadas métricas**: más de 5 métricas en un dashboard y nadie sabe cuál mirar.
@@ -273,7 +273,7 @@ Las **contramétricas** son igual de importantes: si optimizás workouts complet
 - **Métrica única sin segmentación**: el promedio miente. Un promedio de 3 workouts/semana puede esconder 90% de usuarios que hacen 0 y 10% que hacen 30.
 - **No conectar métricas a decisiones**: si la métrica sube 5%, ¿qué hacés distinto mañana?
 
-## Check Your Understanding
+## Comprueba tu Conocimiento
 
 1. ¿Cuál es la diferencia entre una métrica leading y una lagging? Da un ejemplo de cada una para una app de meditación. <!-- Leading predice (ej: sesiones de meditación completadas por semana predicen retención), lagging confirma (ej: churn rate del trimestre). -->
 2. Una app de delivery elige como north star "pedidos por día". ¿Qué problemas ves? <!-- No distingue valor por pedido, no considera calidad del servicio, incentiva pedidos chicos que dañan la economía unitaria. -->
@@ -281,7 +281,7 @@ Las **contramétricas** son igual de importantes: si optimizás workouts complet
 4. Tu north star subió 20%, pero los ingresos cayeron. ¿Qué revisás primero? <!-- Las contramétricas: ¿la feature nueva canibalizó features pagas? ¿usuarios gratuitos consumen más recursos sin convertir? -->
 5. Aplicá AARRR a una app de citas. ¿Qué métrica pondrías en cada etapa? <!-- Acquisition: descargas; Activation: primer match/mensaje; Revenue: suscripciones; Retention: D7; Referral: invites enviados. -->
 
-## Where to Go Next
+## ¿Dónde ir Siguente?
 
 - [[Funnel & Cohort Analysis]] — profundizá en cómo diagnosticar pérdida de usuarios etapa por etapa.
 - [[Experimentation & Growth]] — conectá métricas con experimentos y growth loops.

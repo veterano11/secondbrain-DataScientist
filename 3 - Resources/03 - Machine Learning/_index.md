@@ -8,7 +8,7 @@ created: 2026-06-27
 
 Modelos clásicos de ML, evaluación y feature engineering.
 
-## Topics
+## Temas
 
 - [[Supervised Learning]] — Regresión, clasificación, árboles, ensemble
 - [[Unsupervised Learning]] — Clustering, reducción de dimensionalidad
@@ -20,7 +20,7 @@ Modelos clásicos de ML, evaluación y feature engineering.
 - [[Dimensionality Reduction]] — PCA, t-SNE, UMAP, LDA
 - [[Advanced Feature Engineering]] — Target encoding, cyclical, featuretools, selection
 
-## Progression
+## Progresión
 
 ```
 Foundational → Supervised Learning (básico)

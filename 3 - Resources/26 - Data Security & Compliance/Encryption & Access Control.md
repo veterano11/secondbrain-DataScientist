@@ -293,7 +293,7 @@ engine = create_engine(
 
 La seguridad de datos requiere tres capas: encriptación en reposo (AES-256 con KMS), encriptación en tránsito (TLS 1.2+, mTLS), y control de acceso (IAM con least privilege). Las políticas pueden ser resource-based o identity-based, con condiciones como MFA, IP, y tags. RBAC funciona para equipos pequeños, ABAC escala mejor. Los secrets (passwords, tokens) nunca van en código — usa Secrets Manager o Vault con rotación automática. La combinación de estas prácticas es obligatoria para cumplir HIPAA, GDPR y estándares de [[Privacy Regulations]].
 
-## Check Your Understanding
+## Comprueba tu Conocimiento
 
 1. ¿Qué diferencia hay entre SSE-S3, SSE-KMS y SSE-C?
 2. ¿Qué condición IAM usarías para forzar TLS en S3?
@@ -309,7 +309,7 @@ La seguridad de datos requiere tres capas: encriptación en reposo (AES-256 con 
 5. Rotar automáticamente significa reemplazar el secreto periódicamente sin intervención humana. Limita la ventana de exposición si un secreto se filtra y reduce el riesgo de credenciales estáticas.
 -->
 
-## Where to Go Next
+## ¿Dónde ir Siguente?
 
 - [[Data Classification & Governance]]
 - [[Privacy Regulations]]

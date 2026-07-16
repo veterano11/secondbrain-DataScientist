@@ -8,7 +8,7 @@ created: 2026-06-27
 
 Redes neuronales y arquitecturas profundas.
 
-## Topics
+## Temas
 
 - [[Neural Networks]] — Perceptrón, backpropagation, activation functions
 - [[CNNs]] — Convoluciones, pooling, arquitecturas clásicas
@@ -17,7 +17,7 @@ Redes neuronales y arquitecturas profundas.
 - [[Training Techniques]] — Batch norm, dropout, learning rate scheduling
 - [[Transfer Learning]] — Pre-trained models, fine-tuning, embeddings
 
-## Progression
+## Progresión
 
 ```
 Foundational → Neural Networks (conceptos básicos)

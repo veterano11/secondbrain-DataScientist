@@ -8,7 +8,7 @@ created: 2026-06-27
 
 Modelos de lenguaje de gran escala, RAG y aplicaciones.
 
-## Topics
+## Temas
 
 - [[Transformer Architecture]] — Self-attention, encoder-decoder, scaling laws
 - [[Prompt Engineering]] — Prompt design, few-shot, chain-of-thought
@@ -17,7 +17,7 @@ Modelos de lenguaje de gran escala, RAG y aplicaciones.
 - [[LLM Evaluation]] — Benchmarks, hallucination, toxicity
 - [[Agentic Systems]] — Tool use, function calling, multi-step reasoning
 
-## Progression
+## Progresión
 
 ```
 Foundational → Transformer Architecture

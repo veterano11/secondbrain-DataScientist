@@ -231,12 +231,12 @@ Paso 3: "Dados los resultados de la prueba a continuación, ¿qué hipótesis ti
 
 ## 8. Resumen
 
-Prompt engineering is the skill of communicating intent to LLMs. A good prompt specifies role, tone, format, and constraints. Advanced techniques like Chain-of-Thought and ReAct improve reasoning and tool use. Structured output (JSON) enables downstream processing. The key is systematic testing — vary prompts, measure results, iterate.
+La ingeniería de prompts es la habilidad de comunicar intención a los LLMs. Un buen prompt especifica rol, tono, formato y restricciones. Técnicas avanzadas como Cadena de Pensamiento y ReAct mejoran el razonamiento y el uso de herramientas. La salida estructurada (JSON) permite el procesamiento posterior. La clave es la prueba sistemática — varía los prompts, mide resultados, itera.
 
 ---
 
-## 9. Where to Go Next
+## 9. Dónde Ir Ahora
 
 - [[RAG]] — Combinando prompts con contexto recuperado
-- [[Agentic Systems]] — Razonamiento multi-paso con uso de herramientas
-- [[LLM Evaluation]] — Midiendo la efectividad de los prompts
+- [[Sistemas Agentivos]] — Razonamiento multi-paso con uso de herramientas
+- [[Evaluación de LLMs]] — Midiendo la efectividad de los prompts

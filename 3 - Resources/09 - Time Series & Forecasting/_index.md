@@ -8,14 +8,14 @@ created: 2026-06-27
 
 Modelado secuencial, predicción y análisis temporal.
 
-## Topics
+## Temas
 
 - [[Time Series Fundamentals]] — Estacionalidad, tendencia, descomposición, estacionariedad
 - [[Classical Forecasting Methods]] — ARIMA, SARIMA, Exponential Smoothing, Prophet
 - [[Deep Learning for Time Series]] — LSTM, TCN, N-BEATS, temporal fusion transformers
 - [[Time Series Anomaly Detection]] — Estadístico, basado en ML, reconstruction-based
 
-## Progression
+## Progresión
 
 ```
 Foundational → Time Series Fundamentals

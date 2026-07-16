@@ -13,6 +13,50 @@ Tienes 10,000 reseñas de clientes en texto libre. Necesitas convertirlas en nú
 
 ## 1. Pipeline de preprocessing
 
+### Flujo Visual del Preprocessing de Texto
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    PIPELINE DE PREPROCESSING                        │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  TEXTO CRUDO                                                       │
+│  "¡Excelente producto! Lo compré en https://t.co/abc123 y llego    │
+│   rápido. @usuario #feliz"                                         │
+│                              │                                      │
+│                              ▼                                      │
+│  ┌─────────────────────────────────────────────────────────────┐   │
+│  │ PASO 1: Lowercase                                          │   │
+│  │ "¡excelente producto! lo compré en https://t.co/abc123..." │   │
+│  └─────────────────────────────────────────────────────────────┘   │
+│                              │                                      │
+│                              ▼                                      │
+│  ┌─────────────────────────────────────────────────────────────┐   │
+│  │ PASO 2: Remove URLs                                        │   │
+│  │ "¡excelente producto! lo compré en  y llego rápido..."    │   │
+│  └─────────────────────────────────────────────────────────────┘   │
+│                              │                                      │
+│                              ▼                                      │
+│  ┌─────────────────────────────────────────────────────────────┐   │
+│  │ PASO 3: Remove mentions & hashtags                         │   │
+│  │ "¡excelente producto! lo compré en  y llego rápido..."    │   │
+│  └─────────────────────────────────────────────────────────────┘   │
+│                              │                                      │
+│                              ▼                                      │
+│  ┌─────────────────────────────────────────────────────────────┐   │
+│  │ PASO 4: Remove punctuation & numbers                       │   │
+│  │ "excelente producto lo compré en  y llego rápido"         │   │
+│  └─────────────────────────────────────────────────────────────┘   │
+│                              │                                      │
+│                              ▼                                      │
+│  ┌─────────────────────────────────────────────────────────────┐   │
+│  │ PASO 5: Stemming / Lemmatization                           │   │
+│  │ ['excelent', 'product', 'lo', 'compr', 'y']               │   │
+│  └─────────────────────────────────────────────────────────────┘   │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
 Antes de vectorizar, el texto crudo pasa por una serie de pasos de limpieza. El orden importa.
 
 ```python
@@ -92,6 +136,42 @@ print(filtered)  # ['movie', 'good']  ← perdió la negación
 En [[Text Classification]], considera mantener negaciones o convertirlas en "not_good".
 
 ## 4. Bag of Words (BoW)
+
+### Comparación Visual de Métodos de Vectorización
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    MÉTODOS DE VECTORIZACIÓN                         │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  BAG OF WORDS (BoW)              TF-IDF                            │
+│  ┌─────────────────────────┐     ┌─────────────────────────┐      │
+│  │ "the cat sat on mat"    │     │ "the cat sat on mat"    │      │
+│  │                         │     │                         │      │
+│  │ the: 2  cat: 1          │     │ the: 0.3  cat: 0.8      │      │
+│  │ sat: 1  on: 1           │     │ sat: 0.8  on: 0.5       │      │
+│  │ mat: 1                  │     │ mat: 0.8                │      │
+│  └─────────────────────────┘     └─────────────────────────┘      │
+│                                                                     │
+│  Cuenta frecuencias          Penaliza palabras muy frecuentes      │
+│  Simple, rápido              Mejor discriminación                  │
+│                                                                     │
+│  ─────────────────────────────────────────────────────────────     │
+│                                                                     │
+│  WORD EMBEDDINGS (Word2Vec)     TRANSFORMER EMBEDDINGS             │
+│  ┌─────────────────────────┐     ┌─────────────────────────┐      │
+│  │ "king" → [0.2, -0.4,   │     │ "king" → [0.1, -0.3,   │      │
+│  │          0.7, 0.1, ...] │     │          0.5, 0.2, ...] │      │
+│  │                         │     │                         │      │
+│  │ "queen" → [0.3, -0.5,  │     │ "queen" → [0.2, -0.4,  │      │
+│  │           0.6, 0.2, ...]│     │           0.4, 0.3, ...]│      │
+│  └─────────────────────────┘     └─────────────────────────┘      │
+│                                                                     │
+│  Vecores densos contextuales   Contexto bidireccional              │
+│  Relaciones semánticas         Dependiente del contexto            │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
 
 Vectoriza document → frecuencia de cada palabra en un vocabulario fijo. Resulta en una [[Feature Engineering|matriz sparse]] de tamaño `n_docs × vocab_size`.
 
@@ -175,7 +255,7 @@ En [[Word Embeddings (Word2Vec)]], el contexto implícito del window size es an�
 4. La elección de tokenizador (NLTK vs spaCy) depende de si necesitas análisis morfológico adicional.
 5. Stopwords deben revisarse según el dominio y la tarea (especialmente en análisis de sentimiento).
 
-## Check Your Understanding
+## Comprueba tu Conocimiento
 
 1. ¿Qué ventaja tiene TF-IDF sobre BoW? <!-- Penaliza palabras muy frecuentes en el corpus (como "the") que no aportan discriminación. -->
 2. ¿Por qué es arriesgado eliminar "not" de los stopwords en sentimiento? <!-- Porque convierte "not good" en "good", invirtiendo la polaridad. -->
@@ -183,7 +263,7 @@ En [[Word Embeddings (Word2Vec)]], el contexto implícito del window size es an�
 4. ¿Qué problema resuelve la tokenización que un simple split(" ") no maneja? <!-- Contracciones ("don't" → "do" + "n't"), puntuación pegada ("hola!"), idiomas sin espacios. -->
 5. ¿TF-IDF puede generar vectores para palabras nuevas en test? <!-- No, el vocabulario se fija en fit; OOV se ignora a menos que uses hashing o embeddings. -->
 
-## Where to Go Next
+## ¿Dónde ir Siguente?
 
 - [[Word Embeddings (Word2Vec)]]
 - [[Text Classification]]

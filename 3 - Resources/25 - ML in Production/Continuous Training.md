@@ -309,7 +309,7 @@ rollback.evaluate(baseline_mae=7.5)
 - **Model registry** (MLflow): versionado, lineage, stages (Staging → Production).
 - **Rollback automático**: si métricas empeoran > umbral, revertir a versión anterior.
 
-## Check Your Understanding
+## Comprueba tu Conocimiento
 
 1. ¿Cuál es la diferencia entre un trigger por drift y uno por performance degradation?
    <!-- Drift detecta cambios en distribución de entrada; performance degradation detecta empeoramiento de métricas de salida. -->
@@ -328,7 +328,7 @@ rollback.evaluate(baseline_mae=7.5)
 8. ¿Cuándo preferirías un trigger schedule sobre uno por drift?
    <!-- Cuando el drift es difícil de medir (texto, imágenes) o el costo de reentrenar es bajo. -->
 
-## Where to Go Next
+## ¿Dónde ir Siguente?
 
 - [[Feature Stores]] — features versionadas para reentrenamiento
 - [[Data & Concept Drift]] — técnicas avanzadas de detección de drift

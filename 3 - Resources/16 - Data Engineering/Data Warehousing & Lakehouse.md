@@ -88,7 +88,7 @@ El **Lakehouse** (Databricks, Apache Iceberg, Delta Lake) es la tendencia actual
 
 Todas soportan [[Query Optimization & Indexing|particionado, clustering y optimizaciones de consulta]].
 
-## 7. Common Mistakes
+## 7. Errores Comunes
 
 1. **No particionar tablas grandes**: cada consulta escanea toda la tabla → lentitud y costo excesivo.
 2. **JOINs entre fact tables**: genera productos cartesianos. Siempre pasa por dimensiones primero.
@@ -106,14 +106,14 @@ Todas soportan [[Query Optimization & Indexing|particionado, clustering y optimi
 6. Herramientas como Snowflake, BigQuery, Redshift y Databricks lideran el mercado.
 7. Errores comunes: no particionar, joins entre facts, SCDs incorrectos, sobrenormalización.
 
-## Check Your Understanding
+## Comprueba tu Conocimiento
 
 1. ¿Cuál es la diferencia principal entre almacenamiento row-oriented y column-oriented? <!-- Row-oriented guarda filas contiguas (rápido para transacciones individuales); column-oriented guarda columnas contiguas (rápido para agregaciones masivas) -->
 2. ¿Qué problema resuelve un star schema que un modelo 3NF no resuelve bien en analytics? <!-- Reduce la cantidad de JOINs necesarios para consultas analíticas típicas, haciendo las consultas más simples y rápidas -->
 3. ¿Cuándo preferirías un Lakehouse sobre un Data Warehouse tradicional? <!-- Cuando necesitas datos sin procesar (ML, exploración) y tablas SQL analíticas en el mismo lugar, sin mover datos entre sistemas -->
 4. ¿Por qué es peligroso hacer JOIN entre dos fact tables directamente? <!-- Porque puede generar productos cartesianos si no hay una dimensión que las relacione correctamente -->
 
-## Where to Go Next
+## ¿Dónde ir Siguente?
 
 - [[Data Pipelines & ETL]]
 - [[dbt & Data Transformation]]

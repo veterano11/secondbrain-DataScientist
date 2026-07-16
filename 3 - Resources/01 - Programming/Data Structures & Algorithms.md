@@ -232,38 +232,38 @@ def fib_memo(n):
 
 ---
 
-## 5. Common Mistakes
+## 5. Errores Comunes
 
-1. **Using `list` where `set` is appropriate**: if you only need membership tests, `set` is O(1) vs `list` O(n). On 1M items, the difference is microseconds vs seconds.
+1. **Usar `list` donde `set` es apropiado**: si solo necesitas pruebas de pertenencia, `set` es O(1) vs `list` O(n). Con 1M de elementos, la diferencia es microsegundos vs segundos.
 
-2. **Not understanding amortized cost**: `list.append()` is O(1) on average. But occasionally it is O(n) when resizing. This matters for latency-sensitive applications.
+2. **No entender el costo amortizado**: `list.append()` es O(1) en promedio. Pero ocasionalmente es O(n) al redimensionar. Esto importa para aplicaciones sensibles a la latencia.
 
-3. **Assuming O(n) is always bad**: for small n (n < 1000), O(n) may be faster than O(log n) with high constant factors. Profile before optimizing. [[Code Quality]] covers profiling tools for measuring real-world performance.
+3. **Asumir que O(n) es siempre malo**: para n pequeño (n < 1000), O(n) puede ser más rápido que O(log n) con factores constantes altos. Perfil antes de optimizar. [[Calidad de Código]] cubre herramientas de perfilado para medir rendimiento del mundo real.
 
-4. **Recursion depth**: Python has a recursion limit (~1000). Use iteration for deep recursion. Dynamic programming usually avoids recursion anyway.
+4. **Profundidad de recursión**: Python tiene un límite de recursión (~1000). Usar iteración para recursión profunda. La programación dinámica de todas formas evita la recursión.
 
 ---
 
-## 6. Check Your Understanding
+## 6. Verifica tu Comprensión
 
-1. You need to check if a specific user ID exists in a collection of 10 million IDs. Do you use a list or a set? Why?
-2. What is the Big O of `dict.get(key)`? How does a hash table achieve this?
-3. A decision tree trained on 1000 samples takes 0.1s. Approximately how long for 1,000,000 samples? (Hint: think about tree complexity)
-4. When would O(n) be faster than O(1) in practice?
-5. Why does `list.append()` document itself as "amortized O(1)"? What does "amortized" mean?
+1. Necesitas verificar si un ID de usuario específico existe en una colección de 10 millones de IDs. ¿Usas una lista o un set? ¿Por qué?
+2. ¿Cuál es el Big O de `dict.get(key)`? ¿Cómo logra esto una tabla hash?
+3. Un árbol de decisión entrenado con 1000 muestras toma 0.1s. ¿Aproximadamente cuánto para 1,000,000 de muestras? (Pista: piensa en la complejidad del árbol)
+4. ¿Cuándo sería O(n) más rápido que O(1) en la práctica?
+5. ¿Por qué `list.append()` se documenta como "amortized O(1)"? ¿Qué significa "amortizado"?
 
 ---
 
 ## 7. Resumen
 
-Data structures are about tradeoffs: arrays give fast access but slow insertion; hash tables give fast lookup but use more memory; trees give ordered access but have overhead. Big O notation quantifies these tradeoffs. The most practical takeaway: use `dict`/`set` for fast lookups, `list` for ordered sequences, `deque` for queues, and `heapq` for priority. Understanding these choices separates efficient data code from slow code.
+Las estructuras de datos se tratan de compensaciones: los arrays dan acceso rápido pero inserción lenta; las tablas hash dan búsqueda rápida pero usan más memoria; los árboles dan acceso ordenado pero tienen sobrecarga. La notación Big O cuantifica estas compensaciones. La lección más práctica: usa `dict`/`set` para búsquedas rápidas, `list` para secuencias ordenadas, `deque` para colas, y `heapq` para prioridad. Entender estas decisiones separa el código eficiente del código lento.
 
 ---
 
-## 8. Where to Go Next
+## 8. Dónde Ir Ahora
 
-- [[Python Fundamentals]] — Lists, dicts, sets in practice
-- [[Python for Data Science]] — NumPy arrays are optimized for numerical data
-- [[Supervised Learning]] — Decision trees are binary trees
-- [[Object-Oriented Programming]] — Implementing data structures as classes
-- [[Functional Programming]] — Pure functions for algorithm design
+- [[Fundamentos de Python]] — Listas, diccionarios, sets en la práctica
+- [[Python para Ciencia de Datos]] — Arrays de NumPy optimizados para datos numéricos
+- [[Aprendizaje Supervisado]] — Los árboles de decisión son árboles binarios
+- [[Programación Orientada a Objetos]] — Implementar estructuras de datos como clases
+- [[Programación Funcional]] — Funciones puras para diseño de algoritmos
