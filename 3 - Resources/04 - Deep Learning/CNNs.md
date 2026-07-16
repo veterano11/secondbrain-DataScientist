@@ -4,7 +4,7 @@ status: growing
 created: 2026-06-27
 ---
 
-# Convolutional Neural Networks
+# Redes Neuronales Convolucionales
 
 ## 1. Escenario de aprendizaje
 
@@ -12,7 +12,7 @@ Trabajas en una aplicación de diagnóstico médico por imágenes. Tienes radiog
 
 ---
 
-## 2. The Convolution Operation
+## 2. La Operación de Convolución
 
 ### Arquitectura Visual de CNN
 
@@ -33,16 +33,16 @@ Trabajas en una aplicación de diagnóstico médico por imágenes. Tienes radiog
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-### 2.1 Intuition
+### 2.1 Intuición
 
-A convolution slides a small filter (kernel) over the input, computing dot products at each position. Each filter detects a specific pattern — edges, textures, shapes. See [[Image Processing Fundamentals]] for more on traditional image filters.
+Una convolución desliza un filtro pequeño (kernel) sobre la entrada, calculando productos punto en cada posición. Cada filtro detecta un patrón específico — bordes, texturas, formas. Ver [[Image Processing Fundamentals]] para más sobre filtros de imagen tradicionales.
 
-**Analogy**: imagine shining a flashlight with a patterned lens over an image. At each position, the filter "lights up" when the pattern matches.
+**Analogía**: imagina brillar una linterna con un lente con patrón sobre una imagen. En cada posición, el filtro "se ilumina" cuando el patrón coincide.
 
-### 2.2 How It Works
+### 2.2 Cómo Funciona
 
 ```
-Input (5×5):          Kernel (3×3):        Output (3×3):
+Entrada (5×5):          Kernel (3×3):        Salida (3×3):
 [1 1 1 0 0]          [1 0 1]              [4 3 4]
 [0 1 1 1 0]          [0 1 0]     →        [2 4 3]
 [0 0 1 1 1]          [1 0 1]              [2 3 4]
@@ -50,38 +50,38 @@ Input (5×5):          Kernel (3×3):        Output (3×3):
 [0 1 1 0 0]
 ```
 
-Step by step: place kernel at top-left of input → multiply element-wise → sum = 4 → slide right by stride → repeat.
+Paso a paso: colocar kernel en la esquina superior izquierda de la entrada → multiplicar elemento por elemento → sumar = 4 → deslizar a la derecha por stride → repetir.
 
-### 2.3 Key Parameters
+### 2.3 Parámetros Clave
 
-| Parameter | Effect |
+| Parámetro | Efecto |
 |---|---|
-| **Kernel size** | Larger kernels detect larger patterns but use more parameters. $3\times3$ is the default — stacking two $3\times3$ gives same receptive field as one $5\times5$ with fewer parameters |
-| **Stride** | Step size. Stride 2 reduces output size by half. |
-| **Padding** | Add zeros around input to preserve size ("same" padding) |
-| **Dilation** | Gaps between kernel elements. Used to increase receptive field without increasing parameters |
+| **Tamaño del kernel** | Kernels más grandes detectan patrones más grandes pero usan más parámetros. $3\times3$ es el predeterminado — apilar dos $3\times3$ da el mismo receptive field que una $5\times5$ con menos parámetros |
+| **Stride** | Tamaño del paso. Stride 2 reduce el tamaño de salida a la mitad. |
+| **Padding** | Añadir ceros alrededor de la entrada para preservar tamaño ("same" padding) |
+| **Dilatación** | Espacios entre elementos del kernel. Se usa para aumentar el receptive field sin aumentar parámetros |
 
-### 2.4 Why Convolutions Are Efficient
+### 2.4 Por Qué las Convoluciones Son Eficientes
 
-A fully connected layer connecting a $224\times224$ RGB image to 1024 neurons has: $224 \times 224 \times 3 \times 1024 \approx 154M$ parameters.
+Una capa fully connected que conecta una imagen RGB de $224\times224$ a 1024 neuronas tiene: $224 \times 224 \times 3 \times 1024 \approx 154M$ parámetros.
 
-A convolutional layer with $64$ kernels of $3\times3$ has: $3 \times 3 \times 3 \times 64 = 1,728$ parameters — **89,000× fewer**.
+Una capa convolucional con $64$ kernels de $3\times3$ tiene: $3 \times 3 \times 3 \times 64 = 1,728$ parámetros — **89,000× menos**.
 
-Plus, convolutions are **translation invariant**: a cat is a cat whether it appears at the top or bottom of the image.
+Además, las convoluciones son **invariantes a traslaciones**: un gato es un gato ya sea que aparezca arriba o abajo en la imagen.
 
 ---
 
-## 3. The CNN Building Blocks
+## 3. Los Bloques de Construcción de CNN
 
-### 3.1 Convolution + Pooling + Activation
+### 3.1 Convolución + Pooling + Activación
 
-The standard pattern:
+El patrón estándar:
 
 ```
-Input → Conv2D → ReLU → MaxPool → Conv2D → ReLU → MaxPool → FC → Softmax
+Entrada → Conv2D → ReLU → MaxPool → Conv2D → ReLU → MaxPool → FC → Softmax
 ```
 
-Each convolution extracts features. Pooling downsamples (reduces size). ReLU adds non-linearity. The final fully connected layers make the prediction.
+Cada convolución extrae características. Pooling hace downsampling (reduce tamaño). ReLU añade no-linealidad. Las capas fully connected finales hacen la predicción.
 
 ### 3.2 Pooling
 
@@ -115,7 +115,7 @@ AVERAGE POOLING (2×2, stride 2):
 
 ---
 
-## 4. Classic Architectures
+## 4. Arquitecturas Clásicas
 
 ### Comparación de Arquitecturas CNN
 
@@ -142,22 +142,22 @@ AVERAGE POOLING (2×2, stride 2):
 
 ### 4.1 LeNet-5 (1998)
 
-- 2 conv + 3 FC layers
-- 60k parameters
-- Solved MNIST digit recognition
+- 2 conv + 3 capas FC
+- 60k parámetros
+- Resolvió el reconocimiento de dígitos MNIST
 
 ### 4.2 AlexNet (2012)
 
-- 5 conv + 3 FC layers
-- 60M parameters
-- Won ImageNet by a huge margin (15.3% vs 26.2% error)
-- Introduced ReLU, dropout, data augmentation, GPU training
+- 5 conv + 3 capas FC
+- 60M parámetros
+- Ganó ImageNet por un margen enorme (15.3% vs 26.2% de error)
+- Introdujo ReLU, dropout, data augmentation, entrenamiento con GPU
 
 ### 4.3 VGG (2014)
 
-- 16-19 conv layers, all $3\times3$
-- Simple, uniform architecture
-- 138M parameters (very large)
+- 16-19 capas conv, todas $3\times3$
+- Arquitectura simple y uniforme
+- 138M parámetros (muy grandes)
 
 ### 4.4 ResNet (2015)
 
@@ -192,34 +192,34 @@ Las variantes ResNet (ResNet-50, ResNet-101, ResNet-152) siguen populares como e
 
 ### 4.5 EfficientNet (2019)
 
-Systematically scales depth, width, and resolution using a compound coefficient. Achieves state-of-the-art accuracy with much fewer parameters and FLOPs.
+Escala sistemáticamente profundidad, anchura y resolución usando un coeficiente compuesto. Logra precisión de estado del arte con mucho menos parámetros y FLOPs.
 
 ---
 
-## 5. Modern Developments
+## 5. Desarrollos Modernos
 
-| Architecture | Key Idea |
+| Arquitectura | Idea Clave |
 |---|---|
-| **DenseNet** | Each layer connects to all subsequent layers (maximum information flow) |
-| **MobileNet** | Depthwise separable convolutions (efficient for mobile/edge) |
-| **ResNeXt** | Grouped convolutions (parallel conv paths) |
-| **ConvNeXt** | Modernized ConvNet with transformer-inspired design choices |
+| **DenseNet** | Cada capa se conecta a todas las capas siguientes (flujo máximo de información) |
+| **MobileNet** | Convoluciones depthwise separables (eficiente para móvil/borde) |
+| **ResNeXt** | Convoluciones agrupadas (rutas conv paralelas) |
+| **ConvNeXt** | ConvNet modernizado con decisiones de diseño inspiradas en transformers |
 
 ---
 
-For detection and segmentation architectures built on CNNs, see [[Object Detection & Segmentation]].
+Para arquitecturas de detección y segmentación basadas en CNNs, ver [[Object Detection & Segmentation]].
 
-## 6. CNNs Beyond Images
+## 6. CNNs Más Allá de las Imágenes
 
-- **1D CNNs**: time series, audio, text (character-level)
-- **3D CNNs**: video (spatio-temporal), medical volumes (CT, MRI)
-- **Graph CNNs** (GCN): molecular structures, social networks, 3D point clouds
+- **CNNs 1D**: series temporales, audio, texto (a nivel de caracteres)
+- **CNNs 3D**: video (espacio-temporal), volúmenes médicos (CT, MRI)
+- **CNNs de Grafos** (GCN): estructuras moleculares, redes sociales, nubes de puntos 3D
 
 ---
 
 ## 7. Errores Comunes
 
-1. **Kernel size demasiado grande**: $7\times7$ y más grandes rara vez son necesarios. Apilar $3\times3$ es más eficiente en parámetros y permite más no-linealidad.
+1. **Tamaño de kernel demasiado grande**: $7\times7$ y más grandes rara vez son necesarios. Apilar $3\times3$ es más eficiente en parámetros y permite más no-linealidad.
 
 2. **Demasiado pooling demasiado rápido**: el downsampling agresivo pierde información espacial. Pool gradualmente.
 
@@ -256,4 +256,4 @@ Las CNNs usan convoluciones para aprender patrones espaciales de forma eficiente
 - [[Neural Networks]] — Conceptos fundacionales para CNNs
 - [[Transfer Learning]] — Usar CNNs preentrenadas para nuevas tareas
 - [[Object Detection & Segmentation]] — Arquitecturas de detección y segmentación basadas en CNNs
-- [[Training Techniques]] — Optimizers and regularization for vision models
+- [[Training Techniques]] — Optimizadores y regularización para modelos de visión
