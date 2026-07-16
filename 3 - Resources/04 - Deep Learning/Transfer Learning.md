@@ -12,158 +12,158 @@ Tienes 500 imágenes de rayos X para clasificar entre neumonía y normal. Entren
 
 ---
 
-## 2. The Core Idea
+## 2. La Idea Central
 
-**Pre-training**: train a model on a large, generic dataset (ImageNet for vision, Wikipedia + books for NLP).
+**Pre-entrenamiento**: entrenar un modelo en un conjunto de datos grande y genérico (ImageNet para visión, Wikipedia + libros para NLP).
 
-**Fine-tuning**: adapt the pre-trained model to your specific task with a smaller dataset.
+**Fine-tuning**: adaptar el modelo pre-entrenado a tu tarea específica con un conjunto de datos más pequeño.
 
-**Why it works**: early layers learn general features (edges, textures in vision; syntax, grammar in language). Only the last few layers need to specialize to the target task.
+**Por qué funciona**: las primeras capas aprenden características generales (bordes, texturas en visión; sintaxis, gramática en lenguaje). Solo las últimas capas necesitan especializarse en la tarea objetivo.
 
 ---
 
-## 3. Transfer Learning Strategies
+## 3. Estrategias de Transfer Learning
 
-### 3.1 Feature Extraction
+### 3.1 Extracción de Características
 
-- Freeze the pre-trained backbone (all weights stay fixed)
-- Replace the final classification layer(s)
-- Train only the new layers
+- Congelar el backbone pre-entrenado (todos los pesos se mantienen fijos)
+- Reemplazar la(s) capa(s) de clasificación final(es)
+- Entrenar solo las capas nuevas
 
-**When to use**: very small target dataset (< 1000 examples), similar domain to pre-training data.
+**Cuándo usar**: conjunto de datos objetivo muy pequeño (< 1000 ejemplos), dominio similar a los datos de pre-entrenamiento.
 
 ```python
 import torchvision.models as models
 
-# Load pre-trained ResNet
+# Cargar ResNet pre-entrenado
 backbone = models.resnet50(weights="IMAGENET1K_V2")
 
-# Freeze all layers
+# Congelar todas las capas
 for param in backbone.parameters():
     param.requires_grad = False
 
-# Replace classifier
+# Reemplazar clasificador
 backbone.fc = nn.Linear(2048, num_classes)
 
-# Only the new classifier layer is trainable
+# Solo la capa del clasificador nueva es entrenable
 ```
 
-### 3.2 Full Fine-Tuning
+### 3.2 Fine-Tuning Completo
 
-- Unfreeze the entire model
-- Train everything with a low learning rate
+- Descongelar todo el modelo
+- Entrenar todo con una tasa de aprendizaje baja
 
-**When to use**: moderate target dataset (1000-10000 examples), or different domain from pre-training.
+**Cuándo usar**: conjunto de datos objetivo moderado (1000-10000 ejemplos), o dominio diferente al de pre-entrenamiento.
 
-### 3.3 Progressive Unfreezing
+### 3.3 Descongelamiento Progresivo
 
-- Start with only the new classifier trainable
-- Gradually unfreeze layers from top to bottom
-- Each unfreeze step uses a lower learning rate
+- Comenzar con solo el clasificador nuevo entrenable
+- Descongelar gradualmente capas de arriba hacia abajo
+- Cada paso de descongelamiento usa una tasa de aprendizaje más baja
 
-**Why**: early layers learn very general features that should change the least. Gradually exposing them to the target data prevents catastrophic forgetting.
+**Por qué**: las capas tempranas aprenden características muy generales que deberían cambiar menos. Exponerlas gradualmente a los datos objetivo previene el olvido catastrófico.
 
-### 3.4 Parameter-Efficient Fine-Tuning
+### 3.4 Fine-Tuning Eficiente en Parámetros
 
-Instead of updating all parameters, insert small trainable modules:
+En lugar de actualizar todos los parámetros, insertar módulos pequeños entrenables:
 
-| Method | What is trained | Parameters | Used in |
+| Método | Qué se entrena | Parámetros | Usado en |
 |---|---|---|---|
-| **LoRA** | Low-rank weight updates | ~0.1-1% | LLMs |
-| **Adapters** | Small bottleneck layers | ~1-5% | NLP |
-| **Prefix Tuning** | Virtual token embeddings | ~0.1% | NLG |
+| **LoRA** | Actualizaciones de pesos de bajo rango | ~0.1-1% | LLMs |
+| **Adapters** | Capas bottleneck pequeñas | ~1-5% | NLP |
+| **Prefix Tuning** | Embeddings de tokens virtuales | ~0.1% | NLG |
 
 ---
 
-## 4. Common Pre-trained Models
+## 4. Modelos Pre-entrenados Comunes
 
-### 4.1 Vision
+### 4.1 Visión
 
-| Model | Pre-training Data | Best For |
+| Modelo | Datos de Pre-entrenamiento | Mejor Para |
 |---|---|---|
-| **ResNet** (18/50/101) | ImageNet (1.3M images) | Classification, detection — see [[CNNs]] |
-| **EfficientNet** | ImageNet + noisy student | Efficiency |
-| **ViT** (Vision Transformer) | ImageNet-21k / JFT-300M | Vision (transformer-based) — see [[Transformers]] |
-| **CLIP** (OpenAI) | 400M image-text pairs | Zero-shot, multi-modal |
+| **ResNet** (18/50/101) | ImageNet (1.3M imágenes) | Clasificación, detección — ver [[CNNs]] |
+| **EfficientNet** | ImageNet + student ruidoso | Eficiencia |
+| **ViT** (Vision Transformer) | ImageNet-21k / JFT-300M | Visión (basado en transformer) — ver [[Transformers]] |
+| **CLIP** (OpenAI) | 400M pares imagen-texto | Zero-shot, multi-modal |
 
 ### 4.2 NLP / LLMs
 
-| Model | Parameters | Pre-training Data | Best For |
+| Modelo | Parámetros | Datos de Pre-entrenamiento | Mejor Para |
 |---|---|---|---|
-| **BERT** | 110M-340M | Books + Wikipedia | Understanding (classification, NER) |
-| **RoBERTa** | 125M-355M | 160GB text | Understanding (improved BERT) |
-| **GPT-2** | 124M-1.5B | WebText | Generation |
-| **Llama 2/3** | 7B-70B | 2T-15T tokens | General purpose |
-| **Mistral** | 7B | Various | General purpose (efficient) |
-| **Gemma** | 2B-7B | 6T tokens | Research |
+| **BERT** | 110M-340M | Libros + Wikipedia | Comprensión (clasificación, NER) |
+| **RoBERTa** | 125M-355M | 160GB texto | Comprensión (BERT mejorado) |
+| **GPT-2** | 124M-1.5B | WebText | Generación |
+| **Llama 2/3** | 7B-70B | 2T-15T tokens | Propósito general |
+| **Mistral** | 7B | Varios | Propósito general (eficiente) |
+| **Gemma** | 2B-7B | 6T tokens | Investigación |
 
 ---
 
-## 5. Practical Guidelines
+## 5. Guías Prácticas
 
-### 5.1 Choosing a Strategy
+### 5.1 Elegir una Estrategia
 
-| Target Data | Domain Similarity | Recommended Strategy |
+| Datos Objetivo | Similitud de Dominio | Estrategia Recomendada |
 |---|---|---|
-| < 1000 | Similar | Feature extraction |
-| < 1000 | Different | Fine-tune top layers |
-| 1K-10K | Similar | Fine-tune full model with low LR |
-| 1K-10K | Different | Full fine-tune from pre-trained |
-| > 10K | Any | Consider training from scratch |
+| < 1000 | Similar | Extracción de características |
+| < 1000 | Diferente | Fine-tuning de capas superiores |
+| 1K-10K | Similar | Fine-tuning completo con LR baja |
+| 1K-10K | Diferente | Fine-tuning completo desde pre-entrenado |
+| > 10K | Cualquiera | Considerar entrenamiento desde cero |
 
-### 5.2 Fine-Tuning Best Practices
+### 5.2 Mejores Prácticas de Fine-Tuning
 
-- **Learning rate**: 10-100× lower than training from scratch. For full fine-tuning: 2e-5 to 5e-5. For LoRA: 1e-4 to 5e-4.
-- **Optimizer**: AdamW is standard. SGD with momentum works for vision.
-- **Epochs**: fewer than training from scratch. Monitor validation loss — fine-tuning can overfit quickly.
-- **Batch size**: as large as memory allows (but not too large — small batches act as regularizer).
-- **Data augmentation**: even more important with small datasets.
+- **Tasa de aprendizaje**: 10-100× más baja que entrenar desde cero. Para fine-tuning completo: 2e-5 a 5e-5. Para LoRA: 1e-4 a 5e-4.
+- **Optimizador**: AdamW es estándar. SGD con momentum funciona para visión.
+- **Épocas**: menos que entrenar desde cero. Monitorear pérdida de validación — el fine-tuning puede hacer overfitting rápidamente.
+- **Tamaño de lote**: tan grande como la memoria permita (pero no demasiado — lotes pequeños actúan como regularizador).
+- **Aumento de datos**: aún más importante con conjuntos de datos pequeños.
 
-### 5.3 When NOT to Transfer Learn
+### 5.3 Cuándo NO Usar Transfer Learning
 
-- Target domain is fundamentally different from pre-training domain (e.g., medical images from a novel imaging modality)
-- You have a very large target dataset (millions of examples)
-- Latency constraints require a much smaller model
-- You want to understand the architecture from the ground up (research)
-
----
-
-## 6. Common Mistakes
-
-1. **Learning rate too high**: the most common fine-tuning mistake. Pre-trained weights are already good — large updates destroy learned features.
-
-2. **Not freezing batch norm statistics**: batchnorm running mean/var should be frozen when fine-tuning with small batches. Update them only if training with large batches.
-
-3. **Overfitting to small data**: fine-tuning on hundreds of examples can still overfit. Use stronger [[Regularization]], early stopping, and data augmentation.
-
-4. **Catastrophic forgetting**: the model may "forget" the general features learned during pre-training. Use progressive unfreezing or replay of pre-training data.
-
-5. **Not adjusting the input size**: pre-trained models expect specific input sizes (224×224 for ResNet, 512/1024 tokens for BERT). Resize your data accordingly.
+- El dominio objetivo es fundamentalmente diferente al dominio de pre-entrenamiento (ej: imágenes médicas de una modalidad de imagenado novedosa)
+- Tienes un conjunto de datos objetivo muy grande (millones de ejemplos)
+- Las restricciones de latencia requieren un modelo mucho más pequeño
+- Quieres entender la arquitectura desde cero (investigación)
 
 ---
 
-## 7. Check Your Understanding
+## 6. Errores Comunes
 
-1. You have 500 labeled medical X-ray images. Should you train ResNet from scratch, use feature extraction, or fine-tune the full model? Why?
+1. **Tasa de aprendizaje demasiado alta**: el error de fine-tuning más común. Los pesos pre-entrenados ya son buenos — actualizaciones grandes destruyen características aprendidas.
 
-2. Why is the learning rate for fine-tuning typically 100× lower than training from scratch?
+2. **No congelar estadísticas de batch norm**: la media/varianza en ejecución de batchnorm debe congelarse al hacer fine-tuning con lotes pequeños. Actualizarlos solo si se entrena con lotes grandes.
 
-3. LoRA trains 1% of parameters but achieves similar performance to full fine-tuning on LLMs. How?
+3. **Overfitting a datos pequeños**: fine-tuning con cientos de ejemplos puede hacer overfitting. Usar [[Regularization]] más fuerte, early stopping y aumento de datos.
 
-4. You fine-tune a BERT model on a custom dataset. Training loss decreases but validation loss increases after 2 epochs. What do you do?
+4. **Olvido catastrófico**: el modelo puede "olvidar" las características generales aprendidas durante el pre-entrenamiento. Usar descongelamiento progresivo o replay de datos de pre-entrenamiento.
 
-5. When would you NOT use transfer learning?
+5. **No ajustar el tamaño de entrada**: los modelos pre-entrenados esperan tamaños de entrada específicos (224×224 para ResNet, 512/1024 tokens para BERT). Redimensionar tus datos en consecuencia.
+
+---
+
+## 7. Comprueba tu Conocimiento
+
+1. Tienes 500 imágenes de rayos X médicas etiquetadas. ¿Deberías entrenar ResNet desde cero, usar extracción de características, o hacer fine-tuning del modelo completo? ¿Por qué?
+
+2. ¿Por qué la tasa de aprendizaje para fine-tuning típicamente es 100× más baja que entrenar desde cero?
+
+3. LoRA entrena 1% de los parámetros pero logra un rendimiento similar al fine-tuning completo en LLMs. ¿Cómo?
+
+4. Haces fine-tuning de un modelo BERT en un conjunto de datos personalizado. La pérdida de entrenamiento disminuye pero la pérdida de validación aumenta después de 2 épocas. ¿Qué haces?
+
+5. ¿Cuándo NO usarías transfer learning?
 
 ---
 
 ## 8. Resumen
 
-Transfer learning is the standard practice in deep learning. Start from a pre-trained model, adapt it to your task with a small amount of data and a low learning rate. Choose the strategy (feature extraction, fine-tuning, or PEFT) based on your dataset size and domain similarity. The key is not to destroy the pre-trained features with aggressive updates.
+El transfer learning es la práctica estándar en deep learning. Comenzar desde un modelo pre-entrenado, adaptarlo a tu tarea con una pequeña cantidad de datos y una tasa de aprendizaje baja. Elegir la estrategia (extracción de características, fine-tuning o PEFT) según el tamaño de tu conjunto de datos y la similitud de dominio. La clave es no destruir las características pre-entrenadas con actualizaciones agresivas.
 
 ---
 
-## 9. Where to Go Next
+## 9. ¿Dónde ir Siguente?
 
-- [[Neural Networks]] — What is being transferred
-- [[Fine-tuning]] — LLM-specific transfer learning (LoRA, QLoRA)
-- [[Training Techniques]] — Optimizers and schedules for fine-tuning
+- [[Neural Networks]] — Qué se está transfiriendo
+- [[Fine-tuning]] — Transfer learning específico para LLMs (LoRA, QLoRA)
+- [[Training Techniques]] — Optimizadores y programaciones para fine-tuning
