@@ -9,48 +9,48 @@ Un vault de **Obsidian** con **180+ notas educativas** que cubren el stack compl
 ### Nivel 1: Fundamentos
 | Sección | Notas | Cubre |
 |---------|-------|-------|
-| **01 - Programming** | 6 | Python, DS&A, OOP, FP, NumPy/Pandas, **Polars** |
-| **02 - Mathematics** | 4 | Álgebra Lineal, Cálculo, Probabilidad, Estadística |
-| **14 - Databases & SQL** | 5 | Modelo relacional, Joins, Window Functions, Optimización, **NoSQL** |
-| **15 - Data Visualization** | 5 | Percepción visual, matplotlib, seaborn, plotly/altair, Storytelling |
-| **07 - Tools & Practices** | 5 | Git, Testing, Virtualenv, CLI, Code Quality |
+| **Programming** | 6 | Python, DS&A, OOP, FP, NumPy/Pandas, **Polars** |
+| **Mathematics** | 4 | Álgebra Lineal, Cálculo, Probabilidad, Estadística |
+| **Databases & SQL** | 5 | Modelo relacional, Joins, Window Functions, Optimización, **NoSQL** |
+| **Data Visualization** | 5 | Percepción visual, matplotlib, seaborn, plotly/altair, Storytelling |
+| **Tools & Practices** | 5 | Git, Testing, Virtualenv, CLI, Code Quality |
 
 ### Nivel 2: Machine Learning
 | Sección | Notas | Cubre |
 |---------|-------|-------|
-| **03 - Machine Learning** | 9 | Supervised, Unsupervised, Eval, Regularization, FE, **Ensemble (XGBoost/LGBM/CAT)**, **Anomaly Detection**, **DimRed (t-SNE/UMAP)**, **Advanced FE** |
-| **04 - Deep Learning** | 6 | NN, CNNs, RNNs, Transformers, Training Techniques, Transfer Learning |
-| **12 - Optimization** | 4 | Convex, Gradient-Based, Hyperparameter Tuning (**Optuna**), Constraint |
-| **18 - Advanced Statistics** | 6 | Experimental Design, Causal Inference, Bootstrap, Bayesian Stats, Non-parametric, **Causal ML (DoWhy)** |
-| **23 - Information Theory** | 6 | Information Theory, Graph Theory, Numerical Methods, Adv. Linear Algebra, Optimization Theory, **Graph Neural Networks** |
+| **Machine Learning** | 9 | Supervised, Unsupervised, Eval, Regularization, FE, **Ensemble (XGBoost/LGBM/CAT)**, **Anomaly Detection**, **DimRed (t-SNE/UMAP)**, **Advanced FE** |
+| **Deep Learning** | 6 | NN, CNNs, RNNs, Transformers, Training Techniques, Transfer Learning |
+| **Optimization** | 4 | Convex, Gradient-Based, Hyperparameter Tuning (**Optuna**), Constraint |
+| **Advanced Statistics** | 6 | Experimental Design, Causal Inference, Bootstrap, Bayesian Stats, Non-parametric, **Causal ML (DoWhy)** |
+| **Information Theory** | 6 | Information Theory, Graph Theory, Numerical Methods, Adv. Linear Algebra, Optimization Theory, **Graph Neural Networks** |
 
 ### Nivel 3: Dominios especializados
 | Sección | Notas | Cubre |
 |---------|-------|-------|
-| **08 - Computer Vision** | 5 | Image Processing, Object Detection, GANs, Vision Transformers, Multimodal |
-| **19 - NLP** | 5 | Preprocessing, Word2Vec, Text Classification, NER, Topic Modeling |
-| **05 - LLMs** | 6 | Transformers, Prompt Engineering, Fine-tuning, RAG, Eval, Agentic Systems |
-| **09 - Time Series** | 4 | Fundamentals, Classical, Deep Learning, Anomaly Detection |
-| **10 - Reinforcement Learning** | 5 | RL Fundamentals, Value/Policy-Based, Model-Based, **RLHF** |
-| **11 - Bayesian Methods** | 4 | Bayesian Inference, Probabilistic Programming, MCMC, Gaussian Processes |
-| **24 - Recommender Systems** | 5 | CF, Content-Based, Hybrid/Session, Production, MAB |
+| **Computer Vision** | 5 | Image Processing, Object Detection, GANs, Vision Transformers, Multimodal |
+| **NLP** | 5 | Preprocessing, Word2Vec, Text Classification, NER, Topic Modeling |
+| **LLMs** | 6 | Transformers, Prompt Engineering, Fine-tuning, RAG, Eval, Agentic Systems |
+| **Time Series** | 4 | Fundamentals, Classical, Deep Learning, Anomaly Detection |
+| **Reinforcement Learning** | 5 | RL Fundamentals, Value/Policy-Based, Model-Based, **RLHF** |
+| **Bayesian Methods** | 4 | Bayesian Inference, Probabilistic Programming, MCMC, Gaussian Processes |
+| **Recommender Systems** | 5 | CF, Content-Based, Hybrid/Session, Production, MAB |
 
 ### Nivel 4: Ingeniería y producción
 | Sección | Notas | Cubre |
 |---------|-------|-------|
-| **16 - Data Engineering** | 6 | ETL, Airflow, Kafka, Warehousing, dbt, Data Quality |
-| **13 - Infrastructure & DevOps** | 5 | IaC, Terraform (Fundamentos, State, Modules), AWS CodeBuild |
-| **17 - Containers & Orchestration** | 6 | Docker, Compose, K8s, K8s+ML, Helm, CI/CD + GitOps |
-| **21 - Software Engineering** | 5 | Design Patterns, API Design (FastAPI), System Design, Clean Code, Testing |
-| **06 - MLOps & Observability** | 6 | Pipelines, Monitoring, Drift, **MLflow**, A/B Testing, Observability |
-| **25 - ML in Production** | 5 | Feature Stores, Model Serving, Deploy Strategies, Compression, Continuous Training |
+| **Data Engineering** | 6 | ETL, Airflow, Kafka, Warehousing, dbt, Data Quality |
+| **Infrastructure & DevOps** | 5 | IaC, Terraform (Fundamentos, State, Modules), AWS CodeBuild |
+| **Containers & Orchestration** | 6 | Docker, Compose, K8s, K8s+ML, Helm, CI/CD + GitOps |
+| **Software Engineering** | 5 | Design Patterns, API Design (FastAPI), System Design, Clean Code, Testing |
+| **MLOps & Observability** | 6 | Pipelines, Monitoring, Drift, **MLflow**, A/B Testing, Observability |
+| **ML in Production** | 5 | Feature Stores, Model Serving, Deploy Strategies, Compression, Continuous Training |
 
 ### Nivel 5: Negocio y gobernanza
 | Sección | Notas | Cubre |
 |---------|-------|-------|
-| **22 - Data Product & Analytics** | 5 | Product Thinking, Funnel/Cohort, Experimentation, Stakeholder Comms, Self-Serve |
-| **20 - Responsible AI** | 4 | Bias & Fairness, **SHAP/LIME**, Privacy (DP, Federated), ML Governance |
-| **26 - Data Security & Compliance** | 4 | Data Classification, Encryption, GDPR/CCPA/EU AI Act, Secure ML |
+| **Data Product & Analytics** | 5 | Product Thinking, Funnel/Cohort, Experimentation, Stakeholder Comms, Self-Serve |
+| **Responsible AI** | 4 | Bias & Fairness, **SHAP/LIME**, Privacy (DP, Federated), ML Governance |
+| **Data Security & Compliance** | 4 | Data Classification, Encryption, GDPR/CCPA/EU AI Act, Secure ML |
 
 ---
 
@@ -86,7 +86,45 @@ Brain/
 1. Clona el repo: `git clone https://github.com/veterano11/secondbrain-DataScientist.git`
 2. Abrí la carpeta como vault en Obsidian (File → Open vault → Open folder as vault)
 3. Empezá por `Meta/_index.md` para ver la ruta de lectura recomendada
-4. Seguí los niveles: Fundamentos → ML → Dominios → Producción → Negocio
+4. Seguí el orden secuencial: Fundamentos → ML → Dominios → Producción → Negocio
+
+### Orden de lectura recomendado
+
+**Nivel 1 — Fundamentos** (primero)
+1. Programming
+2. Mathematics
+3. Databases & SQL
+4. Data Visualization
+5. Tools & Practices
+
+**Nivel 2 — Machine Learning**
+6. Machine Learning
+7. Deep Learning
+8. Optimization
+9. Advanced Statistics
+10. Information Theory
+
+**Nivel 3 — Dominios especializados**
+11. Computer Vision
+12. NLP
+13. LLMs
+14. Time Series
+15. Reinforcement Learning
+16. Bayesian Methods
+17. Recommender Systems
+
+**Nivel 4 — Ingeniería y producción**
+18. Data Engineering
+19. Infrastructure & DevOps
+20. Containers & Orchestration
+21. Software Engineering
+22. MLOps & Observability
+23. ML in Production
+
+**Nivel 5 — Negocio y gobernanza** (último)
+24. Data Product & Analytics
+25. Responsible AI
+26. Data Security & Compliance
 
 ---
 
